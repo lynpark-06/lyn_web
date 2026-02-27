@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>International Student Must Items</title>
+  <link rel="stylesheet" href="style/web.css" />
+</head>
+
+<body class="home">
+
+  <header class="topbar">
+    <!-- 왼쪽: + 버튼 -->
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-dropdown">
+      +
+    </button>
+
+    <!-- 가운데: 제목 -->
+    <h1 class="site-title">INT.STUDENT MUST ITEM</h1>
+
+    <!-- 오른쪽: 균형용 빈칸(제목 진짜 가운데 유지용) -->
+    <div class="topbar-spacer" aria-hidden="true"></div>
+
+    <!-- 드롭다운 -->
+    <nav id="menu-dropdown" class="dropdown" aria-label="Menu">
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <script>
+    const toggle = document.querySelector(".menu-toggle");
+    const dropdown = document.querySelector(".dropdown");
+
+    toggle.addEventListener("click", () => {
+      const isOpen = dropdown.classList.toggle("show");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    // 바깥 클릭하면 닫기 (선택이지만 편함)
+    document.addEventListener("click", (e) => {
+      const clickedInside = e.target.closest(".topbar");
+      if (!clickedInside) {
+        dropdown.classList.remove("show");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  </script>
+
+<section class="grid">
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="Rae Item">
+  </a>
+
+  <a href="katie.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+
+  <a href="rae.html" class="grid-item">
+    <img src="Rae.png" alt="">
+  </a>
+</section>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<script>
+  const cursor = document.querySelector(".cursor");
+
+  // 커서 따라다니기
+  window.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+
+  // 이미지 위에 있으면 배경색으로 변경
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest("img")) {
+      cursor.classList.add("photo-hover");
+    }
+  });
+
+  // 이미지 벗어나면 다시 초록색
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest("img")) {
+      cursor.classList.remove("photo-hover");
+    }
+  });
+</script>
+
+</body>
+</html>
+

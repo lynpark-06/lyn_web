@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>International Student Must Items</title>
+        <link rel="stylesheet" href="style/web.css">
+    </head>
+
+    <body>
+        <h1>
+            <a href="index.html" class="home-link">
+            RAE CHANDINAE BAKISAN MANO
+            </a>
+        </h1>
+        <img src="Rae.png" max-width:50%>
+
+<div class="q_and_a">
+        
+        <div>
+            <p class="question">
+                Where are you from?
+            </p>
+
+            <p class="answer">
+                Dubai,UAE.
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's your name,age and when did you come to canada?
+            </p>
+
+            <p class="answer">
+                Rae Chandinae Bakisan Mano, 21 years old, A year and a half? Two years? First year September, So it's been a year and a half.
+            </p>
+        </div>
+        
+        <div>
+            <p class="question">
+                What did you bring to Canada?
+            </p>
+
+            <p class="answer">
+                a tin box of photos 
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's the background story of the item and why did you brought it?
+            </p>
+
+            <p class="answer">
+                I just brought it cause, like, I barely get written letters. So when I get written letters on like my birthday, I just keep it in there and there's like hella photos now.
+            </p>
+        </div>
+        
+        <div>
+            <p class="question">
+                So it's like a memory?
+            </p>
+
+            <p class="answer">
+                Yeah, it's like a memory box.
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                Is there any tips for the new international who's coming to Canada? 
+            </p>
+
+            <p class="answer">
+                Pray. Bring a thousand dollars.
+            </p>
+        </div>
+</div>
+        
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<script>
+  const cursor = document.querySelector(".cursor");
+
+  window.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+
+  // grid-item(인덱스) OR hover-bg(인터뷰 사진) 위면 배경색
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(".grid-item") || e.target.closest(".hover-bg")) {
+      cursor.classList.add("photo-hover");
+    }
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest(".grid-item") || e.target.closest(".hover-bg")) {
+      cursor.classList.remove("photo-hover");
+    }
+  });
+</script>

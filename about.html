@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About – International Student Must Items</title>
+  <link rel="stylesheet" href="style/web.css">
+</head>
+
+<body class="about">
+
+  <!-- 상단 메뉴 동일하게 유지 -->
+  <header class="topbar">
+<h1 class="site-title">
+  <a href="index.html" class="home-link">ABOUT</a>
+</h1>
+    <div class="topbar-spacer"></div>
+  </header>
+
+  <section class="about-content">
+    <p>
+      International Student Must Item is an archive of objects brought 
+      from home countries to Canada.  Each item holds memory, identity, and adaptation.  
+      Through interviews, this archive documents personal transitions.
+    </p>
+  </section>
+
+  <div class="cursor"></div>
+
+<script>
+  const cursor = document.querySelector(".cursor");
+
+  // 커서 따라다니기
+  window.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+
+  // ✅ 이벤트 위임: .grid-item 위에 올라가면 무조건 작동
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(".grid-item")) {
+      cursor.classList.add("photo-hover");
+    }
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest(".grid-item")) {
+      cursor.classList.remove("photo-hover");
+    }
+  });
+</script>
+
+</body>
+</html>
+
