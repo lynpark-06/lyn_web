@@ -82,25 +82,3 @@
 <div class="cursor"></div>
 
 <div class="cursor"></div>
-
-<script>
-  const cursor = document.querySelector(".cursor");
-
-  window.addEventListener("mousemove", (e) => {
-    cursor.style.left = e.clientX + "px";
-    cursor.style.top = e.clientY + "px";
-  });
-
-  // grid-item(인덱스) OR hover-bg(인터뷰 사진) 위면 배경색
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(".grid-item") || e.target.closest(".hover-bg")) {
-      cursor.classList.add("photo-hover");
-    }
-  });
-
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest(".grid-item") || e.target.closest(".hover-bg")) {
-      cursor.classList.remove("photo-hover");
-    }
-  });
-</script>

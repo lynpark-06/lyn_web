@@ -92,32 +92,6 @@
 
 <div class="cursor"></div>
 
-<div class="cursor"></div>
-
-<script>
-  const cursor = document.querySelector(".cursor");
-
-  // 커서 따라다니기
-  window.addEventListener("mousemove", (e) => {
-    cursor.style.left = e.clientX + "px";
-    cursor.style.top = e.clientY + "px";
-  });
-
-  // 이미지 위에 있으면 배경색으로 변경
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest("img")) {
-      cursor.classList.add("photo-hover");
-    }
-  });
-
-  // 이미지 벗어나면 다시 초록색
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest("img")) {
-      cursor.classList.remove("photo-hover");
-    }
-  });
-</script>
-
 </body>
 </html>
 
