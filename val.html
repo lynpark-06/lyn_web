@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>International Student Must Items</title>
+        <link rel="stylesheet" href="style/web.css">
+    </head>
+
+    <body>
+        <h1>
+            <a href="index.html" class="home-link">
+            VALENTINA FERNANDEZ
+            </a>
+        </h1>
+    <div class="q_and_a">
+        <img src="val.png" class="val-photo">
+
+        
+        <div>
+            <p class="question">
+                Where are you from?
+            </p>
+
+            <p class="answer">
+                Lima, Peru
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's your name,age and when did you come to canada?
+            </p>
+
+            <p class="answer">
+                Velentina Fernandez, I'm 20 and I came here almost two years ago
+            </p>
+        </div>
+        
+        <div>
+            <p class="question">
+                What item did you bring?
+            </p>
+
+            <p class="answer">
+                A seasoning called Huancaina.
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's the background story of the item and why did you brought it?
+            </p>
+
+            <p class="answer">
+                Because I wanted to have a little taste of home and I missd my mom's cooking. I could get it in Canada, but I 
+                like bringing it back from home because it's much cheaper.
+            </p>
+        </div>
+        
+        
+        <div>
+            <p class="question">
+                Is there any tips for the new international who's coming to Canada? 
+            </p>
+
+            <p class="answer">
+                Always stay contact with your family and bring a lot of warm clothes, because it's reall cold.
+            </p>
+        </div>
+
+        <h2 class="item">
+            <label class="save-item">
+                Save this Item
+                <input type="checkbox" id="save-checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </h2>
+<div class="cursor"></div>
+
+<script>
+    const saveCheckbox = document.getElementById('save-checkbox');
+    const itemData = {
+        name: 'VALENTINA FERNANDEZ',
+        photo: 'val.png',
+        page: 'VALENTINA FERNANDEZ'
+    };
+
+    // Load saved state
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const isSaved = savedItems.some(item => item.name === itemData.name);
+    saveCheckbox.checked = isSaved;
+
+    saveCheckbox.addEventListener('change', () => {
+        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+        if (saveCheckbox.checked) {
+            // Add item if not already saved
+            if (!savedItems.some(item => item.name === itemData.name)) {
+                savedItems.push(itemData);
+            }
+        } else {
+            // Remove item
+            savedItems = savedItems.filter(item => item.name !== itemData.name);
+        }
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    });
+</script>

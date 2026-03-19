@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About – International Student Must Items</title>
+  <link rel="stylesheet" href="style/web.css">
+</head>
+
+<body class="archive">
+
+  <!-- 상단 메뉴 동일하게 유지 -->
+  <header class="topbar">
+<h1 class="site-title">
+  <a href="index.html" class="home-link">MY CHECKLIST</a>
+</h1>
+    <div class="topbar-spacer"></div>
+  </header>
+
+  <section class="archive-content">
+    <p>
+      On my checklist, you can view the items you have saved. To unssave an item, simply click the button next to the item name.
+    </p>
+  </section>
+
+  <section class="saved-items-grid">
+    <div id="items-container"></div>
+  </section>
+
+  <div class="cursor"></div>
+
+  <div class="cursor"></div>
+
+<script>  
+  const itemsContainer = document.getElementById('items-container');
+  let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+
+  function saveToStorage() {
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+  }
+
+  function displaySavedItems() {
+    itemsContainer.innerHTML = '';
+    savedItems.forEach((item, index) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'saved-item';
+      itemDiv.innerHTML = `
+        <img src="${item.photo}" alt="${item.name}">
+        <p>${item.name}</p>
+        <label class="save-item">
+          <input type="checkbox" data-index="${index}">
+          <span class="checkmark"></span>
+        </label>
+      `;
+      itemsContainer.appendChild(itemDiv);
+    });
+
+    // attach listeners to checkboxes
+    const boxes = itemsContainer.querySelectorAll('.save-item input[type="checkbox"]');
+    boxes.forEach(box => {
+      box.addEventListener('change', (e) => {
+        const idx = Number(e.target.dataset.index);
+        // when checked, ask for confirmation before unsaving
+        if (e.target.checked) {
+          const ok = confirm('Are you sure you want to unsave this item?');
+          if (ok) {
+            savedItems.splice(idx, 1);
+            saveToStorage();
+            displaySavedItems();
+          } else {
+            // user cancelled — revert checkbox state
+            e.target.checked = false;
+          }
+        }
+      });
+    });
+  }
+  displaySavedItems();
+</script>
+
+
+</body>
+</html>
+

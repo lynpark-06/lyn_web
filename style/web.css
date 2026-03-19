@@ -1,6 +1,6 @@
 html{
-    color: rgb(47, 255, 0);
-    background-color:rgb(244, 243, 238);
+    color: rgb(50, 85, 164);
+    background-color:rgb(241, 241, 241);
 }
 
 :root{
@@ -9,7 +9,7 @@ html{
 }
 
 h1 {
-    font-size:50px;
+    font-size:90px;
     font-weight:normal;
     font-family:monospace;
     text-indent:auto;
@@ -17,8 +17,76 @@ h1 {
     margin-bottom:+100px;
 }
 
+.item{
+    font-size: 20px;
+    font-weight:lighter;
+    font-family:monospace;
+    text-indent:auto;
+    text-align: center;
+    margin-bottom:15px;
+    margin-top: 70px;
+    color: rgb(47, 255, 0);
+}
+
+/* Custom Checkbox Styles */
+.save-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: lighter;
+    font-family: monospace;
+    color: rgb(50, 85, 164);
+    margin: 0;
+}
+
+.save-item input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgb(50, 85, 164);
+    margin-left: 10px;
+    position: relative;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.save-item input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(47, 255, 0); /* 네온 그린 */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+  /* Archive page: show green checkbox and checkmark; place checkbox to the right of the name */
+  body.archive .saved-item {
+    align-items: flex-start; /* keep items top-aligned */
+  }
+
+  body.archive .save-item {
+    color: rgb(47, 255, 0);
+    justify-content: flex-end;
+    margin-left: 12px;
+  }
+
+  body.archive .checkmark {
+    border-color: rgb(47, 255, 0);
+  }
+
+  body.archive .save-item input[type="checkbox"]:checked + .checkmark::after {
+    color: rgb(47, 255, 0);
+  }
 .q_and_a > div {
-    width:500px;
+    width:800px;
     margin:auto;
     font-family:monospace;
     line-height:1 em;
@@ -31,7 +99,7 @@ h1 {
 }
 
 .answer {
-    margin-top:0px;
+    margin-top:-15px;
     padding-left:20px;
     font-size:19px;
 }
@@ -82,7 +150,7 @@ img {
   appearance: none;
   border: none;
   background: transparent;
-  color: inherit;       /* 네온 그린 그대로 */
+  color: rgb(47, 255, 0);     /* 네온 그린 그대로 */
   font-family: monospace;
   font-size: 90px;      /* + 크기 */
   line-height: 1;       /* 첫 줄이랑 기준선 맞춤 */
@@ -110,7 +178,7 @@ img {
 }
 
 .dropdown a {
-  color: inherit;
+  color: rgb(47, 255, 0);   
   text-decoration: none;
   font-family: monospace;
   font-size: 20px;
@@ -169,31 +237,33 @@ body.about .topbar{
 body.about .site-title{
   position: absolute;
   left: 50%;
-  top: 40px;                     /* topbar padding이랑 맞춰줌 */
+  top: var(--page-top);           /* topbar padding이랑 맞춰줌 */
   transform: translateX(-50%);
-  
+  color:rgb(47, 255, 0);   ;
+
   margin: 0;
   text-align: center;
 
   /* index랑 같은 느낌으로 (반응형도 안전하게) */
   font-family: monospace;
-  font-size: 100px;
+  font-size: var(--title-size);
   font-weight: normal;
 }
 
 /* 본문도 가운데 + 줄 길이 제한 */
+/* 본문도 가운데 + 줄 길이 제한 */
 body.about .about-content{
-  max-width: 900px;
-  text-align: center;
+  max-width: 1000px;
+  text-align:left;
   font-family: monospace;
   font-size: 18px;               /* 필요하면 조절 */
   line-height: 1.6;
-  margin: 120px auto 0;     
+  margin: calc(var(--page-top) + var(--title-size) + 20px) auto 0;     
 }
 
 /* p 기본 margin 때문에 간격 이상해지면 조절 */
 body.about .about-content p{
-  margin: 0 0 40px;
+  margin: 0 0 2.5rem;
 }
 
 /* ===== GRID ===== */
@@ -201,11 +271,12 @@ body.about .about-content p{
 .grid{
   width: 100%;
   max-width: 1100px;
-  margin: 120px auto 100px;
+  margin: calc(var(--page-top) + var(--title-size) + 20px) auto 100px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 30px;
-  padding: 0 60px;
+  padding: 0 24px;
+  
 }
 
 /* 정사각형 유지 */
@@ -219,7 +290,7 @@ body.about .about-content p{
 
 /* 이미지 꽉 채우기 */
 .grid-item img{
-  width: 100%;
+  
   height: 100%;
   object-fit: cover;
   display: block;
@@ -245,3 +316,157 @@ body.about .about-content p{
   }
 }
 
+
+
+
+.kat-photo{
+  width: 800px;
+}
+
+.rae-photo{
+  width: 830px;
+}
+
+.ege-photo{
+  width: 800px;
+}
+
+.val-photo{
+  width: 800px;
+
+}
+
+.cher-photo{
+  width: 800px;
+}
+
+.jas-photo{
+  width: 800px;
+}
+
+.archive{
+  margin-top: 20px;
+}
+
+/* Saved Items Grid */
+.saved-items-grid {
+    margin-top: 22vh;
+}
+
+/* ABOUT-like paragraph styling for archive page to match about.html */
+body.archive .about-content{
+  max-width: 900px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 120px auto 0;
+}
+
+body.archive .about-content p{
+  margin: 0 0 40px;
+}
+
+/* reduce extra top spacing for saved items specifically on archive page */
+body.archive .saved-items-grid {
+  margin-top: 160px !important;
+}
+
+#items-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+}
+
+.saved-items-grid {
+  margin-top: 22vh;
+}
+
+.saved-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; /* align name to top of image */
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 500px;
+  padding: 14px 10px; /* equal top/bottom padding so border sits centered between items */
+  background-color: transparent;
+}
+
+.saved-item:not(:last-child) {
+  border-bottom: none;
+}
+
+.saved-item img {
+  align-self: flex-start; /* ensure image sticks to top of the flex row */
+}
+
+.saved-item img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: none;
+  margin-right: 20px;
+}
+
+/* Create a centered separator between saved items by spacing the second item
+   and drawing a line half-way into that gap using a pseudo-element. */
+.saved-item + .saved-item {
+  margin-top: 0; /* no extra gap or separator */
+  position: static;
+}
+
+.saved-item p {
+    font-family: monospace;
+    color: rgb(47, 255, 0);
+    font-size: 16px;
+    font-weight: regular;
+    margin: 0;
+    text-align: left;
+    flex: 1;
+}
+
+
+/* ===== ABOUT PAGE ===== */
+
+body.archive .topbar{
+  position: relative;            /* absolute 기준점 */
+  padding: 40px 60px;            /* 너가 쓰던 여백 느낌 유지 */
+}
+
+/* ABOUT 제목을 화면 정중앙에 고정 */
+body.archive .site-title{
+  position: absolute;
+  left: 50%;
+  top: var(--page-top);           /* topbar padding이랑 맞춰줌 */
+  transform: translateX(-50%);
+
+  margin: 0;
+  text-align: center;
+  color: rgb(47, 255, 0);
+
+  /* index랑 같은 느낌으로 (반응형도 안전하게) */
+  font-family: monospace;
+  font-size: var(--title-size);
+  font-weight: normal;
+}
+
+/* 본문도 가운데 + 줄 길이 제한 */
+/* 본문도 가운데 + 줄 길이 제한 */
+body.archive .archive-content{
+  max-width: 900px;
+  text-align: left;
+  font-family: monospace;
+  font-size: 18px;               /* 필요하면 조절 */
+  line-height: 1.6;
+  margin: calc(var(--page-top) + var(--title-size) + 20px) auto 0;     
+}
+
+/* p 기본 margin 때문에 간격 이상해지면 조절 */
+body.archive .archive-content p{
+  margin: 0 0 40px;
+}

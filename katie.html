@@ -13,7 +13,7 @@
             </a>
         </h1>
     <div class="q_and_a">
-        <img src="Rae.png" max-width:30%>
+<img src="kat.png" class="kat-photo">
 
         
         <div>
@@ -22,7 +22,7 @@
             </p>
 
             <p class="answer">
-                Dubai,UAE.
+                I'm from vancouver but I'm originally from Taiwan.
             </p>
         </div>
 
@@ -32,17 +32,17 @@
             </p>
 
             <p class="answer">
-                Rae Chandinae Bakisan Mano, 21 years old, A year and a half? Two years? First year September, So it's been a year and a half.
+                I'm Katie Wu, 20 years old, and I came to Toronto during my first year of university, so almost 2 years.
             </p>
         </div>
         
         <div>
             <p class="question">
-                What did you bring to Canada?
+                What item did you bring?
             </p>
 
             <p class="answer">
-                a tin box of photos 
+                The item that I brought is a stuffed animal from my childhood, and it was from Japan from a family friend.
             </p>
         </div>
 
@@ -52,17 +52,9 @@
             </p>
 
             <p class="answer">
-                I just brought it cause, like, I barely get written letters. So when I get written letters on like my birthday, I just keep it in there and there's like hella photos now.
-            </p>
-        </div>
-        
-        <div>
-            <p class="question">
-                So it's like a memory?
-            </p>
-
-            <p class="answer">
-                Yeah, it's like a memory box.
+                It's just always been a part of me and I brought it because it's really symbolic to me and I find comfort in it. And because It was gifted to me 
+                when I was younger, so coming here it was kind of comforting to know tjat a piece of me from Vancouver also
+                came to Toronto with me.
             </p>
         </div>
 
@@ -72,9 +64,45 @@
             </p>
 
             <p class="answer">
-                Pray. Bring a thousand dollars.
+                I would say definitely bring something from home, nothing that's exactly from Taiwan but soemthing you really like 
+                even if it's just like a keychain, something that resonate with you.
             </p>
         </div>
 
+        <h2 class="item">
+            <label class="save-item">
+                Save this Item
+                <input type="checkbox" id="save-checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </h2>
+
 <div class="cursor"></div>
 
+<script>
+    const saveCheckbox = document.getElementById('save-checkbox');
+    const itemData = {
+        name: 'KATIE WU',
+        photo: 'kat.png',
+        page: 'KATIE WU'
+    };
+
+   // Load saved state
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const isSaved = savedItems.some(item => item.name === itemData.name);
+    saveCheckbox.checked = isSaved;
+
+    saveCheckbox.addEventListener('change', () => {
+        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+        if (saveCheckbox.checked) {
+            // Add item if not already saved
+            if (!savedItems.some(item => item.name === itemData.name)) {
+                savedItems.push(itemData);
+            }
+        } else {
+            // Remove item
+            savedItems = savedItems.filter(item => item.name !== itemData.name);
+        }
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    });
+</script>

@@ -12,7 +12,12 @@
             RAE CHANDINAE BAKISAN MANO
             </a>
         </h1>
-        <img src="Rae.png" max-width:50%>
+        
+    
+       
+        <img src="Rae.png" class="rae-photo">
+
+        
 
 <div class="q_and_a">
         
@@ -38,7 +43,7 @@
         
         <div>
             <p class="question">
-                What did you bring to Canada?
+                What item did you bring?
             </p>
 
             <p class="answer">
@@ -77,8 +82,44 @@
         </div>
 </div>
         
+<h2 class="item">
+            <label class="save-item">
+                Save this Item
+                <input type="checkbox" id="save-checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </h2>
+        
 <div class="cursor"></div>
 
 <div class="cursor"></div>
 
 <div class="cursor"></div>
+
+<script>
+    const saveCheckbox = document.getElementById('save-checkbox');
+    const itemData = {
+        name: 'RAE CHANDINAE BAKISAN MANO',
+        photo: 'Rae.png',
+        page: 'RAE CHANDINAE BAKISAN MANO'
+    };
+
+    // Load saved state
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const isSaved = savedItems.some(item => item.name === itemData.name);
+    saveCheckbox.checked = isSaved;
+
+    saveCheckbox.addEventListener('change', () => {
+        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+        if (saveCheckbox.checked) {
+            // Add item if not already saved
+            if (!savedItems.some(item => item.name === itemData.name)) {
+                savedItems.push(itemData);
+            }
+        } else {
+            // Remove item
+            savedItems = savedItems.filter(item => item.name !== itemData.name);
+        }
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    });
+</script>
