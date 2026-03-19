@@ -104,7 +104,7 @@
         page: 'RAE CHANDINAE BAKISAN MANO'
     };
 
-    // Load saved state
+   // Load saved state
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     const isSaved = savedItems.some(item => item.name === itemData.name);
     saveCheckbox.checked = isSaved;
@@ -122,4 +122,5 @@
         }
         localStorage.setItem('savedItems', JSON.stringify(savedItems));
     });
+</script>
 </script>
