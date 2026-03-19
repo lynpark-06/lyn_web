@@ -86,7 +86,7 @@
         page: 'EGE ALTINOGLU'
     };
 
-    // Load saved state
+   // Load saved state
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     const isSaved = savedItems.some(item => item.name === itemData.name);
     saveCheckbox.checked = isSaved;
