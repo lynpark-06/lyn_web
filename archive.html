@@ -34,6 +34,18 @@
 <script>  
   const itemsContainer = document.getElementById('items-container');
   let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+  const itemPageMap = {
+    'RAE CHANDINAE BAKISAN MANO': 'rae.html',
+    'KATIE WU': 'katie.html',
+    'EGE ALTINOGLU': 'ege.html',
+    'VALENTINA FERNANDEZ': 'val.html',
+    'CHELENE': 'cher.html',
+    'JASMINE JAMANDRE': 'jas.html'
+  };
+
+  function getItemUrl(item) {
+    return item.url || itemPageMap[item.page] || '#';
+  }
 
   function saveToStorage() {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
@@ -45,8 +57,10 @@
       const itemDiv = document.createElement('div');
       itemDiv.className = 'saved-item';
       itemDiv.innerHTML = `
-        <img src="${item.photo}" alt="${item.page}">
-        <p>${item.name}</p>
+        <a href="${getItemUrl(item)}" class="saved-item-photo-link" aria-label="Open ${item.page}">
+          <img src="${item.photo}" alt="${item.page}">
+        </a>
+        <p>${item.name || item.page}</p>
         <label class="save-item">
           <input type="checkbox" data-index="${index}">
           <span class="checkmark"></span>

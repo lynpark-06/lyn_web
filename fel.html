@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>International Student Must Items</title>
+        <link rel="stylesheet" href="style/web.css">
+    </head>
+
+    <body>
+        <h1>
+            <a href="index.html" class="home-link">
+            FELICIA HWANG
+            </a>
+        </h1>
+
+        <a href="jas.html" class="item-nav prev">←</a>
+        <a href="sub.html" class="item-nav next">→</a>
+        
+    
+       
+        <img src="fel.png" class="fel-photo">
+
+<div class="q_and_a">
+        
+        <div>
+            <p class="question">
+                Where are you from?
+            </p>
+
+            <p class="answer">
+                I'm from Calgary, Alberta.
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's your name,age and when did you come to canada?
+            </p>
+
+            <p class="answer">
+                Im Felicia, I'm 20 and I came to Toronto in 2024 August.
+            </p>
+        </div>
+        
+        <div>
+            <p class="question">
+                What item did you bring?
+            </p>
+
+            <p class="answer">
+                I brough essential oils.
+            </p>
+        </div>
+
+        <div>
+            <p class="question">
+                What's the background story of the item and why did you brought it?
+            </p>
+
+            <p class="answer">
+                My mom loves essential oils and she used them for literally everything,
+                so she made me bring along a mini survival pack. I also brought it because they feel better than like, Western
+                medicine.They feel natural and they smell good. I just just like diffusing them in my room.
+        </div>
+        
+        <div>
+            <p class="question">
+                Is there any tips for the new international who's coming to Canada? 
+            </p>
+
+            <p class="answer">
+                I would say do your research on the subway, the transit system, because I struggled so much when I came here,
+                I had no idea how to negivated it.
+            </p>
+        </div>
+        <h2 class="item">
+            <label class="save-item">
+                Save this Item
+                <input type="checkbox" id="save-checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </h2>
+</div>
+        
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<div class="cursor"></div>
+
+<script>
+    const saveCheckbox = document.getElementById('save-checkbox');
+    const itemData = {
+        name: 'essential oils',
+        photo: 'fel.png',
+        page: 'FELICIA HWANG'
+    };
+
+   // Load saved state
+    let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const existingIndex = savedItems.findIndex(item => item.page === itemData.page);
+    if (existingIndex !== -1) {
+        savedItems[existingIndex] = itemData;
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+        saveCheckbox.checked = true;
+    } else {
+        saveCheckbox.checked = false;
+    }
+
+    saveCheckbox.addEventListener('change', () => {
+        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+        const index = savedItems.findIndex(item => item.page === itemData.page);
+        if (saveCheckbox.checked) {
+            // Add item if not already saved
+            if (index === -1) {
+                savedItems.push(itemData);
+            } else {
+                savedItems[index] = itemData;
+            }
+        } else {
+            // Remove item
+            if (index !== -1) {
+                savedItems.splice(index, 1);
+            }
+        }
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    });
+</script>

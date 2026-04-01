@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>International Student Must Items</title>
         <link rel="stylesheet" href="style/web.css">
     </head>
@@ -12,6 +13,8 @@
             JASMINE JAMANDRE
             </a>
         </h1>
+        <a href="cher.html" class="item-nav prev">←</a>
+        <a href="fel.html" class="item-nav next">→</a>
     <div class="q_and_a">
         <img src="jas.png" class="jas-photo">
 
@@ -90,26 +93,37 @@
 <script>
     const saveCheckbox = document.getElementById('save-checkbox');
     const itemData = {
-        name: 'JASMINE JAMANDRE',
+        name: 'traine cream',
         photo: 'jas.png',
         page: 'JASMINE JAMANDRE'
     };
 
     // Load saved state
-    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-    const isSaved = savedItems.some(item => item.name === itemData.name);
-    saveCheckbox.checked = isSaved;
+    let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const existingIndex = savedItems.findIndex(item => item.page === itemData.page);
+    if (existingIndex !== -1) {
+        savedItems[existingIndex] = itemData;
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+        saveCheckbox.checked = true;
+    } else {
+        saveCheckbox.checked = false;
+    }
 
     saveCheckbox.addEventListener('change', () => {
         let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+        const index = savedItems.findIndex(item => item.page === itemData.page);
         if (saveCheckbox.checked) {
             // Add item if not already saved
-            if (!savedItems.some(item => item.name === itemData.name)) {
+            if (index === -1) {
                 savedItems.push(itemData);
+            } else {
+                savedItems[index] = itemData;
             }
         } else {
             // Remove item
-            savedItems = savedItems.filter(item => item.name !== itemData.name);
+            if (index !== -1) {
+                savedItems.splice(index, 1);
+            }
         }
         localStorage.setItem('savedItems', JSON.stringify(savedItems));
     });
