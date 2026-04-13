@@ -49,16 +49,6 @@
     return item.url || itemPageMap[item.page] || '#';
   }
 
-  function getOptimizedPhoto(photo) {
-    if (!photo) return '';
-    if (photo.startsWith('img-opt/')) return photo;
-    if (photo.endsWith('.png')) {
-      const base = photo.replace('.png', '');
-      return `img-opt/${base}-420.jpg`;
-    }
-    return photo;
-  }
-
   function saveToStorage() {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
   }
@@ -70,7 +60,7 @@
       itemDiv.className = 'saved-item';
       itemDiv.innerHTML = `
         <a href="${getItemUrl(item)}" class="saved-item-photo-link" aria-label="Open ${item.page}">
-          <img src="${getOptimizedPhoto(item.photo)}" alt="${item.page}" loading="lazy" decoding="async">
+          <img src="${item.photo}" alt="${item.page}">
         </a>
         <p>${item.name || item.page}</p>
         <label class="save-item">
