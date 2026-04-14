@@ -1,3 +1,20 @@
+// GitHub Pages 서브디렉토리 자동 감지
+function getBasePath() {
+    if (window.location.hostname === 'localhost') return '';
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length > 1 && pathParts[1] !== '') {
+        return '/' + pathParts[1];  // 예: /lyn_web
+    }
+    return '';
+}
+const BASE = getBasePath();
+
+function fixUrl(url) {
+    if (BASE && !url.startsWith(BASE) && !url.startsWith('http')) {
+        return BASE + '/' + url;
+    }
+    return url;
+}
 // script.js - 수정된 버전 (오버레이 저장 시 각 페이지의 itemData.name 사용)
 
 document.addEventListener('DOMContentLoaded', () => {
