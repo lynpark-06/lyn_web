@@ -97,6 +97,7 @@
 
 <div class="cursor"></div>
 
+<script src="script.js"></script>
 <script>
     const saveCheckbox = document.getElementById('save-checkbox');
     const itemData = {
@@ -116,6 +117,7 @@
         saveCheckbox.checked = false;
     }
 
+    
     saveCheckbox.addEventListener('change', () => {
         let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
         const index = savedItems.findIndex(item => item.page === itemData.page);
