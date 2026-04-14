@@ -176,13 +176,47 @@ document.addEventListener('DOMContentLoaded', () => {
 				host.classList.remove('item-enter-active');
 				host.classList.remove('item-enter-ready');
 
-				host.innerHTML = `
-					<h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
-					${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
-					${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
-					<img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
-					<div class="q_and_a">${itemData.qaHTML}</div>
+				 host.innerHTML = `
+    			<h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
+    			${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
+    			${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
+   				 <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
+    			<div class="q_and_a">${itemData.qaHTML}</div>
+
+   				 <!-- Save this Item 버튼 추가 - 원래 q_and_a 밖에 있어서 오버레이에 안 나왔던 부분 -->
+   				 <h2 class="item">
+       			 <label class="save-item">
 				`;
+
+// 버튼이 DOM에 생긴 후 저장 로직 실행
+const saveCheckbox = host.querySelector('#save-checkbox');
+if (saveCheckbox) {
+    // localStorage에서 이 페이지가 이미 저장됐는지 확인
+    let saved = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const alreadySaved = saved.some(i => i.page === itemData.title);
+    saveCheckbox.checked = alreadySaved;
+
+    saveCheckbox.addEventListener('change', () => {
+        // 매번 최신 저장 목록 불러오기
+        let saved = JSON.parse(localStorage.getItem('savedItems')) || [];
+        const idx = saved.findIndex(i => i.page === itemData.title);
+
+        if (saveCheckbox.checked) {
+            // 저장 안 되어 있으면 추가
+            if (idx === -1) {
+                saved.push({
+                    name: itemData.title,
+                    photo: itemData.photoSrc,
+                    page: itemData.title
+                });
+            }
+        } else {
+            // 저장 되어 있으면 제거
+            if (idx !== -1) saved.splice(idx, 1);
+        }
+        localStorage.setItem('savedItems', JSON.stringify(saved));
+    });
+}
 
 				document.body.classList.add('item-overlay-open');
 				host.classList.add('item-enter-ready');

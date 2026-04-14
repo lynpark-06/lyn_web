@@ -1129,3 +1129,29 @@ body.archive .archive-content {
     margin-left: 0;
   }
 }
+
+/* ===== 스크롤 자동 hover 효과 ===== */
+.grid-item.auto-hover img {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.grid-item.auto-hover .meta-line {
+  opacity: 1;
+  transform: translate(var(--text-shift-x, 0px), -50%);
+}
+
+.grid-item.auto-hover .meta-line::before {
+  transform: rotate(var(--line-angle, -20deg)) scaleX(1);
+}
+
+/* 모바일(1024px 이하)에서는 기존 hover 비활성화하고 자동 hover만 사용 */
+@media (max-width: 1024px) {
+  .grid-item:hover img {
+    transform: none;
+  }
+  
+  .grid-item .hover-meta {
+    display: flex;  /* 모바일에서도 메타 정보 영역이 보이도록 */
+  }
+}
