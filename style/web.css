@@ -3,12 +3,6 @@ html{
     background-color:rgb(241, 241, 241);
 }
 
-html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
 :root{
   --page-top: 40px;                 /* 위에서 얼마나 내려올지 */
   --title-size: clamp(60px, 8vw, 100px);  /* 제목 폰트 크기 */
@@ -33,7 +27,7 @@ h1 {
   margin-top: 0;
     color: rgb(133, 214, 107);
 }
-
+v
 /* Custom Checkbox Styles */
 .save-item {
     display: flex;
@@ -845,7 +839,6 @@ h1 {
   margin-top: -8px;
   padding-left: 16px;
   line-height: 1.6;
-  overflow-wrap: anywhere;
 }
 
 .kat-photo,
@@ -857,7 +850,7 @@ h1 {
 .sub-photo,
 .sop-photo,
 .fel-photo{
-  width: min(calc(100% - 24px), 820px);
+  width: min(100%, 820px);
   margin-bottom: clamp(4px, 1.2vw, 10px);
 }
 
@@ -909,70 +902,10 @@ body.archive .archive-content {
   body.archive .saved-items-grid {
     margin-top: 110px !important;
   }
-
-  body.home .home-corner-title {
-    left: 56px;
-    bottom: 20px;
-    font-size: clamp(28px, 5vw, 48px);
-  }
-
-  body.home .home-corner-title .between {
-    bottom: 44px;
-  }
-
-  body.home .home-corner-title .corner-slot {
-    left: -52px;
-    width: 64px;
-    height: 64px;
-  }
-
-  body.home .grid {
-    margin-top: 0;
-    gap: 28px;
-  }
-
-  body.home .grid .extra-gap-item,
-  body.home .grid .extra-gap-big {
-    margin-bottom: 0;
-  }
-
-  .hover-meta {
-    display: none;
-  }
-
-  .grid-item:hover img {
-    transform: none;
-  }
-
-  .item-nav {
-    top: auto;
-    bottom: 20px;
-    transform: none;
-    font-size: clamp(34px, 6vw, 54px);
-    line-height: 1;
-    background: rgb(241, 241, 241);
-    border-radius: 8px;
-    padding: 4px 10px;
-  }
-
-  .item-nav.prev,
-  .item-nav.next {
-    transform: none;
-    left: auto;
-    right: auto;
-  }
-
-  .item-nav.prev {
-    left: 12px;
-  }
-
-  .item-nav.next {
-    right: 12px;
-  }
 }
 
 /* Tablet portrait */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   :root {
     --page-top: 28px;
     --title-size: clamp(42px, 11vw, 72px);
@@ -1005,12 +938,7 @@ body.archive .archive-content {
   }
 
   .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .grid-item {
-    height: auto;
-    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .saved-item {
@@ -1027,16 +955,6 @@ body.archive .archive-content {
 
   .saved-item p {
     font-size: 15px;
-  }
-
-  body.home .home-corner-title {
-    display: none;
-  }
-
-  .item-nav {
-    bottom: 12px;
-    font-size: clamp(30px, 8vw, 44px);
-    padding: 2px 8px;
   }
 }
 
@@ -1127,31 +1045,5 @@ body.archive .archive-content {
 
   body.archive .save-item {
     margin-left: 0;
-  }
-}
-
-/* ===== 스크롤 자동 hover 효과 ===== */
-.grid-item.auto-hover img {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
-
-.grid-item.auto-hover .meta-line {
-  opacity: 1;
-  transform: translate(var(--text-shift-x, 0px), -50%);
-}
-
-.grid-item.auto-hover .meta-line::before {
-  transform: rotate(var(--line-angle, -20deg)) scaleX(1);
-}
-
-/* 모바일(1024px 이하)에서는 기존 hover 비활성화하고 자동 hover만 사용 */
-@media (max-width: 1024px) {
-  .grid-item:hover img {
-    transform: none;
-  }
-  
-  .grid-item .hover-meta {
-    display: flex;  /* 모바일에서도 메타 정보 영역이 보이도록 */
   }
 }

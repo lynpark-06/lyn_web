@@ -1,560 +1,534 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const isHomePage = document.body.classList.contains('home');
-	const isItemPage = Boolean(document.querySelector('.item-nav'));
+  const isHomePage = document.body.classList.contains('home');
+  const isItemPage = Boolean(document.querySelector('.item-nav'));
 
-	const ensureGlobalMenu = () => {
-		let topbar = document.querySelector('.topbar');
+  const ensureGlobalMenu = () => {
+    let topbar = document.querySelector('.topbar');
 
-		if (!topbar) {
-			topbar = document.createElement('header');
-			topbar.className = 'topbar';
-			const spacer = document.createElement('div');
-			spacer.className = 'topbar-spacer';
-			spacer.setAttribute('aria-hidden', 'true');
-			topbar.appendChild(spacer);
+    if (!topbar) {
+      topbar = document.createElement('header');
+      topbar.className = 'topbar';
 
-			const firstH1 = document.querySelector('h1');
-			if (firstH1 && firstH1.parentElement === document.body) {
-				document.body.insertBefore(topbar, firstH1);
-			} else {
-				document.body.insertBefore(topbar, document.body.firstChild);
-			}
-		}
+      const spacer = document.createElement('div');
+      spacer.className = 'topbar-spacer';
+      spacer.setAttribute('aria-hidden', 'true');
+      topbar.appendChild(spacer);
 
-		let toggle = topbar.querySelector('.menu-toggle');
-		if (!toggle) {
-			toggle = document.createElement('button');
-			toggle.className = 'menu-toggle';
-			toggle.type = 'button';
-			toggle.setAttribute('aria-expanded', 'false');
-			toggle.setAttribute('aria-controls', 'menu-dropdown');
-			toggle.textContent = '+';
-			topbar.insertBefore(toggle, topbar.firstChild);
-		}
+      const firstH1 = document.querySelector('h1');
+      if (firstH1 && firstH1.parentElement === document.body) {
+        document.body.insertBefore(topbar, firstH1);
+      } else {
+        document.body.insertBefore(topbar, document.body.firstChild);
+      }
+    }
 
-		let spacer = topbar.querySelector('.topbar-spacer');
-		if (!spacer) {
-			spacer = document.createElement('div');
-			spacer.className = 'topbar-spacer';
-			spacer.setAttribute('aria-hidden', 'true');
-			topbar.appendChild(spacer);
-		}
+    let toggle = topbar.querySelector('.menu-toggle');
+    if (!toggle) {
+      toggle = document.createElement('button');
+      toggle.className = 'menu-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', 'menu-dropdown');
+      toggle.textContent = '+';
+      topbar.insertBefore(toggle, topbar.firstChild);
+    }
 
-		let dropdown = topbar.querySelector('.dropdown');
-		if (!dropdown) {
-			dropdown = document.createElement('nav');
-			dropdown.id = 'menu-dropdown';
-			dropdown.className = 'dropdown';
-			dropdown.setAttribute('aria-label', 'Menu');
-			dropdown.innerHTML = '<a href="about.html">ABOUT</a><br><a href="archive.html">MY CHECKLIST</a>';
-			topbar.appendChild(dropdown);
-		}
+    let spacer = topbar.querySelector('.topbar-spacer');
+    if (!spacer) {
+      spacer = document.createElement('div');
+      spacer.className = 'topbar-spacer';
+      spacer.setAttribute('aria-hidden', 'true');
+      topbar.appendChild(spacer);
+    }
 
-		return { toggle, dropdown };
-	};
+    let dropdown = topbar.querySelector('.dropdown');
+    if (!dropdown) {
+      dropdown = document.createElement('nav');
+      dropdown.id = 'menu-dropdown';
+      dropdown.className = 'dropdown';
+      dropdown.setAttribute('aria-label', 'Menu');
+      dropdown.innerHTML = '<a href="about.html">ABOUT</a><br><a href="archive.html">MY CHECKLIST</a>';
+      topbar.appendChild(dropdown);
+    }
 
-	const { toggle, dropdown } = ensureGlobalMenu();
+    return { toggle, dropdown };
+  };
 
-	if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
-		dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
-	}
+  const { toggle, dropdown } = ensureGlobalMenu();
 
-	if (toggle && dropdown) {
-		toggle.addEventListener('click', () => {
-			const isOpen = dropdown.classList.toggle('show');
-			toggle.setAttribute('aria-expanded', String(isOpen));
+  if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
+    dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
+  }
 
-			if (!isOpen) {
-				toggle.classList.add('just-closed');
-			} else {
-				toggle.classList.remove('just-closed');
-			}
-		});
+  if (toggle && dropdown) {
+    toggle.addEventListener('click', () => {
+      const isOpen = dropdown.classList.toggle('show');
+      toggle.setAttribute('aria-expanded', String(isOpen));
 
-		toggle.addEventListener('mouseleave', () => {
-			toggle.classList.remove('just-closed');
-		});
-
-		document.addEventListener('click', (e) => {
-			const clickedInside = e.target.closest('.topbar');
-			if (!clickedInside) {
-				dropdown.classList.remove('show');
-				toggle.setAttribute('aria-expanded', 'false');
-				toggle.classList.add('just-closed');
-			}
-		});
-	}
-
-	if (isHomePage) {
-		const gridLinks = document.querySelectorAll('.grid a.grid-item, .grid .grid-item[href]');
-		const prefetched = new Set();
-		const pageCache = new Map();
-		const parser = new DOMParser();
-		let isOpening = false;
-		let overlay = null;
-
-		const ensureOverlay = () => {
-			if (overlay) return overlay;
-			overlay = document.createElement('section');
-			overlay.className = 'item-overlay';
-			overlay.setAttribute('aria-live', 'polite');
-			document.body.appendChild(overlay);
-
-			overlay.addEventListener('click', async (e) => {
-				const anchor = e.target.closest('a');
-				if (!anchor || !overlay.contains(anchor)) return;
-
-				if (anchor.classList.contains('home-link')) {
-					e.preventDefault();
-					document.body.classList.remove('item-overlay-open');
-					overlay.classList.remove('is-active');
-					history.pushState({ overlay: false }, '', 'index.html');
-					setTimeout(() => {
-						overlay.innerHTML = '';
-					}, 240);
-					return;
-				}
-
-				if (anchor.classList.contains('item-nav')) {
-					e.preventDefault();
-					if (anchor.href) {
-						await openOverlayItem(anchor.href);
-					}
-				}
-			});
-
-			return overlay;
-		};
-
-		const parseItemPage = async (href) => {
-			if (pageCache.has(href)) return pageCache.get(href);
-
-			const response = await fetch(href, { credentials: 'same-origin' });
-			if (!response.ok) return null;
-			const html = await response.text();
-			const doc = parser.parseFromString(html, 'text/html');
-
-			const titleLink = doc.querySelector('h1 .home-link');
-			const prev = doc.querySelector('.item-nav.prev');
-			const next = doc.querySelector('.item-nav.next');
-			const photo = doc.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
-			const qa = doc.querySelector('.q_and_a');
-
-			if (!titleLink || !photo || !qa) return null;
-
-			const qaClone = qa.cloneNode(true);
-			const inlineQaPhoto = qaClone.querySelector('img');
-			if (inlineQaPhoto) inlineQaPhoto.remove();
-
-			const data = {
-				title: titleLink.textContent?.trim() || '',
-				photoSrc: photo.getAttribute('src') || '',
-				photoClass: photo.className || '',
-				prevHref: prev?.getAttribute('href') || '',
-				nextHref: next?.getAttribute('href') || '',
-				qaHTML: qaClone.innerHTML
-			};
-
-			pageCache.set(href, data);
-			return data;
-		};
-
-		const openOverlayItem = async (href, options = {}) => {
-			const { suppressPhotoReveal = false, preloadedData = null } = options;
-			if (isOpening) return;
-			isOpening = true;
-
-			try {
-				const itemData = preloadedData || await parseItemPage(href);
-				if (!itemData) {
-					window.location.assign(href);
-					return;
-				}
-
-				const host = ensureOverlay();
-				host.classList.remove('is-active');
-				host.classList.remove('item-enter-active');
-				host.classList.remove('item-enter-ready');
-
-				 host.innerHTML = `
-    			<h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
-    			${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
-    			${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
-   				 <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
-    			<div class="q_and_a">${itemData.qaHTML}</div>
-
-   				 <!-- Save this Item 버튼 추가 - 원래 q_and_a 밖에 있어서 오버레이에 안 나왔던 부분 -->
-   				 <h2 class="item">
-       			 <label class="save-item">
-				`;
-
-// 버튼이 DOM에 생긴 후 저장 로직 실행
-const saveCheckbox = host.querySelector('#save-checkbox');
-if (saveCheckbox) {
-    // localStorage에서 이 페이지가 이미 저장됐는지 확인
-    let saved = JSON.parse(localStorage.getItem('savedItems')) || [];
-    const alreadySaved = saved.some(i => i.page === itemData.title);
-    saveCheckbox.checked = alreadySaved;
-
-    saveCheckbox.addEventListener('change', () => {
-        // 매번 최신 저장 목록 불러오기
-        let saved = JSON.parse(localStorage.getItem('savedItems')) || [];
-        const idx = saved.findIndex(i => i.page === itemData.title);
-
-        if (saveCheckbox.checked) {
-            // 저장 안 되어 있으면 추가
-            if (idx === -1) {
-                saved.push({
-                    name: itemData.title,
-                    photo: itemData.photoSrc,
-                    page: itemData.title
-                });
-            }
-        } else {
-            // 저장 되어 있으면 제거
-            if (idx !== -1) saved.splice(idx, 1);
-        }
-        localStorage.setItem('savedItems', JSON.stringify(saved));
+      if (!isOpen) {
+        toggle.classList.add('just-closed');
+      } else {
+        toggle.classList.remove('just-closed');
+      }
     });
-}
 
-				document.body.classList.add('item-overlay-open');
-				host.classList.add('item-enter-ready');
+    toggle.addEventListener('mouseleave', () => {
+      toggle.classList.remove('just-closed');
+    });
 
-				requestAnimationFrame(() => {
-					host.classList.add('is-active');
-					requestAnimationFrame(() => {
-						host.classList.add('item-enter-active');
-					});
-				});
+    document.addEventListener('click', (e) => {
+      const clickedInside = e.target.closest('.topbar');
+      if (!clickedInside) {
+        dropdown.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.classList.add('just-closed');
+      }
+    });
+  }
 
-				history.pushState({ overlay: true, href }, '', href);
-			} finally {
-				isOpening = false;
-			}
-		};
+  if (isHomePage) {
+    const gridLinks = document.querySelectorAll('.grid a.grid-item, .grid .grid-item[href]');
+    const prefetched = new Set();
+    const pageCache = new Map();
+    const parser = new DOMParser();
+    let isOpening = false;
+    let overlay = null;
 
-		window.addEventListener('popstate', () => {
-			if (!overlay) return;
-			if (!document.body.classList.contains('item-overlay-open')) return;
+    const ensureOverlay = () => {
+      if (overlay) return overlay;
 
-			document.body.classList.remove('item-overlay-open');
-			overlay.classList.remove('is-active');
-			setTimeout(() => {
-				overlay.innerHTML = '';
-			}, 240);
-		});
+      overlay = document.createElement('section');
+      overlay.className = 'item-overlay';
+      overlay.setAttribute('aria-live', 'polite');
+      document.body.appendChild(overlay);
 
-		gridLinks.forEach((link) => {
-			const href = link.getAttribute('href');
-			if (!href || prefetched.has(href)) return;
-			prefetched.add(href);
-			const prefetch = document.createElement('link');
-			prefetch.rel = 'prefetch';
-			prefetch.href = href;
-			document.head.appendChild(prefetch);
-		});
+      overlay.addEventListener('click', async (e) => {
+        const anchor = e.target.closest('a');
+        if (!anchor || !overlay.contains(anchor)) return;
 
-		gridLinks.forEach((link) => {
-			link.addEventListener('click', async (e) => {
-				if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-				if (isOpening) return;
-				const href = link.href || link.getAttribute('href');
-				if (!href) return;
+        if (anchor.classList.contains('home-link')) {
+          e.preventDefault();
+          document.body.classList.remove('item-overlay-open');
+          overlay.classList.remove('is-active');
+          history.pushState({ overlay: false }, '', 'index.html');
+          setTimeout(() => {
+            overlay.innerHTML = '';
+          }, 240);
+          return;
+        }
 
-				const img = link.querySelector('img');
-				if (!img) {
-					await openOverlayItem(href);
-					return;
-				}
+        if (anchor.classList.contains('item-nav')) {
+          e.preventDefault();
+          if (anchor.href) {
+            await openOverlayItem(anchor.href);
+          }
+        }
+      });
 
-				e.preventDefault();
-				const dataPromise = parseItemPage(href);
+      return overlay;
+    };
 
-				const rect = img.getBoundingClientRect();
-				if (!rect.width || !rect.height) {
-					await openOverlayItem(href);
-					return;
-				}
-				const ghost = img.cloneNode(true);
-				ghost.style.position = 'fixed';
-				ghost.style.left = `${rect.left}px`;
-				ghost.style.top = `${rect.top}px`;
-				ghost.style.width = `${rect.width}px`;
-				ghost.style.height = `${rect.height}px`;
-				ghost.style.objectFit = 'contain';
-				ghost.style.margin = '0';
-				ghost.style.zIndex = '2000';
-				ghost.style.pointerEvents = 'none';
-				ghost.style.willChange = 'left, top, width, height';
-				ghost.style.transition = 'left 0.24s ease, top 0.24s ease, width 0.24s ease, height 0.24s ease';
+    const parseItemPage = async (href) => {
+      if (pageCache.has(href)) return pageCache.get(href);
 
-				document.body.appendChild(ghost);
-				link.style.opacity = '0';
+      const response = await fetch(href, { credentials: 'same-origin' });
+      if (!response.ok) return null;
 
-				const quickWidth = Math.min(window.innerWidth * 0.52, 520);
-				const ratio = rect.height / Math.max(1, rect.width);
-				const quickHeight = quickWidth * ratio;
-				const quickLeft = (window.innerWidth - quickWidth) / 2;
-				const quickTop = Math.max(100, (window.innerHeight - quickHeight) * 0.24);
+      const html = await response.text();
+      const doc = parser.parseFromString(html, 'text/html');
 
-				requestAnimationFrame(() => {
-					ghost.style.left = `${quickLeft}px`;
-					ghost.style.top = `${quickTop}px`;
-					ghost.style.width = `${quickWidth}px`;
-					ghost.style.height = `${quickHeight}px`;
-				});
+      const titleLink = doc.querySelector('h1 .home-link');
+      const prev = doc.querySelector('.item-nav.prev');
+      const next = doc.querySelector('.item-nav.next');
+      const photo = doc.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
+      const qa = doc.querySelector('.q_and_a');
 
-				const data = await dataPromise;
-				if (!data) {
-					window.location.assign(href);
-					return;
-				}
+      if (!titleLink || !photo || !qa) return null;
 
-				await openOverlayItem(href, { suppressPhotoReveal: true, preloadedData: data });
-				const host = ensureOverlay();
-				const targetImg = host.querySelector('.overlay-photo');
+      const qaClone = qa.cloneNode(true);
+      const inlineQaPhoto = qaClone.querySelector('img');
+      if (inlineQaPhoto) inlineQaPhoto.remove();
 
-				if (!targetImg) {
-					ghost.remove();
-					link.style.opacity = '';
-					return;
-				}
+      const data = {
+        title: titleLink.textContent?.trim() || '',
+        photoSrc: photo.getAttribute('src') || '',
+        photoClass: photo.className || '',
+        prevHref: prev?.getAttribute('href') || '',
+        nextHref: next?.getAttribute('href') || '',
+        qaHTML: qaClone.innerHTML
+      };
 
-				const targetRect = targetImg.getBoundingClientRect();
-				const finishHero = () => {
-					targetImg.classList.remove('hero-hidden');
-					ghost.remove();
-					link.style.opacity = '';
-				};
+      pageCache.set(href, data);
+      return data;
+    };
 
-				ghost.style.transition = 'left 0.18s ease, top 0.18s ease, width 0.18s ease, height 0.18s ease';
-				ghost.addEventListener('transitionend', finishHero, { once: true });
+    const openOverlayItem = async (href, options = {}) => {
+      const { suppressPhotoReveal = false, preloadedData = null } = options;
+      if (isOpening) return;
+      isOpening = true;
 
-				requestAnimationFrame(() => {
-					ghost.style.left = `${targetRect.left}px`;
-					ghost.style.top = `${targetRect.top}px`;
-					ghost.style.width = `${targetRect.width}px`;
-					ghost.style.height = `${targetRect.height}px`;
-				});
+      try {
+        const itemData = preloadedData || await parseItemPage(href);
+        if (!itemData) {
+          window.location.assign(href);
+          return;
+        }
 
-				setTimeout(finishHero, 240);
-			});
-		});
-	}
+        const host = ensureOverlay();
+        host.classList.remove('is-active');
+        host.classList.remove('item-enter-active');
+        host.classList.remove('item-enter-ready');
 
-	if (isItemPage) {
-		const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
-		if (photo) photo.classList.add('reveal-photo');
+        host.innerHTML = `
+          <h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
+          ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
+          ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
+          <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
+          <div class="q_and_a">${itemData.qaHTML}</div>
+        `;
 
-		document.body.classList.add('item-enter-ready');
-		requestAnimationFrame(() => {
-			requestAnimationFrame(() => {
-				document.body.classList.add('item-enter-active');
-			});
-		});
-	}
+        document.body.classList.add('item-overlay-open');
+        host.classList.add('item-enter-ready');
 
-	const gridItems = document.querySelectorAll('.grid-item');
-	if (!gridItems.length) return;
+        requestAnimationFrame(() => {
+          host.classList.add('is-active');
+          requestAnimationFrame(() => {
+            host.classList.add('item-enter-active');
+          });
+        });
 
-	const rand = (min, max) => Math.random() * (max - min) + min;
-	const opaqueBoundsCache = new Map();
-	const linePresetCache = new WeakMap();
-	const itemPresetCache = new WeakMap();
+        history.pushState({ overlay: true, href }, '', href);
+      } finally {
+        isOpening = false;
+      }
+    };
 
-	const getObjectFitContainRect = (boxWidth, boxHeight, naturalWidth, naturalHeight) => {
-		if (!naturalWidth || !naturalHeight) {
-			return { x: 0, y: 0, width: boxWidth, height: boxHeight };
-		}
+    window.addEventListener('popstate', () => {
+      if (!overlay) return;
+      if (!document.body.classList.contains('item-overlay-open')) return;
 
-		const boxRatio = boxWidth / boxHeight;
-		const imageRatio = naturalWidth / naturalHeight;
+      document.body.classList.remove('item-overlay-open');
+      overlay.classList.remove('is-active');
+      setTimeout(() => {
+        overlay.innerHTML = '';
+      }, 240);
+    });
 
-		if (imageRatio > boxRatio) {
-			const width = boxWidth;
-			const height = boxWidth / imageRatio;
-			return { x: 0, y: (boxHeight - height) / 2, width, height };
-		}
+    gridLinks.forEach((link) => {
+      const href = link.getAttribute('href');
+      if (!href || prefetched.has(href)) return;
 
-		const height = boxHeight;
-		const width = boxHeight * imageRatio;
-		return { x: (boxWidth - width) / 2, y: 0, width, height };
-	};
+      prefetched.add(href);
+      const prefetch = document.createElement('link');
+      prefetch.rel = 'prefetch';
+      prefetch.href = href;
+      document.head.appendChild(prefetch);
+    });
 
-	const getOpaqueBounds = (img) => {
-		const src = img.currentSrc || img.src;
-		if (!src) return null;
-		if (opaqueBoundsCache.has(src)) return opaqueBoundsCache.get(src);
+    gridLinks.forEach((link) => {
+      link.addEventListener('click', async (e) => {
+        if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (isOpening) return;
 
-		const w = img.naturalWidth;
-		const h = img.naturalHeight;
-		if (!w || !h) return null;
+        const href = link.href || link.getAttribute('href');
+        if (!href) return;
 
-		const maxSize = 900;
-		const scale = Math.min(1, maxSize / Math.max(w, h));
-		const cw = Math.max(1, Math.floor(w * scale));
-		const ch = Math.max(1, Math.floor(h * scale));
+        const img = link.querySelector('img');
+        if (!img) {
+          await openOverlayItem(href);
+          return;
+        }
 
-		const canvas = document.createElement('canvas');
-		canvas.width = cw;
-		canvas.height = ch;
-		const ctx = canvas.getContext('2d', { willReadFrequently: true });
-		if (!ctx) return null;
+        e.preventDefault();
+        const dataPromise = parseItemPage(href);
 
-		ctx.drawImage(img, 0, 0, cw, ch);
-		const { data } = ctx.getImageData(20, 30, cw, ch);
+        const rect = img.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          await openOverlayItem(href);
+          return;
+        }
 
-		let minX = cw;
-		let minY = ch;
-		let maxX = -1;
-		let maxY = -1;
+        const ghost = img.cloneNode(true);
+        ghost.style.position = 'fixed';
+        ghost.style.left = `${rect.left}px`;
+        ghost.style.top = `${rect.top}px`;
+        ghost.style.width = `${rect.width}px`;
+        ghost.style.height = `${rect.height}px`;
+        ghost.style.objectFit = 'contain';
+        ghost.style.margin = '0';
+        ghost.style.zIndex = '2000';
+        ghost.style.pointerEvents = 'none';
+        ghost.style.willChange = 'left, top, width, height';
+        ghost.style.transition = 'left 0.24s ease, top 0.24s ease, width 0.24s ease, height 0.24s ease';
 
-		for (let y = 0; y < ch; y++) {
-			for (let x = 0; x < cw; x++) {
-				const alpha = data[(y * cw + x) * 4 + 3];
-				if (alpha > 8) {
-					if (x < minX) minX = x;
-					if (y < minY) minY = y;
-					if (x > maxX) maxX = x;
-					if (y > maxY) maxY = y;
-				}
-			}
-		}
+        document.body.appendChild(ghost);
+        link.style.opacity = '0';
 
-		const bounds = maxX === -1
-			? { minX: 0, maxX: 1, minY: 0, maxY: 1 }
-			: {
-				minX: minX / cw,
-				maxX: maxX / cw,
-				minY: minY / ch,
-				maxY: maxY / ch
-			};
+        const quickWidth = Math.min(window.innerWidth * 0.52, 520);
+        const ratio = rect.height / Math.max(1, rect.width);
+        const quickHeight = quickWidth * ratio;
+        const quickLeft = (window.innerWidth - quickWidth) / 2;
+        const quickTop = Math.max(100, (window.innerHeight - quickHeight) * 0.24);
 
-		opaqueBoundsCache.set(src, bounds);
-		return bounds;
-	};
+        requestAnimationFrame(() => {
+          ghost.style.left = `${quickLeft}px`;
+          ghost.style.top = `${quickTop}px`;
+          ghost.style.width = `${quickWidth}px`;
+          ghost.style.height = `${quickHeight}px`;
+        });
 
-	const getItemPreset = (item) => {
-		if (itemPresetCache.has(item)) return itemPresetCache.get(item);
+        const data = await dataPromise;
+        if (!data) {
+          window.location.assign(href);
+          return;
+        }
 
-		const preset = {
-			firstSide: 'right',
-			upperFirst: true
-		};
+        await openOverlayItem(href, { suppressPhotoReveal: true, preloadedData: data });
+        const host = ensureOverlay();
+        const targetImg = host.querySelector('.overlay-photo');
 
-		itemPresetCache.set(item, preset);
-		return preset;
-	};
+        if (!targetImg) {
+          ghost.remove();
+          link.style.opacity = '';
+          return;
+        }
 
-	const getLinePreset = (lineEl) => {
-		if (linePresetCache.has(lineEl)) return linePresetCache.get(lineEl);
+        const targetRect = targetImg.getBoundingClientRect();
+        const finishHero = () => {
+          targetImg.classList.remove('hero-hidden');
+          ghost.remove();
+          link.style.opacity = '';
+        };
 
-		const preset = {
-			startEdgeT: Math.random(),
-			startYT: Math.random(),
-			anchorYT: Math.random(),
-			randomGap: rand(30, 50),
-			randomInward: rand(60, 70)
-		};
+        ghost.style.transition = 'left 0.18s ease, top 0.18s ease, width 0.18s ease, height 0.18s ease';
+        ghost.addEventListener('transitionend', finishHero, { once: true });
 
-		linePresetCache.set(lineEl, preset);
-		return preset;
-	};
+        requestAnimationFrame(() => {
+          ghost.style.left = `${targetRect.left}px`;
+          ghost.style.top = `${targetRect.top}px`;
+          ghost.style.width = `${targetRect.width}px`;
+          ghost.style.height = `${targetRect.height}px`;
+        });
 
-	const applyCallout = (lineEl, boxWidth, boxHeight, side, zone, contentRect) => {
-		const preset = getLinePreset(lineEl);
-		const yRange = zone === 'upper'
-			? [0.12, 0.38]
-			: [0.62, 0.88];
-		const manualStartX = Number(lineEl.dataset.startX);
-		const manualStartY = Number(lineEl.dataset.startY);
-		const hasManualStart = Number.isFinite(manualStartX) && Number.isFinite(manualStartY);
-		const edgeBand = Math.max(6, contentRect.width * 0.06);
-		const forceRightEdge = lineEl.dataset.start === 'right-edge';
-		const autoStartX = side === 'right'
-			? (forceRightEdge ? contentRect.right : contentRect.right - edgeBand + preset.startEdgeT * edgeBand)
-			: contentRect.left + preset.startEdgeT * edgeBand;
-		const autoStartY = contentRect.top + contentRect.height * (yRange[0] + preset.startYT * (yRange[1] - yRange[0]));
-		const startX = hasManualStart
-			? contentRect.left + contentRect.width * Math.max(0, Math.min(1, manualStartX))
-			: autoStartX;
-		const startY = hasManualStart
-			? contentRect.top + contentRect.height * Math.max(0, Math.min(1, manualStartY))
-			: autoStartY;
+        setTimeout(finishHero, 240);
+      });
+    });
+  }
 
-		const labelWidth = lineEl.offsetWidth || 180;
-		const manualGap = Number(lineEl.dataset.gap);
-		const outGap = Number.isFinite(manualGap) ? manualGap : preset.randomGap;
+  if (isItemPage) {
+    const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
+    if (photo) photo.classList.add('reveal-photo');
 
-		const anchorX = side === 'right'
-			? boxWidth + labelWidth + outGap
-			: -(labelWidth + outGap);
-		const fixedAngleDeg = -166;
-		const fixedSlope = Math.tan((fixedAngleDeg * Math.PI) / 180);
-		const anchorY = startY - (startX - anchorX) * fixedSlope;
+    document.body.classList.add('item-enter-ready');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.body.classList.add('item-enter-active');
+      });
+    });
+  }
 
-		const dx = startX - anchorX;
-		const dy = startY - anchorY;
-		const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-		const manualInward = Number(lineEl.dataset.inward);
-		const inwardExtension = Number.isFinite(manualInward) ? manualInward : preset.randomInward;
-		const lineLength = Math.hypot(dx, dy) + inwardExtension;
+  const gridItems = document.querySelectorAll('.grid-item');
+  if (!gridItems.length) return;
 
-		lineEl.style.setProperty('--tx', `${anchorX}px`);
-		lineEl.style.setProperty('--ty', `${anchorY}px`);
-		lineEl.style.setProperty('--line-length', `${lineLength}px`);
-		lineEl.style.setProperty('--line-angle', `${angle}deg`);
-		lineEl.style.setProperty('--anchor-x', side === 'right' ? '-14px' : 'calc(100% + 14px)');
-		lineEl.style.setProperty('--text-shift-x', side === 'right' ? '-100%' : '0px');
-		lineEl.style.setProperty('--intro-x', side === 'right' ? '14px' : '-14px');
-	};
+  const rand = (min, max) => Math.random() * (max - min) + min;
+  const opaqueBoundsCache = new Map();
+  const linePresetCache = new WeakMap();
+  const itemPresetCache = new WeakMap();
 
-	const placeItemCallouts = (item) => {
-		const overlay = item.querySelector('.hover-meta');
-		const img = item.querySelector('img');
-		if (!overlay) return;
-		if (!img) return;
+  const getObjectFitContainRect = (boxWidth, boxHeight, naturalWidth, naturalHeight) => {
+    if (!naturalWidth || !naturalHeight) {
+      return { x: 0, y: 0, width: boxWidth, height: boxHeight };
+    }
 
-		const line = overlay.querySelector('.meta-line');
-		if (!line) return;
+    const boxRatio = boxWidth / boxHeight;
+    const imageRatio = naturalWidth / naturalHeight;
 
-		const boxWidth = overlay.clientWidth;
-		const boxHeight = overlay.clientHeight;
-		if (!boxWidth || !boxHeight) return;
-		if (!img.naturalWidth || !img.naturalHeight) return;
+    if (imageRatio > boxRatio) {
+      const width = boxWidth;
+      const height = boxWidth / imageRatio;
+      return { x: 0, y: (boxHeight - height) / 2, width, height };
+    }
 
-		const fitRect = getObjectFitContainRect(boxWidth, boxHeight, img.naturalWidth, img.naturalHeight);
-		const opaque = getOpaqueBounds(img) || { minX: 0, maxX: 1, minY: 0, maxY: 1 };
-		const contentRect = {
-			left: fitRect.x + fitRect.width * opaque.minX,
-			right: fitRect.x + fitRect.width * opaque.maxX,
-			top: fitRect.y + fitRect.height * opaque.minY,
-			bottom: fitRect.y + fitRect.height * opaque.maxY,
-			width: Math.max(10, fitRect.width * (opaque.maxX - opaque.minX)),
-			height: Math.max(10, fitRect.height * (opaque.maxY - opaque.minY))
-		};
+    const height = boxHeight;
+    const width = boxHeight * imageRatio;
+    return { x: (boxWidth - width) / 2, y: 0, width, height };
+  };
 
-		const itemPreset = getItemPreset(item);
-		const firstSide = itemPreset.firstSide;
-		const upperFirst = itemPreset.upperFirst;
+  const getOpaqueBounds = (img) => {
+    const src = img.currentSrc || img.src;
+    if (!src) return null;
+    if (opaqueBoundsCache.has(src)) return opaqueBoundsCache.get(src);
 
-		applyCallout(line, boxWidth, boxHeight, firstSide, upperFirst ? 'upper' : 'lower', contentRect);
-	};
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    if (!w || !h) return null;
 
-	gridItems.forEach((item) => {
-		const img = item.querySelector('img');
-		if (!img) return;
+    const maxSize = 900;
+    const scale = Math.min(1, maxSize / Math.max(w, h));
+    const cw = Math.max(1, Math.floor(w * scale));
+    const ch = Math.max(1, Math.floor(h * scale));
 
-		if (img.complete && img.naturalWidth) {
-			placeItemCallouts(item);
-		} else {
-			img.addEventListener('load', () => placeItemCallouts(item), { once: true });
-		}
-	});
+    const canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
 
-	window.addEventListener('resize', () => {
-		gridItems.forEach((item) => placeItemCallouts(item));
-	});
+    ctx.drawImage(img, 0, 0, cw, ch);
+    const { data } = ctx.getImageData(20, 30, cw, ch);
+
+    let minX = cw;
+    let minY = ch;
+    let maxX = -1;
+    let maxY = -1;
+
+    for (let y = 0; y < ch; y++) {
+      for (let x = 0; x < cw; x++) {
+        const alpha = data[(y * cw + x) * 4 + 3];
+        if (alpha > 8) {
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+
+    const bounds = maxX === -1
+      ? { minX: 0, maxX: 1, minY: 0, maxY: 1 }
+      : {
+          minX: minX / cw,
+          maxX: maxX / cw,
+          minY: minY / ch,
+          maxY: maxY / ch
+        };
+
+    opaqueBoundsCache.set(src, bounds);
+    return bounds;
+  };
+
+  const getItemPreset = (item) => {
+    if (itemPresetCache.has(item)) return itemPresetCache.get(item);
+
+    const preset = {
+      firstSide: 'right',
+      upperFirst: true
+    };
+
+    itemPresetCache.set(item, preset);
+    return preset;
+  };
+
+  const getLinePreset = (lineEl) => {
+    if (linePresetCache.has(lineEl)) return linePresetCache.get(lineEl);
+
+    const preset = {
+      startEdgeT: Math.random(),
+      startYT: Math.random(),
+      anchorYT: Math.random(),
+      randomGap: rand(30, 50),
+      randomInward: rand(60, 70)
+    };
+
+    linePresetCache.set(lineEl, preset);
+    return preset;
+  };
+
+  const applyCallout = (lineEl, boxWidth, boxHeight, side, zone, contentRect) => {
+    const preset = getLinePreset(lineEl);
+    const yRange = zone === 'upper' ? [0.12, 0.38] : [0.62, 0.88];
+    const manualStartX = Number(lineEl.dataset.startX);
+    const manualStartY = Number(lineEl.dataset.startY);
+    const hasManualStart = Number.isFinite(manualStartX) && Number.isFinite(manualStartY);
+    const edgeBand = Math.max(6, contentRect.width * 0.06);
+    const forceRightEdge = lineEl.dataset.start === 'right-edge';
+
+    const autoStartX = side === 'right'
+      ? (forceRightEdge ? contentRect.right : contentRect.right - edgeBand + preset.startEdgeT * edgeBand)
+      : contentRect.left + preset.startEdgeT * edgeBand;
+
+    const autoStartY = contentRect.top + contentRect.height * (yRange[0] + preset.startYT * (yRange[1] - yRange[0]));
+
+    const startX = hasManualStart
+      ? contentRect.left + contentRect.width * Math.max(0, Math.min(1, manualStartX))
+      : autoStartX;
+
+    const startY = hasManualStart
+      ? contentRect.top + contentRect.height * Math.max(0, Math.min(1, manualStartY))
+      : autoStartY;
+
+    const labelWidth = lineEl.offsetWidth || 180;
+    const manualGap = Number(lineEl.dataset.gap);
+    const outGap = Number.isFinite(manualGap) ? manualGap : preset.randomGap;
+
+    const anchorX = side === 'right'
+      ? boxWidth + labelWidth + outGap
+      : -(labelWidth + outGap);
+
+    const fixedAngleDeg = -166;
+    const fixedSlope = Math.tan((fixedAngleDeg * Math.PI) / 180);
+    const anchorY = startY - (startX - anchorX) * fixedSlope;
+
+    const dx = startX - anchorX;
+    const dy = startY - anchorY;
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    const manualInward = Number(lineEl.dataset.inward);
+    const inwardExtension = Number.isFinite(manualInward) ? manualInward : preset.randomInward;
+    const lineLength = Math.hypot(dx, dy) + inwardExtension;
+
+    lineEl.style.setProperty('--tx', `${anchorX}px`);
+    lineEl.style.setProperty('--ty', `${anchorY}px`);
+    lineEl.style.setProperty('--line-length', `${lineLength}px`);
+    lineEl.style.setProperty('--line-angle', `${angle}deg`);
+    lineEl.style.setProperty('--anchor-x', side === 'right' ? '-14px' : 'calc(100% + 14px)');
+    lineEl.style.setProperty('--text-shift-x', side === 'right' ? '-100%' : '0px');
+    lineEl.style.setProperty('--intro-x', side === 'right' ? '14px' : '-14px');
+  };
+
+  const placeItemCallouts = (item) => {
+    const overlay = item.querySelector('.hover-meta');
+    const img = item.querySelector('img');
+    if (!overlay || !img) return;
+
+    const line = overlay.querySelector('.meta-line');
+    if (!line) return;
+
+    const boxWidth = overlay.clientWidth;
+    const boxHeight = overlay.clientHeight;
+    if (!boxWidth || !boxHeight) return;
+    if (!img.naturalWidth || !img.naturalHeight) return;
+
+    const fitRect = getObjectFitContainRect(boxWidth, boxHeight, img.naturalWidth, img.naturalHeight);
+    const opaque = getOpaqueBounds(img) || { minX: 0, maxX: 1, minY: 0, maxY: 1 };
+
+    const contentRect = {
+      left: fitRect.x + fitRect.width * opaque.minX,
+      right: fitRect.x + fitRect.width * opaque.maxX,
+      top: fitRect.y + fitRect.height * opaque.minY,
+      bottom: fitRect.y + fitRect.height * opaque.maxY,
+      width: Math.max(10, fitRect.width * (opaque.maxX - opaque.minX)),
+      height: Math.max(10, fitRect.height * (opaque.maxY - opaque.minY))
+    };
+
+    const itemPreset = getItemPreset(item);
+    const firstSide = itemPreset.firstSide;
+    const upperFirst = itemPreset.upperFirst;
+
+    applyCallout(line, boxWidth, boxHeight, firstSide, upperFirst ? 'upper' : 'lower', contentRect);
+  };
+
+  gridItems.forEach((item) => {
+    const img = item.querySelector('img');
+    if (!img) return;
+
+    if (img.complete && img.naturalWidth) {
+      placeItemCallouts(item);
+    } else {
+      img.addEventListener('load', () => placeItemCallouts(item), { once: true });
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    gridItems.forEach((item) => placeItemCallouts(item));
+  });
 });
-
