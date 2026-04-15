@@ -1111,30 +1111,3 @@ body.archive .archive-content {
   }
 }
 
-/* 모바일에서 터치 시 이미지 확대 + 정보 표시 (기존 hover 효과 대체) */
-@media (max-width: 768px) {
-  /* 기존 hover 효과 완전 제거 */
-  .grid-item:hover img {
-    transform: none;
-  }
-  
-  .hover-meta {
-    display: none; /* 선과 텍스트 숨김 */
-  }
-  
-  /* 이미지 컨테이너를 상대 위치로 */
-  .grid-item {
-    position: relative;
-  }
-  
-  /* 터치(active) 시 이미지 확대 */
-  .grid-item:active img {
-    transform: scale(1.02);
-    transition: transform 0.1s ease;
-  }
-  
-  /* 터치 시 정보 표시 (이미지 오른쪽 하단) */
-  .grid-item:active .mobile-info {
-    display: block;
-  }
-  
