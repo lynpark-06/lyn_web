@@ -482,52 +482,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 모바일: 이미지가 정중앙에 왔을 때만 active (더 엄격하게)
-if (window.innerWidth <= 768) {
-  const items = document.querySelectorAll('.grid-item');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const rect = entry.target.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const centerY = rect.top + rect.height / 2;
-      // 중앙 기준 5% 이내 (더 좁게)
-      const isCentered = Math.abs(centerY - windowHeight / 2) < windowHeight * 0.05;
-      if (isCentered) {
-        entry.target.classList.add('active');
-      } else {
-        entry.target.classList.remove('active');
-      }
-    });
-  }, { threshold: [0, 0.25, 0.5, 0.75, 1] }); // 여러 기준으로 감지
-  items.forEach(item => observer.observe(item));
-}
-
-// ===== 모바일 펀치아웃: 스크롤 시 이미지 중앙 감지 =====
-if (window.innerWidth <= 768) {
-  let ticking = false;
-  function addActiveOnCenter() {
-    const items = document.querySelectorAll('.grid-item');
-    const windowHeight = window.innerHeight;
-    items.forEach(item => {
-      const rect = item.getBoundingClientRect();
-      const itemCenter = rect.top + rect.height / 2;
-      const viewportCenter = windowHeight / 2;
-      const distance = Math.abs(itemCenter - viewportCenter);
-      const threshold = windowHeight * 0.12; // 중앙에서 12% 이내
-      if (distance < threshold) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
-      }
-    });
-    ticking = false;
-  }
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(addActiveOnCenter);
-      ticking = true;
+    // ========================
+    // 모바일 펀치아웃 (정확한 중앙 감지)
+    // ========================
+    if (window.innerWidth <= 768) {
+        let ticking = false;
+        function updateActive() {
+            const items = document.querySelectorAll('.grid-item');
+            const windowHeight = window.innerHeight;
+            const center = windowHeight / 2;
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const itemCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(itemCenter - center);
+                // 중앙에서 8% 이내로 좁힘 (이전 20% -> 8%)
+                if (distance < windowHeight * 0.08) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            ticking = false;
+        }
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateActive);
+                ticking = true;
+            }
+        });
+        window.addEventListener('resize', updateActive);
+        updateActive();
+        console.log('📱 모바일 펀치아웃 활성화 (엄격한 중앙)');
     }
-  });
-  window.addEventListener('resize', addActiveOnCenter);
-  addActiveOnCenter(); // 초기 실행
-}
