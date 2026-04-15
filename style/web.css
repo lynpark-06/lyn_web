@@ -1111,3 +1111,110 @@ body.archive .archive-content {
   }
 }
 
+/* 모바일 자동 확대 + 펀치아웃 */
+@media (max-width: 768px) {
+}
+  /* 기존 스타일 유지 */
+
+  /* 첫 번째 그리드 아이템을 화면 중앙에 오도록 패딩 추가 */
+  .grid:first-child {
+    padding-top: calc(50vh - 40vh);  /* 조절 가능 */
+  }
+
+  /* 또는 더 간단하게: body에 패딩 */
+  body.home .grid {
+    margin-top: -5vh;  /* 이 값을 조절하세요 */
+  }
+
+.mobile-punchout {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;  /* 오른쪽 정렬 (박스들이 오른쪽에 붙음) */
+  gap: 4px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.mobile-punchout span {
+  display: inline-block;  /* 내용 크기에 맞게 */
+  background: rgb(50, 85, 164);
+  color: rgb(241, 241, 241);
+  font-family: monospace;
+  font-size: 12px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  width: fit-content;     /* 텍스트 길이에 맞춤 */
+  max-width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin: 0;
+  line-height: 1.2;
+}
+
+  .grid-item.active img {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+  .grid-item.active .mobile-punchout span {
+    opacity: 1;
+  }
+
+
+@media (min-width: 769px) {
+  .mobile-punchout {
+    display: none;
+  }
+}
+
+/* 데스크탑에서 펀치아웃 완전히 숨기기 (최종 강제) */
+@media screen and (min-width: 769px) {
+  .mobile-punchout {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+/* ===== 모바일 펀치아웃 (기존 스타일 유지하며 추가) ===== */
+@media (max-width: 768px) {
+  .mobile-punchout {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .mobile-punchout span {
+    display: inline-block;
+    background: rgb(50, 85, 164);
+    color: rgb(241, 241, 241);
+    font-family: monospace;
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    width: fit-content;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .grid-item.active img {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+  .grid-item.active .mobile-punchout span {
+    opacity: 1;
+  }
+}
+@media (min-width: 769px) {
+  .mobile-punchout {
+    display: none !important;
+  }
+}
