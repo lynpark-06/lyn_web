@@ -655,3 +655,25 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         display: none !important;
     }
 }
+
+/* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
+@media (max-width: 768px) {
+    body.about h1,
+    body.archive h1,
+    body:not(.home) h1 {
+        font-size: 50px !important;
+    top:var(--page-top);
+    }
+}
+/* 아카이브, 어바웃 페이지 기본 폰트 모노스페이스 */
+body.archive,
+body.about {
+    font-family: monospace;
+}
+
+/* 데스크톱: 그리드 시작 위치를 적절히 내림 */
+@media (min-width: 769px) {
+    body.home .grid {
+        margin-top: 0px !important;  /* 원하는 높이로 조절 (px, vh 등) */
+    }
+}

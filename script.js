@@ -482,8 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-    // ========================
-    // 모바일 펀치아웃 (정확한 중앙 감지)
+       // ========================
+    // 모바일 펀치아웃 (오래 유지되도록)
     // ========================
     if (window.innerWidth <= 768) {
         let ticking = false;
@@ -495,12 +495,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rect = item.getBoundingClientRect();
                 const itemCenter = rect.top + rect.height / 2;
                 const distance = Math.abs(itemCenter - center);
-                // 중앙에서 8% 이내로 좁힘 (이전 20% -> 8%)
-                if (distance < windowHeight * 0.08) {
+                // 추가 기준 (중앙에서 25% 이내)
+                const addThreshold = windowHeight * 0.25;
+                // 제거 기준 (중앙에서 40% 밖으로 나가면 제거) - 더 넓게
+                const removeThreshold = windowHeight * 0.40;
+                
+                if (distance < addThreshold) {
                     item.classList.add('active');
-                } else {
+                } else if (distance > removeThreshold) {
                     item.classList.remove('active');
                 }
+                // 그 사이 구간에서는 변화 없음 (이전 상태 유지) → 더 오래 머무름
             });
             ticking = false;
         }
@@ -512,5 +517,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         window.addEventListener('resize', updateActive);
         updateActive();
-        console.log('📱 모바일 펀치아웃 활성화 (엄격한 중앙)');
+        console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
     }
