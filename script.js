@@ -1,21 +1,7 @@
-// GitHub Pages 서브디렉토리 자동 감지
-function getBasePath() {
-    if (window.location.hostname === 'localhost') return '';
-    const pathParts = window.location.pathname.split('/');
-    if (pathParts.length > 1 && pathParts[1] !== '') {
-        return '/' + pathParts[1];  // 예: /lyn_web
-    }
-    return '';
-}
-const BASE = getBasePath();
+// script.js - 최종 수정본 (아이템 이름 저장 + callout lines 보존 + GitHub Pages 경호환)
 
-function fixUrl(url) {
-    if (BASE && !url.startsWith(BASE) && !url.startsWith('http')) {
-        return BASE + '/' + url;
-    }
-    return url;
-}
-// script.js - 수정된 버전 (오버레이 저장 시 각 페이지의 itemData.name 사용)
+// GitHub Pages 서브디렉토리 자동 감지 (필요시 사용, 여기선 일단 생략 - 원래 경로 그대로)
+// 만약 GitHub Pages에서 404 나면 아래 주석 해제하고 fixUrl 적용 필요
 
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
@@ -145,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const qa = doc.querySelector('.q_and_a');
             if (!titleLink || !photo || !qa) return null;
 
-            // 각 페이지의 script에서 itemData.name 추출
+            // 각 페이지의 script에서 itemData.name 추출 (아이템 이름 저장용)
             let hardcodedItemName = '';
             const scripts = doc.querySelectorAll('script');
             for (let script of scripts) {
@@ -204,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         const idx = saved.findIndex(i => i.page === itemData.title);
                         if (saveCheckbox.checked) {
                             if (idx === -1) {
-                                // 여기서 itemData.itemName 사용 (각 페이지에서 가져온 올바른 아이템 이름)
                                 const finalName = itemData.itemName || itemData.title;
                                 saved.push({
                                     name: finalName,
@@ -338,8 +323,161 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // callout lines code (생략 - 너무 길어서 원래 코드 유지)
-    // 위 코드는 핵심만 포함했으니, 기존 callout 관련 코드는 그대로 두세요.
-    // 아래에 원래 있던 그리드 callout 함수들 다시 붙여넣어야 함.
-    // (간결함을 위해 생략했지만, 실제로는 필요)
+    // ========================
+    // 원본 callout lines 코드 (hover 시 선 긋는 효과) - 그대로 복원
+    // ========================
+    const gridItems = document.querySelectorAll('.grid-item');
+    if (gridItems.length) {
+        const rand = (min, max) => Math.random() * (max - min) + min;
+        const opaqueBoundsCache = new Map();
+        const linePresetCache = new WeakMap();
+        const itemPresetCache = new WeakMap();
+
+        const getObjectFitContainRect = (boxWidth, boxHeight, naturalWidth, naturalHeight) => {
+            if (!naturalWidth || !naturalHeight) return { x: 0, y: 0, width: boxWidth, height: boxHeight };
+            const boxRatio = boxWidth / boxHeight;
+            const imageRatio = naturalWidth / naturalHeight;
+            if (imageRatio > boxRatio) {
+                const width = boxWidth;
+                const height = boxWidth / imageRatio;
+                return { x: 0, y: (boxHeight - height) / 2, width, height };
+            }
+            const height = boxHeight;
+            const width = boxHeight * imageRatio;
+            return { x: (boxWidth - width) / 2, y: 0, width, height };
+        };
+
+        const getOpaqueBounds = (img) => {
+            const src = img.currentSrc || img.src;
+            if (!src) return null;
+            if (opaqueBoundsCache.has(src)) return opaqueBoundsCache.get(src);
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            if (!w || !h) return null;
+            const maxSize = 900;
+            const scale = Math.min(1, maxSize / Math.max(w, h));
+            const cw = Math.max(1, Math.floor(w * scale));
+            const ch = Math.max(1, Math.floor(h * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = cw;
+            canvas.height = ch;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) return null;
+            ctx.drawImage(img, 0, 0, cw, ch);
+            const { data } = ctx.getImageData(20, 30, cw, ch);
+            let minX = cw, minY = ch, maxX = -1, maxY = -1;
+            for (let y = 0; y < ch; y++) {
+                for (let x = 0; x < cw; x++) {
+                    const alpha = data[(y * cw + x) * 4 + 3];
+                    if (alpha > 8) {
+                        if (x < minX) minX = x;
+                        if (y < minY) minY = y;
+                        if (x > maxX) maxX = x;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+            }
+            const bounds = maxX === -1
+                ? { minX: 0, maxX: 1, minY: 0, maxY: 1 }
+                : { minX: minX / cw, maxX: maxX / cw, minY: minY / ch, maxY: maxY / ch };
+            opaqueBoundsCache.set(src, bounds);
+            return bounds;
+        };
+
+        const getItemPreset = (item) => {
+            if (itemPresetCache.has(item)) return itemPresetCache.get(item);
+            const preset = { firstSide: 'right', upperFirst: true };
+            itemPresetCache.set(item, preset);
+            return preset;
+        };
+
+        const getLinePreset = (lineEl) => {
+            if (linePresetCache.has(lineEl)) return linePresetCache.get(lineEl);
+            const preset = {
+                startEdgeT: Math.random(),
+                startYT: Math.random(),
+                anchorYT: Math.random(),
+                randomGap: rand(30, 50),
+                randomInward: rand(60, 70)
+            };
+            linePresetCache.set(lineEl, preset);
+            return preset;
+        };
+
+        const applyCallout = (lineEl, boxWidth, boxHeight, side, zone, contentRect) => {
+            const preset = getLinePreset(lineEl);
+            const yRange = zone === 'upper' ? [0.12, 0.38] : [0.62, 0.88];
+            const manualStartX = Number(lineEl.dataset.startX);
+            const manualStartY = Number(lineEl.dataset.startY);
+            const hasManualStart = Number.isFinite(manualStartX) && Number.isFinite(manualStartY);
+            const edgeBand = Math.max(6, contentRect.width * 0.06);
+            const forceRightEdge = lineEl.dataset.start === 'right-edge';
+            const autoStartX = side === 'right'
+                ? (forceRightEdge ? contentRect.right : contentRect.right - edgeBand + preset.startEdgeT * edgeBand)
+                : contentRect.left + preset.startEdgeT * edgeBand;
+            const autoStartY = contentRect.top + contentRect.height * (yRange[0] + preset.startYT * (yRange[1] - yRange[0]));
+            const startX = hasManualStart ? contentRect.left + contentRect.width * Math.max(0, Math.min(1, manualStartX)) : autoStartX;
+            const startY = hasManualStart ? contentRect.top + contentRect.height * Math.max(0, Math.min(1, manualStartY)) : autoStartY;
+            const labelWidth = lineEl.offsetWidth || 180;
+            const manualGap = Number(lineEl.dataset.gap);
+            const outGap = Number.isFinite(manualGap) ? manualGap : preset.randomGap;
+            const anchorX = side === 'right' ? boxWidth + labelWidth + outGap : -(labelWidth + outGap);
+            const fixedAngleDeg = -166;
+            const fixedSlope = Math.tan((fixedAngleDeg * Math.PI) / 180);
+            const anchorY = startY - (startX - anchorX) * fixedSlope;
+            const dx = startX - anchorX;
+            const dy = startY - anchorY;
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            const manualInward = Number(lineEl.dataset.inward);
+            const inwardExtension = Number.isFinite(manualInward) ? manualInward : preset.randomInward;
+            const lineLength = Math.hypot(dx, dy) + inwardExtension;
+            lineEl.style.setProperty('--tx', `${anchorX}px`);
+            lineEl.style.setProperty('--ty', `${anchorY}px`);
+            lineEl.style.setProperty('--line-length', `${lineLength}px`);
+            lineEl.style.setProperty('--line-angle', `${angle}deg`);
+            lineEl.style.setProperty('--anchor-x', side === 'right' ? '-14px' : 'calc(100% + 14px)');
+            lineEl.style.setProperty('--text-shift-x', side === 'right' ? '-100%' : '0px');
+            lineEl.style.setProperty('--intro-x', side === 'right' ? '14px' : '-14px');
+        };
+
+        const placeItemCallouts = (item) => {
+            const overlayDiv = item.querySelector('.hover-meta');
+            const img = item.querySelector('img');
+            if (!overlayDiv || !img) return;
+            const line = overlayDiv.querySelector('.meta-line');
+            if (!line) return;
+            const boxWidth = overlayDiv.clientWidth;
+            const boxHeight = overlayDiv.clientHeight;
+            if (!boxWidth || !boxHeight) return;
+            if (!img.naturalWidth || !img.naturalHeight) return;
+            const fitRect = getObjectFitContainRect(boxWidth, boxHeight, img.naturalWidth, img.naturalHeight);
+            const opaque = getOpaqueBounds(img) || { minX: 0, maxX: 1, minY: 0, maxY: 1 };
+            const contentRect = {
+                left: fitRect.x + fitRect.width * opaque.minX,
+                right: fitRect.x + fitRect.width * opaque.maxX,
+                top: fitRect.y + fitRect.height * opaque.minY,
+                bottom: fitRect.y + fitRect.height * opaque.maxY,
+                width: Math.max(10, fitRect.width * (opaque.maxX - opaque.minX)),
+                height: Math.max(10, fitRect.height * (opaque.maxY - opaque.minY))
+            };
+            const itemPreset = getItemPreset(item);
+            const firstSide = itemPreset.firstSide;
+            const upperFirst = itemPreset.upperFirst;
+            applyCallout(line, boxWidth, boxHeight, firstSide, upperFirst ? 'upper' : 'lower', contentRect);
+        };
+
+        gridItems.forEach((item) => {
+            const img = item.querySelector('img');
+            if (!img) return;
+            if (img.complete && img.naturalWidth) {
+                placeItemCallouts(item);
+            } else {
+                img.addEventListener('load', () => placeItemCallouts(item), { once: true });
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            gridItems.forEach((item) => placeItemCallouts(item));
+        });
+    }
 });

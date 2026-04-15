@@ -1,3 +1,13 @@
+@font-face {
+    font-family: 'Velvyn';
+    src: url('../fonts/Velvelyn-Regular.woff2') format('woff2'),
+         url('../fonts/Velvelyn-Regular.woff') format('woff'),
+         url('../fonts/Velvelyn-Regular.ttf') format('truetype'),
+         url('../fonts/Velvelyn-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html{
     color: rgb(50, 85, 164);
     background-color:rgb(241, 241, 241);
@@ -47,13 +57,15 @@ v
 }
 
 .checkmark {
+    display: inline-block;
     width: 20px;
     height: 20px;
     border: 2px solid rgb(50, 85, 164);
     margin-left: 10px;
     position: relative;
-    background-color: transparent;
-    transition: background-color 0.3s;
+    background-color: transparent;  /* 투명 배경 */
+    box-sizing: border-box;
+    border-radius: 0px;             /* 직각 박스 */
 }
 
 .save-item input[type="checkbox"]:checked + .checkmark::after {
@@ -79,9 +91,10 @@ v
     margin-left: 12px;
   }
 
-  body.archive .checkmark {
+body.archive .checkmark {
     border-color: rgb(133, 214, 107);
-  }
+    background-color: transparent;   /* 투명 배경 유지 */
+}
 
   body.archive .save-item input[type="checkbox"]:checked + .checkmark::after {
     color: rgb(133, 214, 107);
@@ -717,8 +730,8 @@ body.archive .saved-items-grid {
 }
 
 .saved-item img {
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   border: none;
   margin-right: 32px;
@@ -1047,3 +1060,81 @@ body.archive .archive-content {
     margin-left: 0;
   }
 }
+
+/* 1200px 이상: 큰 화면 */
+@media (min-width: 1200px) {
+  .grid {
+    max-width: 1400px;
+  }
+}
+
+/* 992px ~ 1199px: 작은 데스크톱 */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .grid {
+    gap: 20px;
+  }
+}
+
+/* 768px ~ 991px: 태블릿 */
+@media (max-width: 991px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 576px ~ 767px: 큰 모바일 */
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .saved-item {
+    flex-direction: column;
+  }
+}
+
+/* 480px 이하: 모바일 */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 32px;
+  }
+  
+  .menu-toggle {
+    font-size: 40px;
+  }
+}
+
+/* 360px 이하: 작은 모바일 */
+@media (max-width: 360px) {
+  .site-title {
+    font-size: 24px;
+  }
+}
+
+/* 모바일에서 터치 시 이미지 확대 + 정보 표시 (기존 hover 효과 대체) */
+@media (max-width: 768px) {
+  /* 기존 hover 효과 완전 제거 */
+  .grid-item:hover img {
+    transform: none;
+  }
+  
+  .hover-meta {
+    display: none; /* 선과 텍스트 숨김 */
+  }
+  
+  /* 이미지 컨테이너를 상대 위치로 */
+  .grid-item {
+    position: relative;
+  }
+  
+  /* 터치(active) 시 이미지 확대 */
+  .grid-item:active img {
+    transform: scale(1.02);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 터치 시 정보 표시 (이미지 오른쪽 하단) */
+  .grid-item:active .mobile-info {
+    display: block;
+  }
+  
