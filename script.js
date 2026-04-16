@@ -519,3 +519,42 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActive();
         console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
     }
+
+// ========================
+// 개별 페이지: 히어로 사진 + 화살표 래핑 & 스크롤 시 topbar 숨기기
+// ========================
+document.addEventListener('DOMContentLoaded', () => {
+    const navPrev = document.querySelector('.item-nav.prev');
+    const navNext = document.querySelector('.item-nav.next');
+    if (!navPrev || !navNext) return; // not an item page
+
+    // Wrap the hero photo and nav arrows in a relative container
+    const heroImg = document.body.querySelector(':scope > img')
+                 || document.querySelector('.q_and_a img');
+    if (heroImg) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'photo-nav-wrap';
+        heroImg.parentNode.insertBefore(wrapper, heroImg);
+        wrapper.appendChild(navPrev);
+        wrapper.appendChild(navNext);
+        wrapper.appendChild(heroImg);
+    }
+
+    // Scroll-hide topbar: hide when scrolling down, show when scrolling up
+    const topbar = document.querySelector('.topbar');
+    if (topbar) {
+        topbar.style.position = 'sticky';
+        topbar.style.top = '0';
+        topbar.style.zIndex = '500';
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const currentY = window.scrollY;
+            if (currentY > lastScrollY && currentY > 60) {
+                topbar.style.transform = 'translateY(-100%)';
+            } else {
+                topbar.style.transform = 'translateY(0)';
+            }
+            lastScrollY = currentY;
+        }, { passive: true });
+    }
+});

@@ -141,6 +141,13 @@ img {
     z-index: 1000;
     padding: 8px;
 }
+
+/* Wrap for mobile: arrows sit beside the hero photo */
+.photo-nav-wrap {
+    position: relative;
+    width: 100%;
+    display: block;
+}
 .item-nav.prev {
     left: max(12px, calc((100vw - min(800px, 100vw - 32px)) / 7));
     text-align: left;
@@ -285,6 +292,7 @@ body.home .home-corner-title .homes {
     grid-template-columns: auto 1fr auto;
     align-items: start;
     padding: 40px 60px;
+    transition: transform 0.3s ease;
 }
 .site-title {
     margin: 0;
@@ -547,7 +555,8 @@ body.archive .archive-content p { margin: 0 0 40px; }
 
 /* GLOBAL RESPONSIVE */
 * { box-sizing: border-box; }
-body { margin: 0; padding: 0; }
+html { overflow-x: clip; }
+body { margin: 0; padding: 0; overflow-x: clip; }
 img { max-width: 100%; height: auto; }
 h1 { font-size: clamp(36px, 8vw, 90px); margin: 24px 0 56px; padding: 0 16px; }
 .item { font-size: clamp(16px, 2.4vw, 20px); margin: clamp(44px, 7vw, 88px) 0 clamp(90px, 14vw, 160px); }
@@ -579,6 +588,22 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item { align-items: center; gap: 14px; padding: 12px 0; }
     .saved-item img { width: 120px; height: 120px; margin-right: 0; }
     .saved-item p { font-size: 15px; }
+    /* Arrows: not fixed, sit beside the photo */
+    .photo-nav-wrap .item-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: clamp(36px, 9vw, 56px);
+        z-index: 10;
+    }
+    .photo-nav-wrap .item-nav.prev { left: 4px; }
+    .photo-nav-wrap .item-nav.next { right: 4px; }
+    /* Body text: smaller + more side margin */
+    .q_and_a { padding: 0 32px 32px; }
+    .question { font-size: 14px; }
+    .answer { font-size: 14px; }
+    .item { font-size: 14px; }
+    .save-item { font-size: 14px; }
 }
 @media (max-width: 480px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
