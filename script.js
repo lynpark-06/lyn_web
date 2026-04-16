@@ -690,3 +690,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', updateResponsiveGridEffects);
     updateResponsiveGridEffects();
 }
+
