@@ -175,11 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 host.classList.remove('is-active', 'item-enter-active', 'item-enter-ready');
                 host.innerHTML = `
                     <h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
-                    <div class="photo-nav-wrap">
-                        ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
-                        ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
-                        <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
-                    </div>
+                    ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
+                    ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
+                    <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
                     <div class="q_and_a">${itemData.qaHTML}</div>
                 `;
                 const saveCheckbox = host.querySelector('#save-checkbox');
@@ -521,24 +519,3 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActive();
         console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
     }
-
-// ========================
-// 개별 페이지: 히어로 사진 + 화살표 래핑 & 스크롤 시 topbar 숨기기
-// ========================
-document.addEventListener('DOMContentLoaded', () => {
-    const navPrev = document.querySelector('.item-nav.prev');
-    const navNext = document.querySelector('.item-nav.next');
-    if (!navPrev || !navNext) return; // not an item page
-
-    // Wrap the hero photo and nav arrows in a relative container
-    const heroImg = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
-    const alreadyWrapped = navPrev.parentElement && navPrev.parentElement.classList.contains('photo-nav-wrap');
-    if (heroImg && !alreadyWrapped) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'photo-nav-wrap';
-        heroImg.parentNode.insertBefore(wrapper, heroImg);
-        wrapper.appendChild(navPrev);
-        wrapper.appendChild(navNext);
-        wrapper.appendChild(heroImg);
-    }
-});

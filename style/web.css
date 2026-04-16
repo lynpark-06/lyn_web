@@ -149,15 +149,6 @@ img {
     width: 100%;
     display: block;
 }
-/* Arrows inside the wrap are absolute, not fixed — they scroll with the page */
-.photo-nav-wrap .item-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-}
-.photo-nav-wrap .item-nav.prev { left: 8px; }
-.photo-nav-wrap .item-nav.next { right: 8px; }
 .item-nav.prev {
     left: max(12px, calc((100vw - min(800px, 100vw - 32px)) / 7));
     text-align: left;
@@ -324,9 +315,9 @@ body.home .home-corner-title .homes {
     font-size: 90px;
     line-height: 1;
     padding: 0;
-    position: relative;
-    top: 0;
-    left: 0;
+    position: fixed;
+    top: 40px;
+    left: 60px;
     z-index: 1200;
     cursor: pointer;
     transform-origin: center;
@@ -350,9 +341,9 @@ body.home .home-corner-title .homes {
     height: 1px;
 }
 .dropdown {
-    position: absolute;
-    left: 0;
-    top: 100%;
+    position: fixed;
+    left: 60px;
+    top: 140px;
     z-index: 1190;
     display: none;
 }
@@ -371,15 +362,15 @@ body.home .home-corner-title .homes {
     .topbar { padding: 24px 20px; }
     body.home .home-corner-title { left: 58px; bottom: 24px; }
     .site-title { font-size: 64px; }
-    .menu-toggle { font-size: 64px; top: 0; left: 0; }
+    .menu-toggle { font-size: 64px; top: 24px; left: 20px; }
     .topbar-spacer { width: 64px; }
-    .dropdown { left: 0; top: 100%; }
+    .dropdown { left: 20px; top: 95px; }
 }
 @media (max-width: 520px) {
     .site-title { font-size: 48px; }
-    .menu-toggle { font-size: 48px; top: 0; left: 0; }
+    .menu-toggle { font-size: 48px; top: 20px; left: 16px; }
     .topbar-spacer { width: 48px; }
-    .dropdown { top: 100%; }
+    .dropdown { top: 80px; }
 }
 @media (max-width: 768px) {
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
@@ -594,24 +585,15 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item { align-items: center; gap: 14px; padding: 12px 0; }
     .saved-item img { width: 120px; height: 120px; margin-right: 0; }
     .saved-item p { font-size: 15px; }
-    /* Arrows: not fixed, sit beside the photo */
-    /* Mobile font size for arrows */
-    .photo-nav-wrap .item-nav { font-size: clamp(36px, 9vw, 56px); }
-    /* Body text: smaller + more side margin */
-    .q_and_a { padding: 0 32px 32px; }
-    .question { font-size: 14px; }
-    .answer { font-size: 14px; }
-    .item { font-size: 14px; }
-    .save-item { font-size: 14px; }
 }
 @media (max-width: 480px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
     .site-title { font-size: clamp(30px, 10vw, 44px); line-height: 1.1; }
-    .menu-toggle { font-size: 40px; top: 0; left: 0; }
+    .menu-toggle { font-size: 40px; top: 14px; left: 12px; }
     .topbar-spacer { width: 40px; }
-    .dropdown { top: 100%; left: 0; }
+    .dropdown { top: 68px; left: 12px; }
     .dropdown a { font-size: 16px; }
     .grid { grid-template-columns: 1fr; width: calc(100% - 24px); }
     .q_and_a { padding: 0 12px 24px; }
