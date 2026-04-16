@@ -242,8 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const qaClone = qa.cloneNode(true);
             const inlineQaPhoto = qaClone.querySelector('img');
             if (inlineQaPhoto) inlineQaPhoto.remove();
+            const titlePlain = (titleLink.innerText || titleLink.textContent || '').replace(/\s+/g, ' ').trim();
             const data = {
-                title: titleLink.textContent?.trim() || '',
+                title: titlePlain,
+                titleHtml: titleLink.innerHTML?.trim() || titlePlain,
                 itemName: hardcodedItemName,
                 photoSrc: photo.getAttribute('src') || '',
                 photoClass: photo.className || '',
@@ -268,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const host = ensureOverlay();
                 host.classList.remove('is-active', 'item-enter-active', 'item-enter-ready');
                 host.innerHTML = `
-                    <h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
+                    <h1><a href="index.html" class="home-link">${itemData.titleHtml || itemData.title}</a></h1>
                     ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
                     ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
                     <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
