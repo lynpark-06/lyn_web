@@ -675,71 +675,18 @@ body.archive .archive-content p { margin: 0 0 40px; }
         display: none !important;
     }
 
-    body.home .topbar::after {
-        content: "HOMES";
-        position: fixed;
-        left: 92px;
-        bottom: 44px;
-        color: rgb(50, 85, 164);
-        font-family: monospace;
-        font-size: 48px;
-        line-height: 1;
-        white-space: nowrap;
-        pointer-events: none;
-        z-index: 3;
-    }
-
-    body.home::before,
-    body.home::after {
-        position: fixed;
-        pointer-events: none;
-        z-index: 3;
-    }
-
-    body.home::before {
-        content: "BETWEEN";
-        bottom: 96px;
-        margin-left: 62px;
-        margin-bottom: -55px;
-        color: rgb(50, 85, 164);
-        font-family: monospace;
-        font-size: 48px;
-        line-height: 1;
-        transform: translateX(-50%) rotate(-90deg);
-        transform-origin: left top;
-        white-space: nowrap;
-    }
-
     body.home::after {
         content: "";
-        left: 20px;
+        position: fixed;
+        left: 60px;
         bottom: 32px;
-        width: 64px;
-        height: 64px;
-        padding: 0;
-        background-image: url("../home.png");
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: 125%;
+        width: 140px;
+        height: 56px;
+        padding: 10px;
+        border: 2px solid rgb(50, 85, 164);
         box-sizing: border-box;
-    }
-}
-
-@media (min-width: 1024px) {
-    body.home .topbar::after {
-        left: 138px;
-        bottom: 56px;
-    }
-
-    body.home::before {
-        left: 95px;
-        bottom: 122px;
-    }
-
-    body.home::after {
-        left: 42px;
-        width: 90px;
-        height: 90px;
+        pointer-events: none;
+        z-index: 3;
     }
 }
 
