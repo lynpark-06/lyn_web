@@ -685,15 +685,22 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     :root { --page-top: 28px; --title-size: clamp(42px, 11vw, 72px); }
     .topbar { grid-template-columns: auto 1fr auto; padding: 20px 16px; }
     .site-title { font-size: clamp(38px, 9vw, 62px); }
-    .menu-toggle { font-size: 48px; top: var(--page-top); }
+    body.home .menu-toggle,
+    body.home.item-overlay-open .menu-toggle,
     body:not(.home) .menu-toggle {
-        position: fixed;
-        left: 20px;
+        position: fixed !important;
+        top: var(--page-top) !important;
+        left: 20px !important;
+        font-size: 48px !important;
+        line-height: 1 !important;
     }
     .topbar-spacer { width: 48px; }
-    .dropdown { left: 20px; top: 84px; }
+    body.home .dropdown,
+    body.home.item-overlay-open .dropdown,
     body:not(.home) .dropdown {
-        position: fixed;
+        position: fixed !important;
+        left: 20px !important;
+        top: 84px !important;
     }
     .dropdown a { font-size: 18px; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -720,17 +727,22 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
     .site-title { font-size: clamp(30px, 10vw, 44px); line-height: 1.1; }
-    .menu-toggle { font-size: 40px; top: var(--page-top); left: 12px; }
-    body.home .menu-toggle {
-        left: 12px;
-    }
+    body.home .menu-toggle,
+    body.home.item-overlay-open .menu-toggle,
     body:not(.home) .menu-toggle {
-        left: 12px;
+        position: fixed !important;
+        top: var(--page-top) !important;
+        left: 12px !important;
+        font-size: 40px !important;
+        line-height: 1 !important;
     }
     .topbar-spacer { width: 40px; }
-    .dropdown { top: 68px; left: 12px; }
+    body.home .dropdown,
+    body.home.item-overlay-open .dropdown,
     body:not(.home) .dropdown {
-        left: 12px;
+        position: fixed !important;
+        top: 68px !important;
+        left: 12px !important;
     }
     .dropdown a { font-size: 16px; }
     .grid { grid-template-columns: 1fr; width: calc(100% - 24px); }
