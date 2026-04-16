@@ -175,9 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 host.classList.remove('is-active', 'item-enter-active', 'item-enter-ready');
                 host.innerHTML = `
                     <h1><a href="index.html" class="home-link">${itemData.title}</a></h1>
-                    ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
-                    ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
-                    <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
+                    <div class="photo-nav-wrap">
+                        ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
+                        ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
+                        <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
+                    </div>
                     <div class="q_and_a">${itemData.qaHTML}</div>
                 `;
                 const saveCheckbox = host.querySelector('#save-checkbox');

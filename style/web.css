@@ -223,6 +223,10 @@ body.home.item-overlay-open .home-corner-title {
     opacity: 0;
     pointer-events: none;
 }
+body.home.item-overlay-open .topbar {
+    opacity: 0;
+    pointer-events: none;
+}
 
 .item-overlay {
     position: fixed;
@@ -236,9 +240,6 @@ body.home.item-overlay-open .home-corner-title {
 .item-overlay.is-active {
     visibility: visible;
     pointer-events: auto;
-}
-.item-overlay .item-nav {
-    position: fixed;
 }
 .item-overlay .overlay-photo {
     margin-top: 0;
