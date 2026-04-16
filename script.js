@@ -429,6 +429,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(finishHero, 240);
             });
         });
+
+        // When returning to index, always remove overlay and reset state
+        gridLinks.forEach((link) => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && /index\.html$/.test(href)) {
+                    // Remove overlay and reset .site-title on next overlay open
+                    const overlay = document.querySelector('.item-overlay');
+                    if (overlay) overlay.innerHTML = '';
+                    document.body.classList.remove('item-overlay-open');
+                }
+            });
+        });
     }
 
     if (isItemPage) {
@@ -720,3 +733,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     updateResponsiveGridEffects();
 }
+
+// Listen for breakpoint changes and update overlay h1 font size
+window.addEventListener('breakpointChange', () => {
+    // For overlays, update .site-title font size to match CSS
+    const overlay = document.querySelector('.item-overlay.is-active');
+    if (overlay) {
+        const h1 = overlay.querySelector('h1');
+        if (h1) h1.classList.add('site-title');
+    }
+    // For direct navigation, update h1 if not already styled
+    if (!document.body.classList.contains('home') && !document.body.classList.contains('about') && !document.body.classList.contains('archive')) {
+        const h1 = document.querySelector('h1');
+        if (h1) h1.classList.add('site-title');
+    }
+});
+
+// On overlay open, always add .site-title to h1
+const origOpenOverlayItem = window.openOverlayItem;
+if (typeof origOpenOverlayItem === 'function') {
+    window.openOverlayItem = async function(...args) {
+        await origOpenOverlayItem.apply(this, args);
+        const overlay = document.querySelector('.item-overlay.is-active');
+        if (overlay) {
+            const h1 = overlay.querySelector('h1');
+            if (h1) h1.classList.add('site-title');
+        }
+    };
+}
+
+// Always remove .site-title from index h1 when returning home
+window.addEventListener('popstate', () => {
+    if (location.pathname.endsWith('index.html') || location.pathname.endsWith('/')) {
+        const h1 = document.querySelector('h1.site-title');
+        if (h1) h1.classList.remove('site-title');
+    }
+});
