@@ -485,6 +485,29 @@ document.addEventListener('DOMContentLoaded', () => {
             gridItems.forEach((item) => placeItemCallouts(item));
         });
     }
+
+    // Mobile only: hide + and arrows on scroll, show when back at top
+    if (window.innerWidth <= 768 && isItemPage) {
+        const mobileScrollTargets = () => [
+            ...document.querySelectorAll('.menu-toggle, .item-nav, .dropdown')
+        ];
+        let scrollTimer;
+        window.addEventListener('scroll', () => {
+            mobileScrollTargets().forEach(el => {
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+            });
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                if (window.scrollY < 10) {
+                    mobileScrollTargets().forEach(el => {
+                        el.style.opacity = '';
+                        el.style.pointerEvents = '';
+                    });
+                }
+            }, 300);
+        }, { passive: true });
+    }
 });
 
        // ========================
