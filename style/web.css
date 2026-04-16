@@ -958,6 +958,35 @@ body.force-phone-effects .grid-item.tablet-active .meta-line::before {
 }
 body.force-phone-effects .mobile-punchout {
     display: flex !important;
+    position: absolute;
+    bottom: 10%;
+    right: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    pointer-events: none;
+    z-index: 100;
+}
+body.force-phone-effects .mobile-punchout span {
+    display: inline-block;
+    background: rgb(50, 85, 164);
+    color: rgb(241, 241, 241);
+    font-family: monospace;
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    width: fit-content;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin: 0;
+    line-height: 1.2;
+}
+body.force-phone-effects .grid-item.active img {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+body.force-phone-effects .grid-item.active .mobile-punchout span {
+    opacity: 1;
 }
 
 /* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
