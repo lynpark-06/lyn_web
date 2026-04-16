@@ -684,6 +684,15 @@ h1 { font-size: clamp(36px, 8vw, 90px); margin: 24px 0 56px; padding: 0 16px; }
 body.about .about-content, body.archive .archive-content { width: min(100% - 32px, 1000px); }
 .grid { width: min(100% - 32px, 1200px); gap: clamp(14px, 2.5vw, 30px); padding: 0; }
 
+/* Responsive widths: never allow side-scrolling */
+@media (max-width: 1023px) {
+    html,
+    body,
+    .item-overlay {
+        overflow-x: hidden;
+    }
+}
+
 @media (min-width: 1024px) { .q_and_a { padding-left: 24px; padding-right: 24px; } }
 @media (min-width: 768px) and (max-width: 1023px) {
     .topbar { padding: 28px; }
@@ -693,8 +702,10 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     body.archive .saved-items-grid { margin-top: 110px !important; }
 
     /* Narrow text columns to match mobile-like reading width */
-    body:not(.home) .q_and_a { padding: 0 36px 28px; }
-    body:not(.home) .q_and_a > div {
+    body:not(.home) .q_and_a,
+    .item-overlay .q_and_a { padding: 0 36px 28px; }
+    body:not(.home) .q_and_a > div,
+    .item-overlay .q_and_a > div {
         width: min(100%, 680px);
         margin-bottom: 20px;
     }
