@@ -541,20 +541,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Scroll-hide topbar: hide when scrolling down, show when scrolling up
-    const topbar = document.querySelector('.topbar');
-    if (topbar) {
-        topbar.style.position = 'sticky';
-        topbar.style.top = '0';
-        topbar.style.zIndex = '500';
-        let lastScrollY = window.scrollY;
-        window.addEventListener('scroll', () => {
-            const currentY = window.scrollY;
-            if (currentY > lastScrollY && currentY > 60) {
-                topbar.style.transform = 'translateY(-100%)';
-            } else {
-                topbar.style.transform = 'translateY(0)';
-            }
-            lastScrollY = currentY;
-        }, { passive: true });
-    }
 });
