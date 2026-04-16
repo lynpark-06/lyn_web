@@ -18,16 +18,13 @@ html {
     --title-size: clamp(60px, 8vw, 100px);
 }
 
-/* 기본 h1 (홈페이지 포함) */
 h1 {
     font-size: 90px;
     font-weight: normal;
     font-family: monospace;
     text-align: center;
     margin-bottom: 100px;
-  }
-
-/* 홈페이지 전용 h1은 나중에 따로 처리 */
+}
 
 .item {
     font-size: 20px;
@@ -52,9 +49,11 @@ h1 {
     color: rgb(50, 85, 164);
     margin: 0;
 }
+
 .save-item input[type="checkbox"] {
     display: none;
 }
+
 .checkmark {
     display: inline-block;
     width: 20px;
@@ -66,6 +65,7 @@ h1 {
     box-sizing: border-box;
     border-radius: 0px;
 }
+
 .save-item input[type="checkbox"]:checked + .checkmark::after {
     content: '✓';
     position: absolute;
@@ -201,7 +201,8 @@ body.item-enter-active .q_and_a .item,
     transform: none;
 }
 
-body.home.item-overlay-open .grid {
+body.home.item-overlay-open .grid,
+body.home.item-overlay-open .home-corner-title {
     opacity: 0;
     pointer-events: none;
 }
@@ -242,7 +243,7 @@ body.home .home-corner-title {
     position: fixed;
     left: 120px;
     bottom: 40px;
-    z-index: 1202;
+    z-index: 4;
     font-family: monospace;
     font-size: clamp(38px, 5vw, 68px);
     font-weight: normal;
@@ -250,13 +251,10 @@ body.home .home-corner-title {
     color: rgb(50, 85, 164);
     pointer-events: none;
 }
-body:not(.home) .home-corner-title {
-    display: none !important;
-}
 body.home .home-corner-title .between {
     position: absolute;
     left: 0;
-    bottom: 45px;
+    bottom: 64px;
     transform-origin: left bottom;
     transform: rotate(-90deg);
     white-space: nowrap;
@@ -290,7 +288,6 @@ body.home .home-corner-title .homes {
 }
 .site-title {
     margin: 0;
-    margin-top: 40px;
     display: inline-block;
     justify-self: center;
     text-align: center;
@@ -374,45 +371,18 @@ body.home .home-corner-title .homes {
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
 }
 
-/* ===== 모든 비홈페이지(About, Archive, 개별 아이템) h1 통일 ===== */
-body:not(.home) .site-title,
-body:not(.home) h1:first-of-type,
-body:not(.home) h1 {
-    position: absolute !important;
-    left: 50% !important;
-    top: var(--page-top) !important;
-    transform: translateX(-50%) !important;
-    margin: 0 !important;
-    text-align: center !important;
-    font-family: monospace !important;
-    font-size: var(--title-size) !important;
-    font-weight: normal !important;
-    line-height: 1 !important;
-    width: auto !important;
-    background: transparent !important;
-    color: rgb(50, 85, 164) !important;
+/* ABOUT 페이지 */
+body.about .topbar { position: relative; padding: 40px 60px; }
+body.about .site-title {
+    position: absolute;
+    left: 50%;
+    top: var(--page-top);
+    transform: translateX(-50%);
+    margin: 0;
+    text-align: center;
+    font-size: var(--title-size);
+    font-weight: normal;
 }
-
-/* 상단바 높이 조정 및 + 버튼 정렬 (비홈페이지) */
-body:not(.home) .topbar {
-    position: relative;
-    height: calc(var(--page-top) + var(--title-size) + 20px);
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 60px;
-}
-
-/* + 버튼 위치 통일 */
-.menu-toggle {
-    position: fixed;
-    top: calc(var(--page-top) + 10px) !important;
-    left: 60px !important;
-    z-index: 1201;
-}
-
-/* ABOUT 페이지 본문 (기존) */
 body.about .about-content {
     max-width: 1000px;
     text-align: left;
@@ -555,6 +525,17 @@ body.archive .saved-items-grid { margin-top: 160px !important; }
     flex: 1;
 }
 
+body.archive .topbar { position: relative; padding: 40px 60px; }
+body.archive .site-title {
+    position: absolute;
+    left: 50%;
+    top: var(--page-top);
+    transform: translateX(-50%);
+    margin: 0;
+    text-align: center;
+    font-size: var(--title-size);
+    font-weight: normal;
+}
 body.archive .archive-content {
     max-width: 900px;
     text-align: left;
@@ -563,22 +544,6 @@ body.archive .archive-content {
     margin: calc(var(--page-top) + var(--title-size) + 20px) auto 0;
 }
 body.archive .archive-content p { margin: 0 0 40px; }
-
-body:not(.home):not(.about):not(.archive) .question,
-body:not(.home):not(.about):not(.archive) .answer,
-body:not(.home):not(.about):not(.archive) .item,
-body:not(.home):not(.about):not(.archive) .save-item {
-    font-size: 18px;
-    line-height: 1.6;
-}
-body:not(.home):not(.about):not(.archive) .q_and_a {
-    width: min(100% - 32px, 1000px);
-    margin: 0 auto;
-    padding: 0 0 32px;
-}
-body:not(.home):not(.about):not(.archive) .q_and_a > div {
-    width: 100%;
-}
 
 /* GLOBAL RESPONSIVE */
 * { box-sizing: border-box; }
@@ -614,20 +579,6 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item { align-items: center; gap: 14px; padding: 12px 0; }
     .saved-item img { width: 120px; height: 120px; margin-right: 0; }
     .saved-item p { font-size: 15px; }
-    /* 비홈페이지 h1 모바일 조정 */
-    body:not(.home) .site-title,
-    body:not(.home) h1 {
-        font-size: clamp(32px, 8vw, 48px) !important;
-        top: 15px !important;
-    }
-    body:not(.home) .topbar {
-        padding: 0 16px;
-    }
-    .menu-toggle {
-        top: 10px !important;
-        left: 16px !important;
-        font-size: 48px !important;
-    }
 }
 @media (max-width: 480px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
@@ -656,79 +607,17 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 @media (max-width: 480px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
 @media (max-width: 360px) { .site-title { font-size: 24px; } }
 
-
-/* 데스크톱: 그리드 시작 위치 */
-@media (min-width: 769px) {
+/* ===== 모바일 전용 (그리드 위치 + 펀치아웃) ===== */
+@media (max-width: 768px) {
+    /* 그리드 시작 위치 내리기 */
     body.home .grid {
-        margin-top: 0px !important;
+        margin-top: 10vh !important;
     }
-}
-
-/* 아카이브, 어바웃 페이지 기본 폰트 모노스페이스 */
-body.archive,
-body.about {
-    font-family: monospace;
-}
-
-/* ===== 모든 비홈페이지(About, Archive, 개별) h1을 완전히 동일하게 ===== */
-body:not(.home) .site-title,
-body:not(.home) h1 {
-    position: absolute !important;
-    left: 50% !important;
-    top: var(--page-top) !important;
-    transform: translateX(-50%) !important;
-    margin: 0 !important;
-    text-align: center !important;
-    font-family: monospace !important;
-    font-size: var(--title-size) !important;
-    font-weight: normal !important;
-    line-height: 1 !important;
-    width: auto !important;
-    background: transparent !important;
-    color: rgb(50, 85, 164) !important;
-}
-
-/* 상단바 높이 조정 (비홈페이지) */
-body:not(.home) .topbar {
-    position: relative;
-    min-height: 100px; /* 적절한 높이로 조절 */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 60px;
-}
-
-/* + 버튼 위치 통일 */
-.menu-toggle {
-    position: fixed;
-    top: calc(var(--page-top) + 10px) !important;
-    left: 60px !important;
-    z-index: 1201;
-}
-
-/* 모바일에서 조정 */
-@media (max-width: 768px) {
-    body:not(.home) .site-title,
-    body:not(.home) h1 {
-        font-size: clamp(32px, 8vw, 48px) !important;
-        top: 20px !important;
-    }
-    body:not(.home) .topbar {
-        padding: 0 16px;
-        min-height: 70px;
-    }
-    .menu-toggle {
-        top: 15px !important;
-        left: 16px !important;
-        font-size: 48px !important;
-    }
-}
-
-/* ===== 모바일 펀치아웃 (복원) ===== */
-@media (max-width: 768px) {
+    
+    /* 펀치아웃 위치 및 스타일 */
     .mobile-punchout {
         position: absolute;
-        bottom: 10%;
+        bottom: 10%;          /* 이미지 하단에서 위로 70px */
         right: 12px;
         display: flex;
         flex-direction: column;
@@ -759,139 +648,33 @@ body:not(.home) .topbar {
         opacity: 1;
     }
 }
+
+/* 데스크톱에서는 숨김 */
 @media (min-width: 769px) {
     .mobile-punchout {
         display: none !important;
     }
 }
 
-/* 모바일에서 그리드 시작 위치를 더 아래로 */
+/* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
 @media (max-width: 768px) {
+    body.about h1,
+    body.archive h1,
+    body:not(.home) h1,
+    .item-overlay h1 {
+        font-size: 50px !important;
+        top: var(--page-top);
+    }
+}
+/* 아카이브, 어바웃 페이지 기본 폰트 모노스페이스 */
+body.archive,
+body.about {
+    font-family: monospace;
+}
+
+/* 데스크톱: 그리드 시작 위치를 적절히 내림 */
+@media (min-width: 769px) {
     body.home .grid {
-        margin-top: -5vh !important;  /* 10vh → 25vh (화면 높이의 25%) */
-    }
-}
-
-/* 모바일: home.png 크기만 줄이기 */
-@media (max-width: 768px) {
-    body.home .home-corner-title .corner-slot {
-        left: auto !important;
-        right: 105px !important;
-        width: 60px !important;
-        height: 60px !important;
-    }
-}
-
-@media (max-width: 768px) {
-    body.about .about-content,
-    body.archive .archive-content {
-        width: calc(100% - 56px);
-        font-size: 14px;
-        line-height: 1.55;
-    }
-    body:not(.home):not(.about):not(.archive) .q_and_a {
-        width: calc(100% - 56px);
-    }
-    body.archive .saved-item p,
-    body:not(.home):not(.about):not(.archive) .question,
-    body:not(.home):not(.about):not(.archive) .answer,
-    body:not(.home):not(.about):not(.archive) .item,
-    body:not(.home):not(.about):not(.archive) .save-item {
-        font-size: 14px;
-        line-height: 1.55;
-    }
-}
-
-@media (max-width: 480px) {
-    body.about .about-content,
-    body.archive .archive-content {
-        width: calc(100% - 44px);
-        font-size: 13px;
-    }
-    body:not(.home):not(.about):not(.archive) .q_and_a {
-        width: calc(100% - 44px);
-    }
-    body.archive .saved-item p,
-    body:not(.home):not(.about):not(.archive) .question,
-    body:not(.home):not(.about):not(.archive) .answer,
-    body:not(.home):not(.about):not(.archive) .item,
-    body:not(.home):not(.about):not(.archive) .save-item {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-}
-
-@media (max-width: 768px) {
-    body:not(.home) .site-title,
-    body:not(.home) h1 {
-        font-size: clamp(38px, 9.5vw, 58px) !important;
-    }
-}
-
-@media (max-width: 480px) {
-    body:not(.home) .site-title,
-    body:not(.home) h1 {
-        font-size: clamp(36px, 11vw, 52px) !important;
-    }
-}
-
-@media (max-width: 767px) {
-    body.archive #items-container {
-        width: calc(100% - 32px) !important;
-    }
-    body.archive .saved-item {
-        flex-direction: row !important;
-        align-items: flex-start !important;
-        justify-content: space-between;
-    }
-    body.archive .saved-item p {
-        text-align: left;
-        flex: 1;
-        margin: 0 10px 0 0;
-    }
-    body.archive .save-item {
-        margin-left: 0;
-        flex-shrink: 0;
-        align-self: flex-start;
-    }
-    body.archive .checkmark {
-        width: 16px;
-        height: 16px;
-        margin-left: 6px;
-    }
-    body.archive .save-item input[type="checkbox"]:checked + .checkmark::after {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    body.archive #items-container {
-        width: calc(100% - 32px) !important;
-    }
-    body.archive .saved-item {
-        flex-direction: row !important;
-        align-items: flex-start !important;
-    }
-    body.archive .saved-item img {
-        width: 96px;
-        height: 96px;
-        object-fit: cover;
-    }
-}
-
-/* Individual pages: keep arrows beside content (not fixed on scroll) */
-body:not(.home):not(.about):not(.archive) .item-nav {
-    position: absolute;
-    top: calc(var(--page-top) + var(--title-size) + 260px);
-    transform: none;
-}
-body:not(.home):not(.about):not(.archive) .item-nav.prev,
-body:not(.home):not(.about):not(.archive) .item-nav.next {
-    transform: none !important;
-}
-
-@media (max-width: 768px) {
-    body:not(.home):not(.about):not(.archive) .item-nav {
-        top: calc(var(--page-top) + var(--title-size) + 180px);
+        margin-top: 0px !important;  /* 원하는 높이로 조절 (px, vh 등) */
     }
 }
