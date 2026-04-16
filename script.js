@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setupMobileItemNav = (root) => {
-        if (!isPhoneLikeMode() || !root) return;
+        if (getViewportWidth() >= 768 || !root) return;
 
         const saveSection = root.querySelector('.q_and_a .item');
         const itemNavs = root.querySelectorAll('.item-nav');
@@ -353,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
+                if (isNarrowDesktopPreview()) return;
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 if (isOpening) return;
                 const href = link.href || link.getAttribute('href');
@@ -621,6 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateResponsiveGridEffects() {
         const items = document.querySelectorAll('.grid-item');
         const w = getViewportWidth();
+        const phoneLike = isPhoneLikeMode();
+
+        document.body.classList.toggle('force-phone-effects', phoneLike);
 
         if (!items.length) {
             ticking = false;
@@ -629,9 +633,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const windowHeight = window.innerHeight;
         const center = windowHeight / 2;
-        const phoneLike = isPhoneLikeMode();
-
-        document.body.classList.toggle('force-phone-effects', phoneLike);
 
         if (phoneLike) {
             const addThreshold = windowHeight * 0.25;

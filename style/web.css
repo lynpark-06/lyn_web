@@ -735,8 +735,15 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         width: min(100%, 620px);
         margin-bottom: 20px;
     }
-    body:not(.home) .question { font-size: 15px; }
-    body:not(.home) .answer { font-size: 14px; padding-left: 12px; line-height: 1.5; }
+    body.about h1,
+    body.archive h1,
+    body:not(.home) h1,
+    .item-overlay h1 {
+        font-size: 50px !important;
+        top: var(--page-top);
+    }
+    body:not(.home) .question { font-size: 14px; }
+    body:not(.home) .answer { font-size: 13px; padding-left: 10px; line-height: 1.5; }
     body.about .about-content,
     body.archive .archive-content {
         width: min(calc(100% - 64px), 620px);
