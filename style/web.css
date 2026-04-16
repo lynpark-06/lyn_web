@@ -508,9 +508,6 @@ body.about .site-title {
     font-size: var(--title-size);
     font-weight: normal;
 }
-
-/* Individual pages (not home/about/archive) */
-
 body.about .about-content {
     max-width: 1000px;
     text-align: left;
@@ -678,6 +675,19 @@ body.archive .archive-content p { margin: 0 0 40px; }
         display: none !important;
     }
 
+    body.home .topbar::after {
+        content: "HOMES";
+        position: fixed;
+        left: 92px;
+        bottom: 44px;
+        color: rgb(50, 85, 164);
+        font-family: monospace;
+        font-size: 48px;
+        line-height: 1;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 3;
+    }
 
     body.home::before,
     body.home::after {
@@ -686,7 +696,20 @@ body.archive .archive-content p { margin: 0 0 40px; }
         z-index: 3;
     }
 
-    
+    body.home::before {
+        content: "BETWEEN";
+        bottom: 96px;
+        margin-left: 62px;
+        margin-bottom: -55px;
+        color: rgb(50, 85, 164);
+        font-family: monospace;
+        font-size: 48px;
+        line-height: 1;
+        transform: translateX(-50%) rotate(-90deg);
+        transform-origin: left top;
+        white-space: nowrap;
+    }
+
     body.home::after {
         content: "";
         left: 20px;
@@ -745,11 +768,10 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 
 @media (min-width: 1024px) { .q_and_a { padding-left: 24px; padding-right: 24px; } }
 @media (min-width: 768px) and (max-width: 1023px) {
-    .topbar { padding: 28px; position: relative; }
-    .item-overlay .topbar { position: relative; }
+    .topbar { padding: 28px; }
     .site-title { font-size: clamp(48px, 8vw, 78px); }
     .menu-toggle, .topbar-spacer { width: 64px; font-size: 64px; }
-    .dropdown { position: absolute !important; left: 28px; top: 102px; }
+    .dropdown { left: 28px; top: 102px; }
     body.archive .saved-items-grid { margin-top: 110px !important; }
 
     /* Narrow text columns to match mobile-like reading width */
@@ -792,13 +814,6 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .grid-item.tablet-active .meta-line::before {
         transform: rotate(var(--line-angle, -20deg)) scaleX(1);
-    }
-
-    /* Tablet: arrows centered on image and scrolling */
-    body:not(.home) .item-nav,
-    .item-overlay .item-nav {
-        position: absolute;
-        top: 50%;
     }
 }
 @media (min-width: 480px) and (max-width: 767px) {
