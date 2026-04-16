@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setupMobileItemNav = (root) => {
-        if (window.innerWidth >= 768 || !root) return;
+        if (window.innerWidth >= 480 || !root) return;
 
         const saveSection = root.querySelector('.q_and_a .item');
         const itemNavs = root.querySelectorAll('.item-nav');
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (window.innerWidth >= 768) return;
+            if (window.innerWidth >= 480) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (window.innerWidth >= 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (window.innerWidth >= 480 || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
        // ========================
     // 모바일 펀치아웃 (오래 유지되도록)
     // ========================
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 480) {
         let ticking = false;
         function updateActive() {
             const items = document.querySelectorAll('.grid-item');
@@ -620,4 +620,41 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', updateActive);
         updateActive();
         console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
+    }
+
+    // ========================
+    // 태블릿 메타라인 자동 표시 (중앙 근처에서만)
+    // ========================
+    if (window.innerWidth >= 480 && window.innerWidth <= 1023) {
+        let ticking = false;
+        function updateTabletActive() {
+            const items = document.querySelectorAll('.grid-item');
+            const windowHeight = window.innerHeight;
+            const center = windowHeight / 2;
+            const addThreshold = windowHeight * 0.22;
+            const removeThreshold = windowHeight * 0.34;
+
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const itemCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(itemCenter - center);
+
+                if (distance < addThreshold) {
+                    item.classList.add('tablet-active');
+                } else if (distance > removeThreshold) {
+                    item.classList.remove('tablet-active');
+                }
+            });
+
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateTabletActive);
+                ticking = true;
+            }
+        });
+        window.addEventListener('resize', updateTabletActive);
+        updateTabletActive();
     }

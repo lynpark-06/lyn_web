@@ -364,13 +364,13 @@ body.home .home-corner-title .homes {
     .topbar-spacer { width: 64px; }
     .dropdown { left: 20px; top: 95px; }
 }
-@media (max-width: 767px) {
+@media (min-width: 480px) and (max-width: 767px) {
     .site-title { font-size: 48px; }
     .menu-toggle { font-size: 48px; top: 20px; left: 16px; }
     .topbar-spacer { width: 48px; }
     .dropdown { top: 80px; }
 }
-@media (max-width: 767px) {
+@media (min-width: 480px) and (max-width: 767px) {
     body.home .topbar {
         display: flex;
         justify-content: flex-start;
@@ -687,8 +687,8 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .meta-line {
         font-size: clamp(12px, 1.35vw, 16px);
-        opacity: 1;
-        transform: translate(var(--text-shift-x, 0px), -50%);
+        opacity: 0;
+        transform: translate(calc(var(--text-shift-x, 0px) + var(--intro-x, 14px)), -50%);
     }
     .meta-line span {
         max-width: 280px;
@@ -697,10 +697,17 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .meta-line::before {
         width: min(calc(var(--line-length, 220px) * 0.6), 180px);
+        transform: rotate(var(--line-angle, -20deg)) scaleX(0);
+    }
+    .grid-item.tablet-active .meta-line {
+        opacity: 1;
+        transform: translate(var(--text-shift-x, 0px), -50%);
+    }
+    .grid-item.tablet-active .meta-line::before {
         transform: rotate(var(--line-angle, -20deg)) scaleX(1);
     }
 }
-@media (max-width: 767px) {
+@media (min-width: 480px) and (max-width: 767px) {
     :root { --page-top: 28px; --title-size: clamp(42px, 11vw, 72px); }
     .topbar { grid-template-columns: auto 1fr auto; padding: 20px 16px; }
     .site-title { font-size: clamp(38px, 9vw, 62px); }
@@ -741,7 +748,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item p { font-size: 14px; margin-top: 0; flex: 1; }
     body.archive .save-item { align-self: flex-start; margin-top: 0; margin-left: 0; }
 }
-@media (max-width: 767px) {
+@media (max-width: 479px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
@@ -783,15 +790,15 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item p { font-size: 13px; }
     body.archive .save-item { margin-left: 0; align-self: flex-start; }
 }
-@media (min-width: 1024px) { .grid { max-width: 1400px; } }
-@media (min-width: 1024px) { .grid { gap: 20px; } }
+@media (min-width: 1280px) { .grid { max-width: 1400px; } }
+@media (min-width: 1280px) { .grid { gap: 20px; } }
 @media (min-width: 768px) and (max-width: 1023px) { .grid { grid-template-columns: 1fr; } }
-@media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
-@media (max-width: 767px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
-@media (max-width: 767px) { .site-title { font-size: 24px; } }
+@media (min-width: 480px) and (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 479px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
+@media (max-width: 479px) { .site-title { font-size: 24px; } }
 
 /* ===== 모바일 전용 (그리드 위치 + 펀치아웃) ===== */
-@media (max-width: 767px) {
+@media (max-width: 479px) {
     /* 그리드 시작 위치 내리기 */
     body.home .grid {
         margin-top: 4vh !important;
@@ -844,14 +851,14 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 }
 
 /* 태블릿/데스크톱에서는 숨김 */
-@media (min-width: 768px) {
+@media (min-width: 480px) {
     .mobile-punchout {
         display: none !important;
     }
 }
 
 /* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
-@media (max-width: 767px) {
+@media (max-width: 479px) {
     body.about h1,
     body.archive h1,
     body:not(.home) h1,
