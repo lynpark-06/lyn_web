@@ -382,6 +382,10 @@ body.home .home-corner-title .homes {
         width: 120%;
         height: 120%;
     }
+    html,
+    body {
+        overflow-x: hidden;
+    }
 }
 
 /* ABOUT 페이지 */
