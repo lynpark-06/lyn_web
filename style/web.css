@@ -359,6 +359,17 @@ body.home .home-corner-title .homes {
 @media (min-width: 768px) and (max-width: 1023px) {
     .topbar { padding: 24px 20px; }
     body.home .home-corner-title { left: 58px; bottom: 24px; }
+    body.home .home-corner-title .corner-slot {
+        left: -72px;
+        bottom: 8px;
+        width: 76px;
+        height: 76px;
+    }
+    body.home .home-corner-title .corner-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
     .site-title { font-size: 64px; }
     .menu-toggle { font-size: 64px; top: 24px; left: 20px; }
     .topbar-spacer { width: 64px; }
@@ -680,6 +691,20 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .menu-toggle, .topbar-spacer { width: 64px; font-size: 64px; }
     .dropdown { left: 28px; top: 102px; }
     body.archive .saved-items-grid { margin-top: 110px !important; }
+
+    /* Narrow text columns to match mobile-like reading width */
+    body:not(.home) .q_and_a { padding: 0 36px 28px; }
+    body:not(.home) .q_and_a > div {
+        width: min(100%, 680px);
+        margin-bottom: 20px;
+    }
+    body.about .about-content,
+    body.archive .archive-content {
+        width: min(calc(100% - 72px), 680px);
+    }
+    body.archive #items-container {
+        width: min(calc(100% - 72px), 680px);
+    }
 
     /* Tablet: keep desktop effect but scale callouts to fit narrower viewport */
     .grid {
