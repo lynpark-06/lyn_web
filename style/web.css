@@ -671,22 +671,67 @@ body.archive .archive-content {
 body.archive .archive-content p { margin: 0 0 40px; }
 
 @media (min-width: 768px) {
+    /* 데스크톱/태블릿: 홈페이지 제목(h1)을 왼쪽 하단에 고정, 회전 유지 */
     body.home .home-corner-title {
-        display: none !important;
+        display: block !important;   /* 숨김 해제 */
+        position: fixed;
+        left: 120px;
+        bottom: 40px;
+        z-index: 4;
+        font-family: monospace;
+        font-size: clamp(38px, 5vw, 68px);
+        font-weight: normal;
+        line-height: 1;
+        color: rgb(50, 85, 164);
+        pointer-events: none;
+    }
+    body.home .home-corner-title .between {
+        position: absolute;
+        left: 0;
+        bottom: 64px;
+        transform-origin: left bottom;
+        transform: rotate(-90deg);
+        white-space: nowrap;
+    }
+    body.home .home-corner-title .corner-slot {
+        position: absolute;
+        left: -80px;
+        bottom: 10px;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    body.home .home-corner-title .corner-slot img {
+        width: 150%;
+        height: 150%;
+        object-fit: contain;
+    }
+    body.home .home-corner-title .homes {
+        display: block;
+        white-space: nowrap;
+    }
+
+    /* 기존에 있던 다른 태블릿/데스크톱 스타일은 그대로 유지 */
+    /* 예: .topbar, .site-title 등 다른 것들은 건드리지 않음 */
+}
+
+@media (min-width: 1024px) {
+    body.home .topbar::after {
+        left: 138px;
+        bottom: 56px;
+    }
+
+    body.home::before {
+        left: 95px;
+        bottom: 122px;
     }
 
     body.home::after {
-        content: "";
-        position: fixed;
-        left: 60px;
-        bottom: 32px;
-        width: 140px;
-        height: 56px;
-        padding: 10px;
-        border: 2px solid rgb(50, 85, 164);
-        box-sizing: border-box;
-        pointer-events: none;
-        z-index: 3;
+        left: 42px;
+        width: 90px;
+        height: 90px;
     }
 }
 
@@ -761,6 +806,13 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .grid-item.tablet-active .meta-line::before {
         transform: rotate(var(--line-angle, -20deg)) scaleX(1);
+    }
+
+    /* Tablet: arrows centered on image and scrolling */
+    body:not(.home) .item-nav,
+    .item-overlay .item-nav {
+        position: absolute;
+        top: 50%;
     }
 }
 @media (min-width: 480px) and (max-width: 767px) {
