@@ -368,13 +368,43 @@ body.home .home-corner-title .homes {
     .dropdown { top: 80px; }
 }
 @media (max-width: 768px) {
+    body.home .topbar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 16px 0;
+    }
+    body.home .topbar-spacer {
+        display: none;
+    }
+    body.home .site-title {
+        justify-self: auto;
+        font-size: 48px;
+        line-height: 1;
+        margin: 0;
+        white-space: nowrap;
+    }
+    body.home .menu-toggle {
+        position: static;
+        top: auto;
+        left: auto;
+        font-size: 48px;
+        line-height: 1;
+    }
+    body.home .dropdown {
+        left: auto;
+        right: 16px;
+        top: 72px;
+    }
+
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
     body.home .home-corner-title .between {
         left: -50px;
     }
     body.home .home-corner-title .corner-slot {
-        left: -57px;
-        bottom: -5px;
+        left: -30px;
+        bottom: 4px;
         width: 72px;
         height: 72px;
     }
