@@ -3,20 +3,23 @@
 // GitHub Pages 서브디렉토리 자동 감지 (필요시 사용, 여기선 일단 생략 - 원래 경로 그대로)
 // 만약 GitHub Pages에서 404 나면 아래 주석 해제하고 fixUrl 적용 필요
 
-// Global viewport width helper for all breakpoint calculations
-const getViewportWidth = () => {
-    const vv = window.visualViewport?.width;
-    const cw = document.documentElement?.clientWidth;
-    return Math.min(
-        Number.isFinite(vv) ? vv : Infinity,
-        Number.isFinite(cw) ? cw : Infinity,
-        window.innerWidth
-    );
-};
-
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
+    const getViewportWidth = () => {
+        const vv = window.visualViewport?.width;
+        const cw = document.documentElement?.clientWidth;
+        return Math.min(
+            Number.isFinite(vv) ? vv : Infinity,
+            Number.isFinite(cw) ? cw : Infinity,
+            window.innerWidth
+        );
+    };
+    const isNarrowDesktopPreview = () => {
+        const w = getViewportWidth();
+        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    };
+    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -117,15 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            const w = getViewportWidth();
-            
-            // Only apply manual positioning for mobile; let CSS handle tablet/desktop
-            if (w >= 768) {
-                dropdown.style.removeProperty('left');
-                dropdown.style.removeProperty('top');
-                dropdown.style.removeProperty('right');
-                return;
-            }
+            if (!isPhoneLikeMode()) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -181,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (getViewportWidth() >= 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (!isPhoneLikeMode() || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -289,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const host = ensureOverlay();
                 host.classList.remove('is-active', 'item-enter-active', 'item-enter-ready');
                 host.innerHTML = `
-                    <h1 class="site-title"><a href="index.html" class="home-link">${itemData.titleHtml || itemData.title}</a></h1>
+                    <h1><a href="index.html" class="home-link">${itemData.titleHtml || itemData.title}</a></h1>
                     ${itemData.prevHref ? `<a href="${itemData.prevHref}" class="item-nav prev">←</a>` : ''}
                     ${itemData.nextHref ? `<a href="${itemData.nextHref}" class="item-nav next">→</a>` : ''}
                     <img src="${itemData.photoSrc}" class="${itemData.photoClass} reveal-photo overlay-photo${suppressPhotoReveal ? ' hero-hidden' : ''}" alt="">
@@ -358,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
+                if (isNarrowDesktopPreview()) return;
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 if (isOpening) return;
                 const href = link.href || link.getAttribute('href');
@@ -427,19 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ghost.style.height = `${targetRect.height}px`;
                 });
                 setTimeout(finishHero, 240);
-            });
-        });
-
-        // When returning to index, always remove overlay and reset state
-        gridLinks.forEach((link) => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                if (href && /index\.html$/.test(href)) {
-                    // Remove overlay and reset .site-title on next overlay open
-                    const overlay = document.querySelector('.item-overlay');
-                    if (overlay) overlay.innerHTML = '';
-                    document.body.classList.remove('item-overlay-open');
-                }
             });
         });
     }
@@ -621,17 +604,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================
 {
     let ticking = false;
-    let lastBreakpoint = null;
-
-    const getBreakpoint = (w) => {
-        if (w < 768) return 'mobile';
-        if (w <= 1023) return 'tablet';
-        return 'desktop';
+    const getViewportWidth = () => {
+        const vv = window.visualViewport?.width;
+        const cw = document.documentElement?.clientWidth;
+        return Math.min(
+            Number.isFinite(vv) ? vv : Infinity,
+            Number.isFinite(cw) ? cw : Infinity,
+            window.innerWidth
+        );
     };
+    const isNarrowDesktopPreview = () => {
+        const w = getViewportWidth();
+        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    };
+    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
     function updateResponsiveGridEffects() {
         const items = document.querySelectorAll('.grid-item');
         const w = getViewportWidth();
+        const phoneLike = isPhoneLikeMode();
+
+        document.body.classList.toggle('force-phone-effects', phoneLike);
 
         if (!items.length) {
             ticking = false;
@@ -641,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowHeight = window.innerHeight;
         const center = windowHeight / 2;
 
-        if (w < 768) {
+        if (phoneLike) {
             const addThreshold = windowHeight * 0.25;
             const removeThreshold = windowHeight * 0.40;
 
@@ -685,27 +678,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ticking = false;
     }
 
-    function handleBreakpointChange(oldBp, newBp) {
-        // Re-trigger dropdowns and item nav when breakpoint changes
-        if (oldBp !== newBp) {
-            // Clear inline dropdown styles that might conflict with CSS media queries
-            const dropdown = document.querySelector('.dropdown');
-            if (dropdown && (oldBp === 'mobile' && newBp !== 'mobile' || oldBp !== 'mobile' && newBp === 'mobile')) {
-                // Reset inline styles to let CSS media queries take over
-                dropdown.style.removeProperty('left');
-                dropdown.style.removeProperty('top');
-                dropdown.style.removeProperty('right');
-            }
-            
-            // Re-setup mobile item nav if transitioning to mobile on item pages
-            const isItemPage = Boolean(document.querySelector('.item-nav'));
-            if (isItemPage && newBp === 'mobile' && oldBp !== 'mobile') {
-                // Trigger setupMobileItemNav through a custom event
-                window.dispatchEvent(new CustomEvent('breakpointChange', { detail: { newBp, oldBp } }));
-            }
-        }
-    }
-
     const onScroll = () => {
         if (!ticking) {
             requestAnimationFrame(updateResponsiveGridEffects);
@@ -713,59 +685,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const onResize = () => {
-        const w = getViewportWidth();
-        const currentBp = getBreakpoint(w);
-        
-        if (currentBp !== lastBreakpoint) {
-            handleBreakpointChange(lastBreakpoint, currentBp);
-            lastBreakpoint = currentBp;
-        }
-        
-        updateResponsiveGridEffects();
-    };
-
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-    window.addEventListener('load', () => {
-        lastBreakpoint = getBreakpoint(getViewportWidth());
-        updateResponsiveGridEffects();
-    });
+    window.addEventListener('resize', updateResponsiveGridEffects);
+    window.addEventListener('load', updateResponsiveGridEffects);
     updateResponsiveGridEffects();
 }
-
-// Listen for breakpoint changes and update overlay h1 font size
-window.addEventListener('breakpointChange', () => {
-    // For overlays, update .site-title font size to match CSS
-    const overlay = document.querySelector('.item-overlay.is-active');
-    if (overlay) {
-        const h1 = overlay.querySelector('h1');
-        if (h1) h1.classList.add('site-title');
-    }
-    // For direct navigation, update h1 if not already styled
-    if (!document.body.classList.contains('home') && !document.body.classList.contains('about') && !document.body.classList.contains('archive')) {
-        const h1 = document.querySelector('h1');
-        if (h1) h1.classList.add('site-title');
-    }
-});
-
-// On overlay open, always add .site-title to h1
-const origOpenOverlayItem = window.openOverlayItem;
-if (typeof origOpenOverlayItem === 'function') {
-    window.openOverlayItem = async function(...args) {
-        await origOpenOverlayItem.apply(this, args);
-        const overlay = document.querySelector('.item-overlay.is-active');
-        if (overlay) {
-            const h1 = overlay.querySelector('h1');
-            if (h1) h1.classList.add('site-title');
-        }
-    };
-}
-
-// Always remove .site-title from index h1 when returning home
-window.addEventListener('popstate', () => {
-    if (location.pathname.endsWith('index.html') || location.pathname.endsWith('/')) {
-        const h1 = document.querySelector('h1.site-title');
-        if (h1) h1.classList.remove('site-title');
-    }
-});
