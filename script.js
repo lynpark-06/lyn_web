@@ -6,11 +6,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
-    const isPhone = window.innerWidth < 480;
-
-    if (isPhone) {
-        document.querySelectorAll('.hover-meta').forEach((el) => el.remove());
-    }
+    const getViewportWidth = () => {
+        const vv = window.visualViewport?.width;
+        const cw = document.documentElement?.clientWidth;
+        return Math.min(
+            Number.isFinite(vv) ? vv : Infinity,
+            Number.isFinite(cw) ? cw : Infinity,
+            window.innerWidth
+        );
+    };
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setupMobileItemNav = (root) => {
-        if (window.innerWidth >= 480 || !root) return;
+        if (getViewportWidth() >= 480 || !root) return;
 
         const saveSection = root.querySelector('.q_and_a .item');
         const itemNavs = root.querySelectorAll('.item-nav');
@@ -111,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (window.innerWidth >= 480) return;
+            if (getViewportWidth() >= 480) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -167,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (window.innerWidth >= 480 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (getViewportWidth() >= 480 || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -433,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 원본 callout lines 코드 (hover 시 선 긋는 효과) - 그대로 복원
     // ========================
     const gridItems = document.querySelectorAll('.grid-item');
-    if (gridItems.length && !isPhone) {
+    if (gridItems.length) {
         const rand = (min, max) => Math.random() * (max - min) + min;
         const opaqueBoundsCache = new Map();
         const linePresetCache = new WeakMap();
@@ -589,57 +593,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-       // ========================
-    // 모바일 펀치아웃 (오래 유지되도록)
-    // ========================
-    if (window.innerWidth < 480) {
-        let ticking = false;
-        function updateActive() {
-            const items = document.querySelectorAll('.grid-item');
-            const windowHeight = window.innerHeight;
-            const center = windowHeight / 2;
-            items.forEach(item => {
+// ========================
+// Responsive activation for phone punchout / tablet callout
+// ========================
+{
+    let ticking = false;
+    const getViewportWidth = () => {
+        const vv = window.visualViewport?.width;
+        const cw = document.documentElement?.clientWidth;
+        return Math.min(
+            Number.isFinite(vv) ? vv : Infinity,
+            Number.isFinite(cw) ? cw : Infinity,
+            window.innerWidth
+        );
+    };
+
+    function updateResponsiveGridEffects() {
+        const items = document.querySelectorAll('.grid-item');
+        const w = getViewportWidth();
+
+        if (!items.length) {
+            ticking = false;
+            return;
+        }
+
+        const windowHeight = window.innerHeight;
+        const center = windowHeight / 2;
+
+        if (w < 480) {
+            const addThreshold = windowHeight * 0.25;
+            const removeThreshold = windowHeight * 0.40;
+
+            items.forEach((item) => {
                 const rect = item.getBoundingClientRect();
                 const itemCenter = rect.top + rect.height / 2;
                 const distance = Math.abs(itemCenter - center);
-                // 추가 기준 (중앙에서 25% 이내)
-                const addThreshold = windowHeight * 0.25;
-                // 제거 기준 (중앙에서 40% 밖으로 나가면 제거) - 더 넓게
-                const removeThreshold = windowHeight * 0.40;
-                
+
                 if (distance < addThreshold) {
                     item.classList.add('active');
                 } else if (distance > removeThreshold) {
                     item.classList.remove('active');
                 }
-                // 그 사이 구간에서는 변화 없음 (이전 상태 유지) → 더 오래 머무름
-            });
-            ticking = false;
-        }
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateActive);
-                ticking = true;
-            }
-        });
-        window.addEventListener('resize', updateActive);
-        updateActive();
-        console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
-    }
 
-    // ========================
-    // 태블릿 메타라인 자동 표시 (중앙 근처에서만)
-    // ========================
-    if (window.innerWidth >= 480 && window.innerWidth <= 1023) {
-        let ticking = false;
-        function updateTabletActive() {
-            const items = document.querySelectorAll('.grid-item');
-            const windowHeight = window.innerHeight;
-            const center = windowHeight / 2;
+                item.classList.remove('tablet-active');
+            });
+        } else if (w <= 1023) {
             const addThreshold = windowHeight * 0.22;
             const removeThreshold = windowHeight * 0.34;
 
-            items.forEach(item => {
+            items.forEach((item) => {
                 const rect = item.getBoundingClientRect();
                 const itemCenter = rect.top + rect.height / 2;
                 const distance = Math.abs(itemCenter - center);
@@ -649,17 +651,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (distance > removeThreshold) {
                     item.classList.remove('tablet-active');
                 }
-            });
 
-            ticking = false;
+                item.classList.remove('active');
+            });
+        } else {
+            items.forEach((item) => {
+                item.classList.remove('active');
+                item.classList.remove('tablet-active');
+            });
         }
 
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateTabletActive);
-                ticking = true;
-            }
-        });
-        window.addEventListener('resize', updateTabletActive);
-        updateTabletActive();
+        ticking = false;
     }
+
+    const onScroll = () => {
+        if (!ticking) {
+            requestAnimationFrame(updateResponsiveGridEffects);
+            ticking = true;
+        }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateResponsiveGridEffects);
+    window.addEventListener('load', updateResponsiveGridEffects);
+    updateResponsiveGridEffects();
+}
