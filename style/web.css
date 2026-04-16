@@ -402,8 +402,9 @@ body.home .home-corner-title .homes {
     }
 
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
-    body:not(.home) .item-nav {
-        position: absolute;
+    body:not(.home) .item-nav,
+    .item-overlay .item-nav {
+        position: fixed;
         top: var(--mobile-item-nav-top, 50%);
         bottom: auto;
         transform: translateY(-50%);
@@ -411,18 +412,23 @@ body.home .home-corner-title .homes {
         pointer-events: none;
         transition: opacity 0.2s ease, transform 0.6s ease;
     }
-    body.mobile-item-nav-visible .item-nav {
+    body.mobile-item-nav-visible .item-nav,
+    .item-overlay.mobile-item-nav-visible .item-nav {
         opacity: 1;
         pointer-events: auto;
     }
-    body.item-enter-ready .item-nav.prev {
+    body.item-enter-ready .item-nav.prev,
+    .item-overlay.item-enter-ready .item-nav.prev {
         transform: translate(-28px, -50%);
     }
-    body.item-enter-ready .item-nav.next {
+    body.item-enter-ready .item-nav.next,
+    .item-overlay.item-enter-ready .item-nav.next {
         transform: translate(28px, -50%);
     }
     body.item-enter-active .item-nav.prev,
-    body.item-enter-active .item-nav.next {
+    body.item-enter-active .item-nav.next,
+    .item-overlay.item-enter-active .item-nav.prev,
+    .item-overlay.item-enter-active .item-nav.next {
         transform: translateY(-50%);
     }
 

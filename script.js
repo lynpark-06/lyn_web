@@ -63,6 +63,47 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
     }
 
+    const setupMobileItemNav = (root) => {
+        if (window.innerWidth > 768 || !root) return;
+
+        const saveSection = root.querySelector('.q_and_a .item');
+        const itemNavs = root.querySelectorAll('.item-nav');
+        if (!saveSection || !itemNavs.length) return;
+
+        if (root.__mobileItemNavController) {
+            root.__mobileItemNavController.abort();
+        }
+
+        const controller = new AbortController();
+        const { signal } = controller;
+        root.__mobileItemNavController = controller;
+
+        const updateMobileItemNavTop = () => {
+            const rect = saveSection.getBoundingClientRect();
+            const centerY = rect.top + (rect.height / 2);
+            root.style.setProperty('--mobile-item-nav-top', `${Math.round(centerY)}px`);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            const isVisible = entries.some((entry) => entry.isIntersecting);
+            root.classList.toggle('mobile-item-nav-visible', isVisible);
+            if (isVisible) updateMobileItemNavTop();
+        }, {
+            threshold: 0.2,
+            root: root.classList.contains('item-overlay') ? root : null,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        updateMobileItemNavTop();
+        observer.observe(saveSection);
+
+        const scrollTarget = root.classList.contains('item-overlay') ? root : window;
+        scrollTarget.addEventListener('scroll', updateMobileItemNavTop, { passive: true, signal });
+        window.addEventListener('resize', updateMobileItemNavTop, { signal });
+        window.addEventListener('load', updateMobileItemNavTop, { signal });
+        signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+    };
+
     if (toggle && dropdown) {
         toggle.addEventListener('click', () => {
             const isOpen = dropdown.classList.toggle('show');
@@ -210,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 document.body.classList.add('item-overlay-open');
                 host.classList.add('item-enter-ready');
+                setupMobileItemNav(host);
                 requestAnimationFrame(() => {
                     host.classList.add('is-active');
                     requestAnimationFrame(() => {
@@ -321,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
         if (photo) photo.classList.add('reveal-photo');
         document.body.classList.add('item-enter-ready');
+        setupMobileItemNav(document.body);
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 document.body.classList.add('item-enter-active');
@@ -486,32 +529,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (window.innerWidth <= 768 && isItemPage) {
-        const saveSection = document.querySelector('.q_and_a .item');
-        const itemNavs = document.querySelectorAll('.item-nav');
-
-        if (saveSection && itemNavs.length) {
-            const setMobileItemNavTop = () => {
-                const rect = saveSection.getBoundingClientRect();
-                const pageTop = window.scrollY + rect.top + (rect.height / 2);
-                document.body.style.setProperty('--mobile-item-nav-top', `${Math.round(pageTop)}px`);
-            };
-
-            setMobileItemNavTop();
-            window.addEventListener('resize', setMobileItemNavTop);
-            window.addEventListener('load', setMobileItemNavTop);
-
-            const saveObserver = new IntersectionObserver((entries) => {
-                const isVisible = entries.some((entry) => entry.isIntersecting);
-                document.body.classList.toggle('mobile-item-nav-visible', isVisible);
-            }, {
-                threshold: 0.2,
-                rootMargin: '0px 0px -10% 0px'
-            });
-
-            saveObserver.observe(saveSection);
-        }
-    }
 });
 
        // ========================
