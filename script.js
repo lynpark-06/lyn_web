@@ -66,16 +66,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return { toggle, dropdown };
     };
 
+
     const { toggle, dropdown } = ensureGlobalMenu();
 
-    if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
-        dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
-    }
+    // Always ensure Home, About, and My Checklist are present in order
+    const menuLinks = [
+        { href: 'index.html', text: 'HOME' },
+        { href: 'about.html', text: 'ABOUT' },
+        { href: 'archive.html', text: 'MY CHECKLIST' }
+    ];
+    dropdown.innerHTML = '';
+    menuLinks.forEach(link => {
+        if (!dropdown.querySelector(`a[href="${link.href}"]`)) {
+            dropdown.insertAdjacentHTML('beforeend', `<a href="${link.href}">${link.text}</a><br>`);
+        }
+    });
 
-    const isAboutOrArchive = document.body.classList.contains('about') || document.body.classList.contains('archive');
-    if (isAboutOrArchive && !dropdown.querySelector('a[href="index.html"]')) {
-        dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
-    }
+    // Dropdown toggle effect
+    toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        dropdown.classList.toggle('show', !expanded);
+    });
 
     const setupMobileItemNav = (root) => {
         if (getViewportWidth() >= 768 || !root) return;
