@@ -89,6 +89,8 @@ body.archive .save-item {
     color: rgb(133, 214, 107);
     justify-content: flex-end;
     margin-left: 12px;
+    position: relative;
+    top: -24px;
 }
 body.archive .checkmark {
     border-color: rgb(133, 214, 107);
@@ -626,12 +628,80 @@ body.archive .saved-items-grid { margin-top: 160px !important; }
     margin: 0 auto;
 }
 .saved-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 18px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 18px 0;
+        position: relative;
+}
+
+body.archive .saved-item-photo-link,
+body.archive .saved-item img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+}
+body.archive .saved-item p,
+body.archive .save-item {
+        display: flex;
+        align-items: center;
+        height: 200px;
+}
+body.archive .saved-item p {
+        margin: 0 16px 0 0;
+        flex: 1;
+}
+body.archive .save-item {
+        margin-left: 0;
+        align-self: center;
+}
+body.archive .saved-item:not(:last-child)::after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        right: -32px;
+        bottom: 0;
+        width: auto;
+        height: 1.5px;
+        background: rgb(50, 85, 164);
+        opacity: 0.4;
+}
+@media (max-width: 767px) {
+        body.archive .save-item {
+            top: -32px;
+        }
+    body.archive .saved-item p {
+        height: 120px;
+    }
+    body.archive .saved-item img {
+        height: 120px;
+        width: 120px;
+    }
+    body.archive .saved-item:not(:last-child)::after {
+        left: 12px;
+        right: 12px;
+    }
+    body.archive #items-container {
+        width: calc(100% - 24px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+    }
+}
+@media (max-width: 479px) {
+    body.archive .saved-item p,
+    body.archive .save-item {
+        height: 100px;
+    }
+    body.archive .saved-item img {
+        height: 100px;
+        width: 100px;
+    }
+}
 }
 .saved-item-photo-link { flex-shrink: 0; }
 .saved-item img {
