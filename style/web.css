@@ -675,7 +675,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     :root { --page-top: 28px; --title-size: clamp(42px, 11vw, 72px); }
     .topbar { grid-template-columns: auto 1fr auto; padding: 20px 16px; }
     .site-title { font-size: clamp(38px, 9vw, 62px); }
-    .menu-toggle { font-size: 48px; top: 30px; }
+    .menu-toggle { font-size: 48px; top: var(--page-top); }
     .topbar-spacer { width: 48px; }
     .dropdown { left: 20px; top: 84px; }
     .dropdown a { font-size: 18px; }
@@ -690,7 +690,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
     .site-title { font-size: clamp(30px, 10vw, 44px); line-height: 1.1; }
-    .menu-toggle { font-size: 40px; top: 22px; left: 12px; }
+    .menu-toggle { font-size: 40px; top: var(--page-top); left: 12px; }
     .topbar-spacer { width: 40px; }
     .dropdown { top: 68px; left: 12px; }
     .dropdown a { font-size: 16px; }
