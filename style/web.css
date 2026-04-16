@@ -742,10 +742,11 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 
 @media (min-width: 1024px) { .q_and_a { padding-left: 24px; padding-right: 24px; } }
 @media (min-width: 768px) and (max-width: 1023px) {
-    .topbar { padding: 28px; }
+    .topbar { padding: 28px; position: relative; }
+    .item-overlay .topbar { position: relative; }
     .site-title { font-size: clamp(48px, 8vw, 78px); }
     .menu-toggle, .topbar-spacer { width: 64px; font-size: 64px; }
-    .dropdown { left: 28px; top: 102px; }
+    .dropdown { position: absolute !important; left: 28px; top: 102px; }
     body.archive .saved-items-grid { margin-top: 110px !important; }
 
     /* Narrow text columns to match mobile-like reading width */
