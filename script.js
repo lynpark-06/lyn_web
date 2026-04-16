@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
             window.innerWidth
         );
     };
+    const isNarrowDesktopPreview = () => {
+        const w = getViewportWidth();
+        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    };
+    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -73,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setupMobileItemNav = (root) => {
-        if (getViewportWidth() >= 480 || !root) return;
+        if (!isPhoneLikeMode() || !root) return;
 
         const saveSection = root.querySelector('.q_and_a .item');
         const itemNavs = root.querySelectorAll('.item-nav');
@@ -115,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (getViewportWidth() >= 480) return;
+            if (!isPhoneLikeMode()) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -171,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (getViewportWidth() >= 480 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (!isPhoneLikeMode() || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -607,6 +612,11 @@ document.addEventListener('DOMContentLoaded', () => {
             window.innerWidth
         );
     };
+    const isNarrowDesktopPreview = () => {
+        const w = getViewportWidth();
+        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    };
+    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
     function updateResponsiveGridEffects() {
         const items = document.querySelectorAll('.grid-item');
@@ -619,8 +629,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const windowHeight = window.innerHeight;
         const center = windowHeight / 2;
+        const phoneLike = isPhoneLikeMode();
 
-        if (w < 480) {
+        document.body.classList.toggle('force-phone-effects', phoneLike);
+
+        if (phoneLike) {
             const addThreshold = windowHeight * 0.25;
             const removeThreshold = windowHeight * 0.40;
 

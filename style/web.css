@@ -943,6 +943,23 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
 }
 
+/* Narrow desktop preview: force phone-like index effects */
+body.force-phone-effects .hover-meta,
+body.force-phone-effects .meta-line,
+body.force-phone-effects .meta-line::before,
+body.force-phone-effects .grid-item:hover .meta-line,
+body.force-phone-effects .grid-item:hover .meta-line::before,
+body.force-phone-effects .grid-item.tablet-active .meta-line,
+body.force-phone-effects .grid-item.tablet-active .meta-line::before {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: none !important;
+}
+body.force-phone-effects .mobile-punchout {
+    display: flex !important;
+}
+
 /* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
 @media (max-width: 479px) {
     body.about h1,
