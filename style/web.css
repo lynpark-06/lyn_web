@@ -697,9 +697,22 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .dropdown a { font-size: 18px; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    body:not(.home) .q_and_a { padding: 0 32px 28px; }
+    body:not(.home) .q_and_a > div {
+        width: min(100%, 620px);
+        margin-bottom: 20px;
+    }
+    body:not(.home) .question { font-size: 15px; }
+    body:not(.home) .answer { font-size: 14px; padding-left: 12px; line-height: 1.5; }
+    body.about .about-content,
+    body.archive .archive-content {
+        width: min(calc(100% - 64px), 620px);
+        font-size: 15px;
+    }
+    body.archive #items-container { width: min(calc(100% - 64px), 620px); }
     .saved-item { flex-direction: row; align-items: flex-start; gap: 14px; padding: 12px 0; }
     .saved-item img { width: 120px; height: 120px; margin-right: 0; flex-shrink: 0; }
-    .saved-item p { font-size: 15px; margin-top: 0; flex: 1; }
+    .saved-item p { font-size: 14px; margin-top: 0; flex: 1; }
     body.archive .save-item { align-self: flex-start; margin-top: 0; margin-left: 0; }
 }
 @media (max-width: 480px) {
@@ -718,14 +731,22 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .dropdown a { font-size: 16px; }
     .grid { grid-template-columns: 1fr; width: calc(100% - 24px); }
-    .q_and_a { padding: 0 12px 24px; }
-    .q_and_a > div { margin-bottom: 18px; }
-    .answer { padding-left: 10px; margin-top: -4px; }
-    body.about .about-content, body.archive .archive-content { width: calc(100% - 24px); font-size: 16px; }
+    body:not(.home) .q_and_a { padding: 0 24px 24px; }
+    body:not(.home) .q_and_a > div {
+        width: min(100%, 480px);
+        margin-bottom: 18px;
+    }
+    body:not(.home) .question { font-size: 14px; }
+    body:not(.home) .answer { font-size: 13px; padding-left: 8px; margin-top: -4px; }
+    body.about .about-content, body.archive .archive-content {
+        width: min(calc(100% - 48px), 480px);
+        font-size: 14px;
+    }
     body.archive .saved-items-grid { margin-top: 72px !important; }
-    #items-container { width: calc(100% - 24px); }
+    body.archive #items-container { width: min(calc(100% - 48px), 480px); }
     .saved-item { flex-direction: row; align-items: flex-start; gap: 12px; padding: 14px 0; }
     .saved-item img { width: 100px; height: 100px; object-fit: cover; flex-shrink: 0; }
+    .saved-item p { font-size: 13px; }
     body.archive .save-item { margin-left: 0; align-self: flex-start; }
 }
 @media (min-width: 1200px) { .grid { max-width: 1400px; } }

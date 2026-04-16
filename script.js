@@ -105,7 +105,32 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (toggle && dropdown) {
+        const alignMobileDropdownToToggle = () => {
+            if (window.innerWidth > 768) return;
+
+            const toggleRect = toggle.getBoundingClientRect();
+            const dropdownPosition = window.getComputedStyle(dropdown).position;
+
+            if (dropdownPosition === 'fixed') {
+                dropdown.style.left = `${Math.round(toggleRect.left)}px`;
+                dropdown.style.top = `${Math.round(toggleRect.bottom + 6)}px`;
+                dropdown.style.right = 'auto';
+                return;
+            }
+
+            const topbar = toggle.closest('.topbar');
+            if (!topbar) return;
+            const topbarRect = topbar.getBoundingClientRect();
+            dropdown.style.left = `${Math.round(toggleRect.left - topbarRect.left)}px`;
+            dropdown.style.top = `${Math.round(toggleRect.bottom - topbarRect.top + 6)}px`;
+            dropdown.style.right = 'auto';
+        };
+
+        alignMobileDropdownToToggle();
+        window.addEventListener('resize', alignMobileDropdownToToggle);
+
         toggle.addEventListener('click', () => {
+            alignMobileDropdownToToggle();
             const isOpen = dropdown.classList.toggle('show');
             toggle.setAttribute('aria-expanded', String(isOpen));
             if (!isOpen) {
@@ -286,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
-                if (window.innerWidth <= 768) return;
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 if (isOpening) return;
                 const href = link.href || link.getAttribute('href');
