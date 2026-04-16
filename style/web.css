@@ -359,6 +359,34 @@ body.home .home-corner-title .homes {
 
 /* 반응형 (공통) */
 @media (min-width: 768px) and (max-width: 1023px) {
+        /* Show meta-line and callout when .tablet-active is present (JS should toggle this class when item is near center) */
+        .grid-item.tablet-active .meta-line {
+            opacity: 1;
+            transform: translate(var(--text-shift-x, 0px), -50%);
+            transition: opacity 0.28s, transform 0.28s;
+            pointer-events: auto;
+        }
+        .grid-item.tablet-active .meta-line::before {
+            transform: rotate(var(--line-angle, -20deg)) scaleX(1);
+            transition: transform 0.28s;
+        }
+        /* Optionally, hide meta-line on hover for clarity */
+        .grid-item.tablet-active:hover .meta-line {
+            opacity: 1;
+        }
+    /* Anchor meta-line to the left and keep it in viewport */
+    .meta-line {
+        left: 0;
+        right: auto;
+        margin-left: -180px;
+        margin-right: 0;
+        max-width: 20vw;
+    }
+    .meta-line span {
+        max-width: -100vw;
+        word-break: break-word;
+        text-align: left;
+    }
     .topbar { padding: 24px 20px; }
     body.home .home-corner-title { left: 58px; bottom: 24px; }
     body.home .home-corner-title .corner-slot {
@@ -659,20 +687,21 @@ body.archive .save-item {
         align-self: center;
 }
 body.archive .saved-item:not(:last-child)::after {
-        content: "";
-        display: block;
-        position: absolute;
-        left: 0;
-        right: -32px;
-        bottom: 0;
-        width: auto;
-        height: 1.5px;
-        background: rgb(50, 85, 164);
-        opacity: 0.4;
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2.2em;
+    width: 100%;
+    height: 1.5px;
+    background: rgb(50, 85, 164);
+    opacity: 0.4;
 }
 @media (max-width: 767px) {
         body.archive .save-item {
-            top: -32px;
+            position: relative;
+            top: -42px;
         }
     body.archive .saved-item p {
         height: 120px;
@@ -680,15 +709,6 @@ body.archive .saved-item:not(:last-child)::after {
     body.archive .saved-item img {
         height: 120px;
         width: 120px;
-    }
-    body.archive .saved-item:not(:last-child)::after {
-        left: 12px;
-        right: 12px;
-    }
-    body.archive #items-container {
-        width: calc(100% - 24px);
-        margin-left: auto;
-        margin-right: auto;
     }
     }
 }
