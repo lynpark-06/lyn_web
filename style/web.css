@@ -250,6 +250,9 @@ body.home .home-corner-title {
     color: rgb(50, 85, 164);
     pointer-events: none;
 }
+body:not(.home) .home-corner-title {
+    display: none !important;
+}
 body.home .home-corner-title .between {
     position: absolute;
     left: 0;
@@ -561,6 +564,22 @@ body.archive .archive-content {
 }
 body.archive .archive-content p { margin: 0 0 40px; }
 
+body:not(.home):not(.about):not(.archive) .question,
+body:not(.home):not(.about):not(.archive) .answer,
+body:not(.home):not(.about):not(.archive) .item,
+body:not(.home):not(.about):not(.archive) .save-item {
+    font-size: 18px;
+    line-height: 1.6;
+}
+body:not(.home):not(.about):not(.archive) .q_and_a {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+    padding: 0 0 32px;
+}
+body:not(.home):not(.about):not(.archive) .q_and_a > div {
+    width: 100%;
+}
+
 /* GLOBAL RESPONSIVE */
 * { box-sizing: border-box; }
 body { margin: 0; padding: 0; }
@@ -770,6 +789,9 @@ body:not(.home) .topbar {
         font-size: 14px;
         line-height: 1.55;
     }
+    body:not(.home):not(.about):not(.archive) .q_and_a {
+        width: calc(100% - 56px);
+    }
     body.archive .saved-item p,
     body:not(.home):not(.about):not(.archive) .question,
     body:not(.home):not(.about):not(.archive) .answer,
@@ -785,6 +807,9 @@ body:not(.home) .topbar {
     body.archive .archive-content {
         width: calc(100% - 44px);
         font-size: 13px;
+    }
+    body:not(.home):not(.about):not(.archive) .q_and_a {
+        width: calc(100% - 44px);
     }
     body.archive .saved-item p,
     body:not(.home):not(.about):not(.archive) .question,
@@ -851,5 +876,22 @@ body:not(.home) .topbar {
         width: 96px;
         height: 96px;
         object-fit: cover;
+    }
+}
+
+/* Individual pages: keep arrows beside content (not fixed on scroll) */
+body:not(.home):not(.about):not(.archive) .item-nav {
+    position: absolute;
+    top: calc(var(--page-top) + var(--title-size) + 260px);
+    transform: none;
+}
+body:not(.home):not(.about):not(.archive) .item-nav.prev,
+body:not(.home):not(.about):not(.archive) .item-nav.next {
+    transform: none !important;
+}
+
+@media (max-width: 768px) {
+    body:not(.home):not(.about):not(.archive) .item-nav {
+        top: calc(var(--page-top) + var(--title-size) + 180px);
     }
 }
