@@ -687,13 +687,13 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .site-title { font-size: clamp(38px, 9vw, 62px); }
     .menu-toggle { font-size: 48px; top: var(--page-top); }
     body:not(.home) .menu-toggle {
-        position: absolute;
+        position: fixed;
         left: 20px;
     }
     .topbar-spacer { width: 48px; }
     .dropdown { left: 20px; top: 84px; }
     body:not(.home) .dropdown {
-        position: absolute;
+        position: fixed;
     }
     .dropdown a { font-size: 18px; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
