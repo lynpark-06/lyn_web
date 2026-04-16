@@ -675,18 +675,45 @@ body.archive .archive-content p { margin: 0 0 40px; }
         display: none !important;
     }
 
+
+    body.home::before,
     body.home::after {
-        content: "";
         position: fixed;
-        left: 60px;
-        bottom: 32px;
-        width: 140px;
-        height: 56px;
-        padding: 10px;
-        border: 2px solid rgb(50, 85, 164);
-        box-sizing: border-box;
         pointer-events: none;
         z-index: 3;
+    }
+
+    
+    body.home::after {
+        content: "";
+        left: 20px;
+        bottom: 32px;
+        width: 64px;
+        height: 64px;
+        padding: 0;
+        background-image: url("../home.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 125%;
+        box-sizing: border-box;
+    }
+}
+
+@media (min-width: 1024px) {
+    body.home .topbar::after {
+        left: 138px;
+        bottom: 56px;
+    }
+
+    body.home::before {
+        left: 95px;
+        bottom: 122px;
+    }
+
+    body.home::after {
+        left: 42px;
+        width: 90px;
+        height: 90px;
     }
 }
 
@@ -761,6 +788,13 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
     .grid-item.tablet-active .meta-line::before {
         transform: rotate(var(--line-angle, -20deg)) scaleX(1);
+    }
+
+    /* Tablet: arrows centered on image and scrolling */
+    body:not(.home) .item-nav,
+    .item-overlay .item-nav {
+        position: absolute;
+        top: 50%;
     }
 }
 @media (min-width: 480px) and (max-width: 767px) {
