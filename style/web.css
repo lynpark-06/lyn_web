@@ -223,10 +223,6 @@ body.home.item-overlay-open .home-corner-title {
     opacity: 0;
     pointer-events: none;
 }
-body.home.item-overlay-open .topbar {
-    opacity: 0;
-    pointer-events: none;
-}
 
 .item-overlay {
     position: fixed;
