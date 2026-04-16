@@ -1,12 +1,10 @@
-// script.js - 최종 수정본 (아이템 이름 저장 + callout lines 보존 + GitHub Pages 경호환)
-
-// GitHub Pages 서브디렉토리 자동 감지 (필요시 사용, 여기선 일단 생략 - 원래 경로 그대로)
-// 만약 GitHub Pages에서 404 나면 아래 주석 해제하고 fixUrl 적용 필요
+// script.js - 최종 정리본 (중복 제거, h1 정렬 통합)
 
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
 
+    // ---------- 상단 메뉴 (topbar, +, 드롭다운) 생성 ----------
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
         if (!topbar) {
@@ -54,26 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { toggle, dropdown } = ensureGlobalMenu();
 
+    // 개별 페이지에 HOME 링크 추가
     if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
         dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
     }
 
+    // 드롭다운 토글
     if (toggle && dropdown) {
         toggle.addEventListener('click', () => {
             const isOpen = dropdown.classList.toggle('show');
             toggle.setAttribute('aria-expanded', String(isOpen));
-            if (!isOpen) {
-                toggle.classList.add('just-closed');
-            } else {
-                toggle.classList.remove('just-closed');
-            }
+            if (!isOpen) toggle.classList.add('just-closed');
+            else toggle.classList.remove('just-closed');
         });
-        toggle.addEventListener('mouseleave', () => {
-            toggle.classList.remove('just-closed');
-        });
+        toggle.addEventListener('mouseleave', () => toggle.classList.remove('just-closed'));
         document.addEventListener('click', (e) => {
-            const clickedInside = e.target.closest('.topbar');
-            if (!clickedInside) {
+            if (!e.target.closest('.topbar')) {
                 dropdown.classList.remove('show');
                 toggle.setAttribute('aria-expanded', 'false');
                 toggle.classList.add('just-closed');
@@ -81,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---------- 홈페이지 오버레이 (확대 애니메이션) ----------
     if (isHomePage) {
         const gridLinks = document.querySelectorAll('.grid a.grid-item, .grid .grid-item[href]');
         const prefetched = new Set();
@@ -103,16 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.classList.remove('item-overlay-open');
                     overlay.classList.remove('is-active');
                     history.pushState({ overlay: false }, '', 'index.html');
-                    setTimeout(() => {
-                        overlay.innerHTML = '';
-                    }, 240);
+                    setTimeout(() => overlay.innerHTML = '', 240);
                     return;
                 }
                 if (anchor.classList.contains('item-nav')) {
                     e.preventDefault();
-                    if (anchor.href) {
-                        await openOverlayItem(anchor.href);
-                    }
+                    if (anchor.href) await openOverlayItem(anchor.href);
                 }
             });
             return overlay;
@@ -131,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const qa = doc.querySelector('.q_and_a');
             if (!titleLink || !photo || !qa) return null;
 
-            // 각 페이지의 script에서 itemData.name 추출 (아이템 이름 저장용)
+            // 아이템 이름 추출 (각 페이지의 script에서)
             let hardcodedItemName = '';
             const scripts = doc.querySelectorAll('script');
             for (let script of scripts) {
@@ -190,9 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const idx = saved.findIndex(i => i.page === itemData.title);
                         if (saveCheckbox.checked) {
                             if (idx === -1) {
-                                const finalName = itemData.itemName || itemData.title;
                                 saved.push({
-                                    name: finalName,
+                                    name: itemData.itemName || itemData.title,
                                     photo: itemData.photoSrc,
                                     page: itemData.title
                                 });
@@ -207,9 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 host.classList.add('item-enter-ready');
                 requestAnimationFrame(() => {
                     host.classList.add('is-active');
-                    requestAnimationFrame(() => {
-                        host.classList.add('item-enter-active');
-                    });
+                    requestAnimationFrame(() => host.classList.add('item-enter-active'));
                 });
                 history.pushState({ overlay: true, href }, '', href);
             } finally {
@@ -222,11 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.body.classList.contains('item-overlay-open')) return;
             document.body.classList.remove('item-overlay-open');
             overlay.classList.remove('is-active');
-            setTimeout(() => {
-                overlay.innerHTML = '';
-            }, 240);
+            setTimeout(() => overlay.innerHTML = '', 240);
         });
 
+        // 프리페치
         gridLinks.forEach((link) => {
             const href = link.getAttribute('href');
             if (!href || prefetched.has(href)) return;
@@ -237,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(prefetch);
         });
 
+        // 클릭 이벤트 (확대 없이 부드럽게 이동)
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -249,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 e.preventDefault();
-                const dataPromise = parseItemPage(href);
                 const rect = img.getBoundingClientRect();
                 if (!rect.width || !rect.height) {
                     await openOverlayItem(href);
@@ -265,22 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ghost.style.margin = '0';
                 ghost.style.zIndex = '2000';
                 ghost.style.pointerEvents = 'none';
-                ghost.style.willChange = 'left, top, width, height';
-                ghost.style.transition = 'left 0.24s ease, top 0.24s ease, width 0.24s ease, height 0.24s ease';
+                ghost.style.transition = 'left 0.24s ease, top 0.24s ease';
                 document.body.appendChild(ghost);
                 link.style.opacity = '0';
-                const quickWidth = Math.min(window.innerWidth * 0.52, 520);
-                const ratio = rect.height / Math.max(1, rect.width);
-                const quickHeight = quickWidth * ratio;
-                const quickLeft = (window.innerWidth - quickWidth) / 2;
-                const quickTop = Math.max(100, (window.innerHeight - quickHeight) * 0.24);
-                requestAnimationFrame(() => {
-                    ghost.style.left = `${quickLeft}px`;
-                    ghost.style.top = `${quickTop}px`;
-                    ghost.style.width = `${quickWidth}px`;
-                    ghost.style.height = `${quickHeight}px`;
-                });
-                const data = await dataPromise;
+
+                const data = await parseItemPage(href);
                 if (!data) {
                     window.location.assign(href);
                     return;
@@ -294,38 +270,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 const targetRect = targetImg.getBoundingClientRect();
+                ghost.style.transition = 'left 0.18s ease, top 0.18s ease';
+                ghost.style.left = `${targetRect.left + (targetRect.width - rect.width) / 2}px`;
+                ghost.style.top = `${targetRect.top + (targetRect.height - rect.height) / 2}px`;
                 const finishHero = () => {
                     targetImg.classList.remove('hero-hidden');
                     ghost.remove();
                     link.style.opacity = '';
                 };
-                ghost.style.transition = 'left 0.18s ease, top 0.18s ease, width 0.18s ease, height 0.18s ease';
                 ghost.addEventListener('transitionend', finishHero, { once: true });
-                requestAnimationFrame(() => {
-                    ghost.style.left = `${targetRect.left}px`;
-                    ghost.style.top = `${targetRect.top}px`;
-                    ghost.style.width = `${targetRect.width}px`;
-                    ghost.style.height = `${targetRect.height}px`;
-                });
                 setTimeout(finishHero, 240);
             });
         });
     }
 
+    // 개별 아이템 페이지 진입 애니메이션
     if (isItemPage) {
         const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
         if (photo) photo.classList.add('reveal-photo');
         document.body.classList.add('item-enter-ready');
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                document.body.classList.add('item-enter-active');
-            });
+            requestAnimationFrame(() => document.body.classList.add('item-enter-active'));
         });
     }
 
-    // ========================
-    // 원본 callout lines 코드 (hover 시 선 긋는 효과) - 그대로 복원
-    // ========================
+    // ---------- 그리드 호버 선 (callout lines) ----------
     const gridItems = document.querySelectorAll('.grid-item');
     if (gridItems.length) {
         const rand = (min, max) => Math.random() * (max - min) + min;
@@ -351,16 +320,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const src = img.currentSrc || img.src;
             if (!src) return null;
             if (opaqueBoundsCache.has(src)) return opaqueBoundsCache.get(src);
-            const w = img.naturalWidth;
-            const h = img.naturalHeight;
+            const w = img.naturalWidth, h = img.naturalHeight;
             if (!w || !h) return null;
             const maxSize = 900;
             const scale = Math.min(1, maxSize / Math.max(w, h));
-            const cw = Math.max(1, Math.floor(w * scale));
-            const ch = Math.max(1, Math.floor(h * scale));
+            const cw = Math.max(1, Math.floor(w * scale)), ch = Math.max(1, Math.floor(h * scale));
             const canvas = document.createElement('canvas');
-            canvas.width = cw;
-            canvas.height = ch;
+            canvas.width = cw; canvas.height = ch;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
             if (!ctx) return null;
             ctx.drawImage(img, 0, 0, cw, ch);
@@ -368,8 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let minX = cw, minY = ch, maxX = -1, maxY = -1;
             for (let y = 0; y < ch; y++) {
                 for (let x = 0; x < cw; x++) {
-                    const alpha = data[(y * cw + x) * 4 + 3];
-                    if (alpha > 8) {
+                    if (data[(y * cw + x) * 4 + 3] > 8) {
                         if (x < minX) minX = x;
                         if (y < minY) minY = y;
                         if (x > maxX) maxX = x;
@@ -377,26 +342,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            const bounds = maxX === -1
-                ? { minX: 0, maxX: 1, minY: 0, maxY: 1 }
-                : { minX: minX / cw, maxX: maxX / cw, minY: minY / ch, maxY: maxY / ch };
+            const bounds = maxX === -1 ? { minX: 0, maxX: 1, minY: 0, maxY: 1 } : {
+                minX: minX / cw, maxX: maxX / cw, minY: minY / ch, maxY: maxY / ch
+            };
             opaqueBoundsCache.set(src, bounds);
             return bounds;
         };
 
-        const getItemPreset = (item) => {
-            if (itemPresetCache.has(item)) return itemPresetCache.get(item);
-            const preset = { firstSide: 'right', upperFirst: true };
-            itemPresetCache.set(item, preset);
-            return preset;
-        };
-
+        const getItemPreset = () => ({ firstSide: 'right', upperFirst: true });
         const getLinePreset = (lineEl) => {
             if (linePresetCache.has(lineEl)) return linePresetCache.get(lineEl);
             const preset = {
                 startEdgeT: Math.random(),
                 startYT: Math.random(),
-                anchorYT: Math.random(),
                 randomGap: rand(30, 50),
                 randomInward: rand(60, 70)
             };
@@ -425,8 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const fixedAngleDeg = -166;
             const fixedSlope = Math.tan((fixedAngleDeg * Math.PI) / 180);
             const anchorY = startY - (startX - anchorX) * fixedSlope;
-            const dx = startX - anchorX;
-            const dy = startY - anchorY;
+            const dx = startX - anchorX, dy = startY - anchorY;
             const angle = Math.atan2(dy, dx) * (180 / Math.PI);
             const manualInward = Number(lineEl.dataset.inward);
             const inwardExtension = Number.isFinite(manualInward) ? manualInward : preset.randomInward;
@@ -440,14 +397,14 @@ document.addEventListener('DOMContentLoaded', () => {
             lineEl.style.setProperty('--intro-x', side === 'right' ? '14px' : '-14px');
         };
 
+
         const placeItemCallouts = (item) => {
             const overlayDiv = item.querySelector('.hover-meta');
             const img = item.querySelector('img');
             if (!overlayDiv || !img) return;
             const line = overlayDiv.querySelector('.meta-line');
             if (!line) return;
-            const boxWidth = overlayDiv.clientWidth;
-            const boxHeight = overlayDiv.clientHeight;
+            const boxWidth = overlayDiv.clientWidth, boxHeight = overlayDiv.clientHeight;
             if (!boxWidth || !boxHeight) return;
             if (!img.naturalWidth || !img.naturalHeight) return;
             const fitRect = getObjectFitContainRect(boxWidth, boxHeight, img.naturalWidth, img.naturalHeight);
@@ -460,31 +417,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 width: Math.max(10, fitRect.width * (opaque.maxX - opaque.minX)),
                 height: Math.max(10, fitRect.height * (opaque.maxY - opaque.minY))
             };
-            const itemPreset = getItemPreset(item);
-            const firstSide = itemPreset.firstSide;
-            const upperFirst = itemPreset.upperFirst;
-            applyCallout(line, boxWidth, boxHeight, firstSide, upperFirst ? 'upper' : 'lower', contentRect);
+            const itemPreset = getItemPreset();
+            applyCallout(line, boxWidth, boxHeight, itemPreset.firstSide, itemPreset.upperFirst ? 'upper' : 'lower', contentRect);
         };
 
         gridItems.forEach((item) => {
             const img = item.querySelector('img');
             if (!img) return;
-            if (img.complete && img.naturalWidth) {
-                placeItemCallouts(item);
-            } else {
-                img.addEventListener('load', () => placeItemCallouts(item), { once: true });
-            }
+            if (img.complete && img.naturalWidth) placeItemCallouts(item);
+            else img.addEventListener('load', () => placeItemCallouts(item), { once: true });
         });
-
-        window.addEventListener('resize', () => {
-            gridItems.forEach((item) => placeItemCallouts(item));
-        });
+        window.addEventListener('resize', () => gridItems.forEach(placeItemCallouts));
     }
-});
 
-       // ========================
-    // 모바일 펀치아웃 (오래 유지되도록)
-    // ========================
+    // ---------- 모바일 펀치아웃 (중앙 감지) ----------
     if (window.innerWidth <= 768) {
         let ticking = false;
         function updateActive() {
@@ -495,27 +441,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rect = item.getBoundingClientRect();
                 const itemCenter = rect.top + rect.height / 2;
                 const distance = Math.abs(itemCenter - center);
-                // 추가 기준 (중앙에서 25% 이내)
                 const addThreshold = windowHeight * 0.25;
-                // 제거 기준 (중앙에서 40% 밖으로 나가면 제거) - 더 넓게
                 const removeThreshold = windowHeight * 0.40;
-                
-                if (distance < addThreshold) {
-                    item.classList.add('active');
-                } else if (distance > removeThreshold) {
-                    item.classList.remove('active');
-                }
-                // 그 사이 구간에서는 변화 없음 (이전 상태 유지) → 더 오래 머무름
+                if (distance < addThreshold) item.classList.add('active');
+                else if (distance > removeThreshold) item.classList.remove('active');
             });
             ticking = false;
         }
         window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateActive);
-                ticking = true;
-            }
+            if (!ticking) { requestAnimationFrame(updateActive); ticking = true; }
         });
         window.addEventListener('resize', updateActive);
         updateActive();
-        console.log('📱 모바일 펀치아웃 (추가 25%, 제거 40%)');
     }
+
+    // ---------- h1 상단 여백을 + 버튼의 top 값과 동기화 (모든 비홈페이지) ----------
+    function syncH1Margin() {
+        const plus = document.querySelector('.menu-toggle');
+        if (!plus) return;
+        const plusTop = parseInt(window.getComputedStyle(plus).top, 10);
+        if (isNaN(plusTop)) return;
+
+        // 홈이 아닌 모든 페이지의 h1 또는 .site-title
+        const targets = document.querySelectorAll('body:not(.home) h1, body:not(.home) .site-title');
+        targets.forEach(el => {
+            el.style.marginTop = plusTop + 'px';
+            el.style.marginBottom = '20px';
+            el.style.position = 'relative';
+            el.style.top = 'auto';
+            el.style.left = 'auto';
+            el.style.transform = 'none';
+        });
+    }
+    window.addEventListener('load', syncH1Margin);
+    window.addEventListener('resize', syncH1Margin);
+    setTimeout(syncH1Margin, 100);
+});
