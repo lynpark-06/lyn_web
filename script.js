@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setupMobileItemNav = (root) => {
-        if (window.innerWidth > 768 || !root) return;
+        if (window.innerWidth >= 768 || !root) return;
 
         const saveSection = root.querySelector('.q_and_a .item');
         const itemNavs = root.querySelectorAll('.item-nav');
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (window.innerWidth > 768) return;
+            if (window.innerWidth >= 768) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (window.innerWidth > 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (window.innerWidth >= 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
        // ========================
     // 모바일 펀치아웃 (오래 유지되도록)
     // ========================
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth < 768) {
         let ticking = false;
         function updateActive() {
             const items = document.querySelectorAll('.grid-item');

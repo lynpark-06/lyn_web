@@ -356,7 +356,7 @@ body.home .home-corner-title .homes {
 }
 
 /* 반응형 (공통) */
-@media (max-width: 900px) {
+@media (min-width: 768px) and (max-width: 1023px) {
     .topbar { padding: 24px 20px; }
     body.home .home-corner-title { left: 58px; bottom: 24px; }
     .site-title { font-size: 64px; }
@@ -364,13 +364,13 @@ body.home .home-corner-title .homes {
     .topbar-spacer { width: 64px; }
     .dropdown { left: 20px; top: 95px; }
 }
-@media (max-width: 520px) {
+@media (max-width: 767px) {
     .site-title { font-size: 48px; }
     .menu-toggle { font-size: 48px; top: 20px; left: 16px; }
     .topbar-spacer { width: 48px; }
     .dropdown { top: 80px; }
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     body.home .topbar {
         display: flex;
         justify-content: flex-start;
@@ -673,15 +673,34 @@ h1 { font-size: clamp(36px, 8vw, 90px); margin: 24px 0 56px; padding: 0 16px; }
 body.about .about-content, body.archive .archive-content { width: min(100% - 32px, 1000px); }
 .grid { width: min(100% - 32px, 1200px); gap: clamp(14px, 2.5vw, 30px); padding: 0; }
 
-@media (min-width: 1200px) { .q_and_a { padding-left: 24px; padding-right: 24px; } }
-@media (max-width: 1024px) {
+@media (min-width: 1024px) { .q_and_a { padding-left: 24px; padding-right: 24px; } }
+@media (min-width: 768px) and (max-width: 1023px) {
     .topbar { padding: 28px; }
     .site-title { font-size: clamp(48px, 8vw, 78px); }
     .menu-toggle, .topbar-spacer { width: 64px; font-size: 64px; }
     .dropdown { left: 28px; top: 102px; }
     body.archive .saved-items-grid { margin-top: 110px !important; }
+
+    /* Tablet: keep desktop effect but scale callouts to fit narrower viewport */
+    .grid {
+        width: min(100% - 48px, 980px);
+    }
+    .meta-line {
+        font-size: clamp(12px, 1.35vw, 16px);
+        opacity: 1;
+        transform: translate(var(--text-shift-x, 0px), -50%);
+    }
+    .meta-line span {
+        max-width: 280px;
+        white-space: normal;
+        word-break: keep-all;
+    }
+    .meta-line::before {
+        width: min(calc(var(--line-length, 220px) * 0.6), 180px);
+        transform: rotate(var(--line-angle, -20deg)) scaleX(1);
+    }
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     :root { --page-top: 28px; --title-size: clamp(42px, 11vw, 72px); }
     .topbar { grid-template-columns: auto 1fr auto; padding: 20px 16px; }
     .site-title { font-size: clamp(38px, 9vw, 62px); }
@@ -722,7 +741,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item p { font-size: 14px; margin-top: 0; flex: 1; }
     body.archive .save-item { align-self: flex-start; margin-top: 0; margin-left: 0; }
 }
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
@@ -764,18 +783,30 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .saved-item p { font-size: 13px; }
     body.archive .save-item { margin-left: 0; align-self: flex-start; }
 }
-@media (min-width: 1200px) { .grid { max-width: 1400px; } }
-@media (max-width: 1199px) and (min-width: 992px) { .grid { gap: 20px; } }
-@media (max-width: 991px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { max-width: 1400px; } }
+@media (min-width: 1024px) { .grid { gap: 20px; } }
+@media (min-width: 768px) and (max-width: 1023px) { .grid { grid-template-columns: 1fr; } }
 @media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
-@media (max-width: 480px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
-@media (max-width: 360px) { .site-title { font-size: 24px; } }
+@media (max-width: 767px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
+@media (max-width: 767px) { .site-title { font-size: 24px; } }
 
 /* ===== 모바일 전용 (그리드 위치 + 펀치아웃) ===== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     /* 그리드 시작 위치 내리기 */
     body.home .grid {
         margin-top: 4vh !important;
+    }
+
+    /* 모바일에서는 메타 라인 레이어 완전 비활성화 */
+    .hover-meta,
+    .meta-line,
+    .meta-line::before,
+    .grid-item:hover .meta-line,
+    .grid-item:hover .meta-line::before {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: none !important;
     }
     
     /* 펀치아웃 위치 및 스타일 */
@@ -812,15 +843,15 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
 }
 
-/* 데스크톱에서는 숨김 */
-@media (min-width: 769px) {
+/* 태블릿/데스크톱에서는 숨김 */
+@media (min-width: 768px) {
     .mobile-punchout {
         display: none !important;
     }
 }
 
 /* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     body.about h1,
     body.archive h1,
     body:not(.home) h1,
@@ -836,7 +867,7 @@ body.about {
 }
 
 /* 데스크톱: 그리드 시작 위치를 적절히 내림 */
-@media (min-width: 769px) {
+@media (min-width: 1024px) {
     body.home .grid {
         margin-top: 0px !important;  /* 원하는 높이로 조절 (px, vh 등) */
     }
