@@ -508,6 +508,13 @@ body.about .site-title {
     font-size: var(--title-size);
     font-weight: normal;
 }
+
+/* Individual pages (not home/about/archive) */
+body:not(.home):not(.about):not(.archive) .site-title,
+.item-overlay .site-title {
+    font-size: var(--title-size) !important;
+}
+
 body.about .about-content {
     max-width: 1000px;
     text-align: left;

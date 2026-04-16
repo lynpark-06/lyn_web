@@ -3,18 +3,20 @@
 // GitHub Pages 서브디렉토리 자동 감지 (필요시 사용, 여기선 일단 생략 - 원래 경로 그대로)
 // 만약 GitHub Pages에서 404 나면 아래 주석 해제하고 fixUrl 적용 필요
 
+// Global viewport width helper for all breakpoint calculations
+const getViewportWidth = () => {
+    const vv = window.visualViewport?.width;
+    const cw = document.documentElement?.clientWidth;
+    return Math.min(
+        Number.isFinite(vv) ? vv : Infinity,
+        Number.isFinite(cw) ? cw : Infinity,
+        window.innerWidth
+    );
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
-    const getViewportWidth = () => {
-        const vv = window.visualViewport?.width;
-        const cw = document.documentElement?.clientWidth;
-        return Math.min(
-            Number.isFinite(vv) ? vv : Infinity,
-            Number.isFinite(cw) ? cw : Infinity,
-            window.innerWidth
-        );
-    };
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -115,7 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (getViewportWidth() >= 768) return;
+            const w = getViewportWidth();
+            
+            // Only apply manual positioning for mobile; let CSS handle tablet/desktop
+            if (w >= 768) {
+                dropdown.style.removeProperty('left');
+                dropdown.style.removeProperty('top');
+                dropdown.style.removeProperty('right');
+                return;
+            }
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -598,15 +608,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================
 {
     let ticking = false;
-    const getViewportWidth = () => {
-        const vv = window.visualViewport?.width;
-        const cw = document.documentElement?.clientWidth;
-        return Math.min(
-            Number.isFinite(vv) ? vv : Infinity,
-            Number.isFinite(cw) ? cw : Infinity,
-            window.innerWidth
-        );
+    let lastBreakpoint = null;
+
+    const getBreakpoint = (w) => {
+        if (w < 768) return 'mobile';
+        if (w <= 1023) return 'tablet';
+        return 'desktop';
     };
+
     function updateResponsiveGridEffects() {
         const items = document.querySelectorAll('.grid-item');
         const w = getViewportWidth();
@@ -663,6 +672,27 @@ document.addEventListener('DOMContentLoaded', () => {
         ticking = false;
     }
 
+    function handleBreakpointChange(oldBp, newBp) {
+        // Re-trigger dropdowns and item nav when breakpoint changes
+        if (oldBp !== newBp) {
+            // Clear inline dropdown styles that might conflict with CSS media queries
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdown && (oldBp === 'mobile' && newBp !== 'mobile' || oldBp !== 'mobile' && newBp === 'mobile')) {
+                // Reset inline styles to let CSS media queries take over
+                dropdown.style.removeProperty('left');
+                dropdown.style.removeProperty('top');
+                dropdown.style.removeProperty('right');
+            }
+            
+            // Re-setup mobile item nav if transitioning to mobile on item pages
+            const isItemPage = Boolean(document.querySelector('.item-nav'));
+            if (isItemPage && newBp === 'mobile' && oldBp !== 'mobile') {
+                // Trigger setupMobileItemNav through a custom event
+                window.dispatchEvent(new CustomEvent('breakpointChange', { detail: { newBp, oldBp } }));
+            }
+        }
+    }
+
     const onScroll = () => {
         if (!ticking) {
             requestAnimationFrame(updateResponsiveGridEffects);
@@ -670,8 +700,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const onResize = () => {
+        const w = getViewportWidth();
+        const currentBp = getBreakpoint(w);
+        
+        if (currentBp !== lastBreakpoint) {
+            handleBreakpointChange(lastBreakpoint, currentBp);
+            lastBreakpoint = currentBp;
+        }
+        
+        updateResponsiveGridEffects();
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', updateResponsiveGridEffects);
-    window.addEventListener('load', updateResponsiveGridEffects);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('load', () => {
+        lastBreakpoint = getBreakpoint(getViewportWidth());
+        updateResponsiveGridEffects();
+    });
     updateResponsiveGridEffects();
 }
