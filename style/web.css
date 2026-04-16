@@ -402,6 +402,29 @@ body.home .home-corner-title .homes {
     }
 
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
+    body:not(.home) .item-nav {
+        position: absolute;
+        top: var(--mobile-item-nav-top, 50%);
+        bottom: auto;
+        transform: translateY(-50%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.6s ease;
+    }
+    body.mobile-item-nav-visible .item-nav {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    body.item-enter-ready .item-nav.prev {
+        transform: translate(-28px, -50%);
+    }
+    body.item-enter-ready .item-nav.next {
+        transform: translate(28px, -50%);
+    }
+    body.item-enter-active .item-nav.prev,
+    body.item-enter-active .item-nav.next {
+        transform: translateY(-50%);
+    }
 
     /* Home title: horizontal row at top-right, aligned with + */
     body.home {

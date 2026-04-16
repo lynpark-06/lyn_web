@@ -486,27 +486,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mobile only: hide + and arrows on scroll, show when back at top
     if (window.innerWidth <= 768 && isItemPage) {
-        const mobileScrollTargets = () => [
-            ...document.querySelectorAll('.menu-toggle, .item-nav, .dropdown')
-        ];
-        let scrollTimer;
-        window.addEventListener('scroll', () => {
-            mobileScrollTargets().forEach(el => {
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
+        const saveSection = document.querySelector('.q_and_a .item');
+        const itemNavs = document.querySelectorAll('.item-nav');
+
+        if (saveSection && itemNavs.length) {
+            const setMobileItemNavTop = () => {
+                const rect = saveSection.getBoundingClientRect();
+                const pageTop = window.scrollY + rect.top + (rect.height / 2);
+                document.body.style.setProperty('--mobile-item-nav-top', `${Math.round(pageTop)}px`);
+            };
+
+            setMobileItemNavTop();
+            window.addEventListener('resize', setMobileItemNavTop);
+            window.addEventListener('load', setMobileItemNavTop);
+
+            const saveObserver = new IntersectionObserver((entries) => {
+                const isVisible = entries.some((entry) => entry.isIntersecting);
+                document.body.classList.toggle('mobile-item-nav-visible', isVisible);
+            }, {
+                threshold: 0.2,
+                rootMargin: '0px 0px -10% 0px'
             });
-            clearTimeout(scrollTimer);
-            scrollTimer = setTimeout(() => {
-                if (window.scrollY < 10) {
-                    mobileScrollTargets().forEach(el => {
-                        el.style.opacity = '';
-                        el.style.pointerEvents = '';
-                    });
-                }
-            }, 300);
-        }, { passive: true });
+
+            saveObserver.observe(saveSection);
+        }
     }
 });
 
