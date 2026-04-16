@@ -455,7 +455,7 @@ body.home .home-corner-title .homes {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 6px;
+        gap: 2px;
         font-size: 32px;
     }
     body.home .home-corner-title .between {
@@ -466,8 +466,8 @@ body.home .home-corner-title .homes {
     }
     body.home .home-corner-title .corner-slot {
         position: static;
-        width: 36px;
-        height: 36px;
+        width: 48px;
+        height: 48px;
         flex-shrink: 0;
     }
     body.home .home-corner-title .corner-slot img {
