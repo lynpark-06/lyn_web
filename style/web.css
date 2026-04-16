@@ -369,6 +369,19 @@ body.home .home-corner-title .homes {
 }
 @media (max-width: 768px) {
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
+    body.home .home-corner-title .between {
+        left: -50px;
+    }
+    body.home .home-corner-title .corner-slot {
+        left: -57px;
+        bottom: -5px;
+        width: 72px;
+        height: 72px;
+    }
+    body.home .home-corner-title .corner-slot img {
+        width: 120%;
+        height: 120%;
+    }
 }
 
 /* ABOUT 페이지 */
