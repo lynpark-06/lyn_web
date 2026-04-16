@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (isHomePage) {
+    if (isHomePage && window.innerWidth > 768) {
         const gridLinks = document.querySelectorAll('.grid a.grid-item, .grid .grid-item[href]');
         const prefetched = new Set();
         const pageCache = new Map();
@@ -314,6 +314,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isItemPage) {
         const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
+        const navPrev = document.querySelector('.item-nav.prev');
+        const navNext = document.querySelector('.item-nav.next');
+
+        // Mobile only: wrap arrows with hero image so they scroll away with content.
+        if (window.innerWidth <= 768 && photo && navPrev && navNext) {
+            const alreadyWrapped = navPrev.parentElement && navPrev.parentElement.classList.contains('photo-nav-wrap');
+            if (!alreadyWrapped) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'photo-nav-wrap';
+                photo.parentNode.insertBefore(wrapper, photo);
+                wrapper.appendChild(navPrev);
+                wrapper.appendChild(navNext);
+                wrapper.appendChild(photo);
+            }
+        }
+
         if (photo) photo.classList.add('reveal-photo');
         document.body.classList.add('item-enter-ready');
         requestAnimationFrame(() => {
