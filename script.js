@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
+                if (window.innerWidth <= 768) return;
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 if (isOpening) return;
                 const href = link.href || link.getAttribute('href');
