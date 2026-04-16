@@ -221,7 +221,12 @@ body.home.item-overlay-open .home-corner-title {
     overflow-y: auto;
     visibility: hidden;
     pointer-events: none;
+    /* Match topbar height so h1 sits at same position as direct page load */
+    padding-top: 81px;
 }
+@media (max-width: 1024px) { .item-overlay { padding-top: 57px; } }
+@media (max-width: 768px)  { .item-overlay { padding-top: 41px; } }
+@media (max-width: 480px)  { .item-overlay { padding-top: 29px; } }
 .item-overlay.is-active {
     visibility: visible;
     pointer-events: auto;
