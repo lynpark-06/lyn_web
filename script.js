@@ -15,11 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.innerWidth
         );
     };
-    const isNarrowDesktopPreview = () => {
-        const w = getViewportWidth();
-        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    };
-    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -120,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggle && dropdown) {
         const alignMobileDropdownToToggle = () => {
-            if (!isPhoneLikeMode()) return;
+            if (getViewportWidth() >= 768) return;
 
             const toggleRect = toggle.getBoundingClientRect();
             const dropdownPosition = window.getComputedStyle(dropdown).position;
@@ -176,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
-            if (!isPhoneLikeMode() || !overlay || !document.body.classList.contains('item-overlay-open')) {
+            if (getViewportWidth() >= 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
                 toggle.style.opacity = '';
                 toggle.style.pointerEvents = '';
                 dropdown.style.opacity = '';
@@ -353,7 +348,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
-                if (isNarrowDesktopPreview()) return;
                 if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 if (isOpening) return;
                 const href = link.href || link.getAttribute('href');
@@ -613,18 +607,9 @@ document.addEventListener('DOMContentLoaded', () => {
             window.innerWidth
         );
     };
-    const isNarrowDesktopPreview = () => {
-        const w = getViewportWidth();
-        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    };
-    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
-
     function updateResponsiveGridEffects() {
         const items = document.querySelectorAll('.grid-item');
         const w = getViewportWidth();
-        const phoneLike = isPhoneLikeMode();
-
-        document.body.classList.toggle('force-phone-effects', phoneLike);
 
         if (!items.length) {
             ticking = false;
@@ -634,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowHeight = window.innerHeight;
         const center = windowHeight / 2;
 
-        if (phoneLike) {
+        if (w < 768) {
             const addThreshold = windowHeight * 0.25;
             const removeThreshold = windowHeight * 0.40;
 
