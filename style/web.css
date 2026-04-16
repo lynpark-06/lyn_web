@@ -395,10 +395,20 @@ body.home .home-corner-title .homes {
         font-size: 48px;
         line-height: 1;
     }
+    body.home.item-overlay-open .menu-toggle {
+        position: fixed;
+        top: var(--page-top);
+        left: 20px;
+    }
     body.home .dropdown {
         left: 16px;
         right: auto;
         top: 72px;
+    }
+    body.home.item-overlay-open .dropdown {
+        position: fixed;
+        left: 20px;
+        top: 84px;
     }
 
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
