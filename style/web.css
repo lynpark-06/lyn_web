@@ -389,9 +389,9 @@ body.home .home-corner-title .homes {
         white-space: nowrap;
     }
     body.home .menu-toggle {
-        position: static;
-        top: auto;
-        left: auto;
+        position: fixed;
+        top: var(--page-top);
+        left: 20px;
         font-size: 48px;
         line-height: 1;
     }
@@ -448,7 +448,7 @@ body.home .home-corner-title .homes {
     }
     body.home .home-corner-title {
         position: absolute;
-        top: 22px;
+        top: var(--page-top);
         right: 16px;
         left: auto;
         bottom: auto;
@@ -721,6 +721,9 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .topbar { padding: 14px 12px; }
     .site-title { font-size: clamp(30px, 10vw, 44px); line-height: 1.1; }
     .menu-toggle { font-size: 40px; top: var(--page-top); left: 12px; }
+    body.home .menu-toggle {
+        left: 12px;
+    }
     body:not(.home) .menu-toggle {
         left: 12px;
     }
