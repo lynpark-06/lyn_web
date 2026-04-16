@@ -327,9 +327,9 @@ body.home .home-corner-title .homes {
     font-size: 90px;
     line-height: 1;
     padding: 0;
-    position: fixed;
-    top: 40px;
-    left: 60px;
+    position: relative;
+    top: 0;
+    left: 0;
     z-index: 1200;
     cursor: pointer;
     transform-origin: center;
@@ -353,9 +353,9 @@ body.home .home-corner-title .homes {
     height: 1px;
 }
 .dropdown {
-    position: fixed;
-    left: 60px;
-    top: 140px;
+    position: absolute;
+    left: 0;
+    top: 100%;
     z-index: 1190;
     display: none;
 }
@@ -374,15 +374,15 @@ body.home .home-corner-title .homes {
     .topbar { padding: 24px 20px; }
     body.home .home-corner-title { left: 58px; bottom: 24px; }
     .site-title { font-size: 64px; }
-    .menu-toggle { font-size: 64px; top: 24px; left: 20px; }
+    .menu-toggle { font-size: 64px; top: 0; left: 0; }
     .topbar-spacer { width: 64px; }
-    .dropdown { left: 20px; top: 95px; }
+    .dropdown { left: 0; top: 100%; }
 }
 @media (max-width: 520px) {
     .site-title { font-size: 48px; }
-    .menu-toggle { font-size: 48px; top: 20px; left: 16px; }
+    .menu-toggle { font-size: 48px; top: 0; left: 0; }
     .topbar-spacer { width: 48px; }
-    .dropdown { top: 80px; }
+    .dropdown { top: 100%; }
 }
 @media (max-width: 768px) {
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
@@ -612,9 +612,9 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     h1 { margin: 14px 0 28px; padding: 0 12px; }
     .topbar { padding: 14px 12px; }
     .site-title { font-size: clamp(30px, 10vw, 44px); line-height: 1.1; }
-    .menu-toggle { font-size: 40px; top: 14px; left: 12px; }
+    .menu-toggle { font-size: 40px; top: 0; left: 0; }
     .topbar-spacer { width: 40px; }
-    .dropdown { top: 68px; left: 12px; }
+    .dropdown { top: 100%; left: 0; }
     .dropdown a { font-size: 16px; }
     .grid { grid-template-columns: 1fr; width: calc(100% - 24px); }
     .q_and_a { padding: 0 12px 24px; }

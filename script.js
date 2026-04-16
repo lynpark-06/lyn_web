@@ -529,9 +529,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!navPrev || !navNext) return; // not an item page
 
     // Wrap the hero photo and nav arrows in a relative container
-    const heroImg = document.body.querySelector(':scope > img')
-                 || document.querySelector('.q_and_a img');
-    if (heroImg) {
+    const heroImg = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
+    const alreadyWrapped = navPrev.parentElement && navPrev.parentElement.classList.contains('photo-nav-wrap');
+    if (heroImg && !alreadyWrapped) {
         const wrapper = document.createElement('div');
         wrapper.className = 'photo-nav-wrap';
         heroImg.parentNode.insertBefore(wrapper, heroImg);
@@ -539,6 +539,4 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.appendChild(navNext);
         wrapper.appendChild(heroImg);
     }
-
-    // Scroll-hide topbar: hide when scrolling down, show when scrolling up
 });
