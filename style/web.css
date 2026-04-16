@@ -82,6 +82,9 @@ h1 {
 body.archive .saved-item {
     align-items: flex-start;
 }
+body.archive .saved-item p {
+    margin-top: 0;
+}
 body.archive .save-item {
     color: rgb(133, 214, 107);
     justify-content: flex-end;
@@ -370,7 +373,7 @@ body.home .home-corner-title .homes {
 @media (max-width: 768px) {
     body.home .topbar {
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         align-items: flex-start;
         gap: 10px;
         padding: 14px 16px 0;
@@ -393,24 +396,50 @@ body.home .home-corner-title .homes {
         line-height: 1;
     }
     body.home .dropdown {
-        left: auto;
-        right: 16px;
+        left: 16px;
+        right: auto;
         top: 72px;
     }
 
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
+
+    /* Home title: horizontal row at top-right, aligned with + */
+    body.home {
+        position: relative;
+    }
+    body.home .home-corner-title {
+        position: absolute;
+        top: 22px;
+        right: 16px;
+        left: auto;
+        bottom: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        font-size: 50px;
+        z-index: 1100;
+    }
     body.home .home-corner-title .between {
-        left: -50px;
+        position: static;
+        transform: none;
+        white-space: nowrap;
+        font-size: inherit;
     }
     body.home .home-corner-title .corner-slot {
-        left: -30px;
-        bottom: 4px;
-        width: 72px;
-        height: 72px;
+        position: static;
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
     }
     body.home .home-corner-title .corner-slot img {
-        width: 120%;
-        height: 120%;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    body.home .home-corner-title .homes {
+        white-space: nowrap;
+        font-size: inherit;
     }
     html,
     body {
@@ -620,12 +649,13 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .site-title { font-size: clamp(38px, 9vw, 62px); }
     .menu-toggle { font-size: 48px; }
     .topbar-spacer { width: 48px; }
-    .dropdown { left: 16px; top: 84px; }
+    .dropdown { left: 20px; top: 84px; }
     .dropdown a { font-size: 18px; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .saved-item { align-items: center; gap: 14px; padding: 12px 0; }
-    .saved-item img { width: 120px; height: 120px; margin-right: 0; }
-    .saved-item p { font-size: 15px; }
+    .saved-item { flex-direction: row; align-items: flex-start; gap: 14px; padding: 12px 0; }
+    .saved-item img { width: 120px; height: 120px; margin-right: 0; flex-shrink: 0; }
+    .saved-item p { font-size: 15px; margin-top: 0; flex: 1; }
+    body.archive .save-item { align-self: flex-start; margin-top: 0; margin-left: 0; }
 }
 @media (max-width: 480px) {
     :root { --page-top: 18px; --title-size: clamp(34px, 12vw, 52px); }
@@ -643,14 +673,14 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     body.about .about-content, body.archive .archive-content { width: calc(100% - 24px); font-size: 16px; }
     body.archive .saved-items-grid { margin-top: 72px !important; }
     #items-container { width: calc(100% - 24px); }
-    .saved-item { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 0; }
-    .saved-item img { width: 100%; max-width: 220px; height: auto; }
-    body.archive .save-item { margin-left: 0; }
+    .saved-item { flex-direction: row; align-items: flex-start; gap: 12px; padding: 14px 0; }
+    .saved-item img { width: 100px; height: 100px; object-fit: cover; flex-shrink: 0; }
+    body.archive .save-item { margin-left: 0; align-self: flex-start; }
 }
 @media (min-width: 1200px) { .grid { max-width: 1400px; } }
 @media (max-width: 1199px) and (min-width: 992px) { .grid { gap: 20px; } }
 @media (max-width: 991px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 767px) { .grid { grid-template-columns: 1fr; } .saved-item { flex-direction: column; } }
+@media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
 @media (max-width: 360px) { .site-title { font-size: 24px; } }
 
@@ -658,7 +688,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 @media (max-width: 768px) {
     /* 그리드 시작 위치 내리기 */
     body.home .grid {
-        margin-top: 10vh !important;
+        margin-top: 4vh !important;
     }
     
     /* 펀치아웃 위치 및 스타일 */

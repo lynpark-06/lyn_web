@@ -58,6 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
     }
 
+    const isAboutOrArchive = document.body.classList.contains('about') || document.body.classList.contains('archive');
+    if (isAboutOrArchive && !dropdown.querySelector('a[href="index.html"]')) {
+        dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
+    }
+
     if (toggle && dropdown) {
         toggle.addEventListener('click', () => {
             const isOpen = dropdown.classList.toggle('show');
