@@ -160,12 +160,34 @@ document.addEventListener('DOMContentLoaded', () => {
         let isOpening = false;
         let overlay = null;
 
+        const syncMobileOverlayMenuVisibility = () => {
+            if (!toggle || !dropdown) return;
+            if (window.innerWidth > 768 || !overlay || !document.body.classList.contains('item-overlay-open')) {
+                toggle.style.opacity = '';
+                toggle.style.pointerEvents = '';
+                dropdown.style.opacity = '';
+                dropdown.style.pointerEvents = '';
+                return;
+            }
+
+            const shouldHide = overlay.scrollTop > 8;
+            if (shouldHide) {
+                dropdown.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+            toggle.style.opacity = shouldHide ? '0' : '';
+            toggle.style.pointerEvents = shouldHide ? 'none' : '';
+            dropdown.style.opacity = shouldHide ? '0' : '';
+            dropdown.style.pointerEvents = shouldHide ? 'none' : '';
+        };
+
         const ensureOverlay = () => {
             if (overlay) return overlay;
             overlay = document.createElement('section');
             overlay.className = 'item-overlay';
             overlay.setAttribute('aria-live', 'polite');
             document.body.appendChild(overlay);
+            overlay.addEventListener('scroll', syncMobileOverlayMenuVisibility, { passive: true });
             overlay.addEventListener('click', async (e) => {
                 const anchor = e.target.closest('a');
                 if (!anchor || !overlay.contains(anchor)) return;
@@ -173,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     document.body.classList.remove('item-overlay-open');
                     overlay.classList.remove('is-active');
+                    syncMobileOverlayMenuVisibility();
                     history.pushState({ overlay: false }, '', 'index.html');
                     setTimeout(() => {
                         overlay.innerHTML = '';
@@ -275,8 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
                 document.body.classList.add('item-overlay-open');
+                host.scrollTop = 0;
                 host.classList.add('item-enter-ready');
                 setupMobileItemNav(host);
+                syncMobileOverlayMenuVisibility();
                 requestAnimationFrame(() => {
                     host.classList.add('is-active');
                     requestAnimationFrame(() => {
@@ -294,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!document.body.classList.contains('item-overlay-open')) return;
             document.body.classList.remove('item-overlay-open');
             overlay.classList.remove('is-active');
+            syncMobileOverlayMenuVisibility();
             setTimeout(() => {
                 overlay.innerHTML = '';
             }, 240);
