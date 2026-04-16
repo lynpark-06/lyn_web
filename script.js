@@ -6,6 +6,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
+    const isPhone = window.innerWidth < 480;
+
+    if (isPhone) {
+        document.querySelectorAll('.hover-meta').forEach((el) => el.remove());
+    }
 
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
@@ -428,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 원본 callout lines 코드 (hover 시 선 긋는 효과) - 그대로 복원
     // ========================
     const gridItems = document.querySelectorAll('.grid-item');
-    if (gridItems.length) {
+    if (gridItems.length && !isPhone) {
         const rand = (min, max) => Math.random() * (max - min) + min;
         const opaqueBoundsCache = new Map();
         const linePresetCache = new WeakMap();
