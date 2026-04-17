@@ -415,7 +415,7 @@ body.home .home-corner-title .homes {
     body.home .topbar {
         display: flex;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center;
         gap: 10px;
         padding: 14px 16px 0;
     }
