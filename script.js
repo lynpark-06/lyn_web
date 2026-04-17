@@ -66,28 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return { toggle, dropdown };
     };
 
-
     const { toggle, dropdown } = ensureGlobalMenu();
 
-    // Always ensure Home, About, and My Checklist are present in order
-    const menuLinks = [
-        { href: 'index.html', text: 'HOME' },
-        { href: 'about.html', text: 'ABOUT' },
-        { href: 'archive.html', text: 'MY CHECKLIST' }
-    ];
-    dropdown.innerHTML = '';
-    menuLinks.forEach(link => {
-        if (!dropdown.querySelector(`a[href="${link.href}"]`)) {
-            dropdown.insertAdjacentHTML('beforeend', `<a href="${link.href}">${link.text}</a><br>`);
-        }
-    });
+    if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
+        dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
+    }
 
-    // Dropdown toggle effect
-    toggle.addEventListener('click', () => {
-        const expanded = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', String(!expanded));
-        dropdown.classList.toggle('show', !expanded);
-    });
+    const isAboutOrArchive = document.body.classList.contains('about') || document.body.classList.contains('archive');
+    if (isAboutOrArchive && !dropdown.querySelector('a[href="index.html"]')) {
+        dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
+    }
 
     const setupMobileItemNav = (root) => {
         if (getViewportWidth() >= 768 || !root) return;
@@ -703,3 +691,44 @@ document.addEventListener('DOMContentLoaded', () => {
     updateResponsiveGridEffects();
 }
 
+// 오버레이(개별 페이지)의 h1과 본문 글자 크기를 About 페이지와 동일하게 (태블릿 768-1023px)
+function fixOverlayFonts() {
+    const overlay = document.querySelector('.item-overlay.is-active');
+    if (!overlay) return;
+    const width = window.innerWidth;
+    if (width >= 768 && width <= 1023) {
+        const h1 = overlay.querySelector('h1');
+        if (h1) {
+            h1.style.fontSize = 'var(--title-size)';
+            h1.style.fontFamily = 'monospace';
+            h1.style.fontWeight = 'normal';
+            h1.style.textAlign = 'center';
+            h1.style.margin = '0';
+        }
+        const qa = overlay.querySelector('.q_and_a');
+        if (qa) {
+            qa.style.fontSize = '18px';
+            qa.style.fontFamily = 'monospace';
+            qa.style.lineHeight = '1.6';
+            qa.style.maxWidth = '1000px';
+            qa.style.margin = 'calc(var(--page-top) + var(--title-size) + 20px) auto 0';
+            qa.style.padding = '0 16px 32px';
+        }
+        const questions = overlay.querySelectorAll('.question');
+        questions.forEach(q => q.style.fontSize = '18px');
+        const answers = overlay.querySelectorAll('.answer');
+        answers.forEach(a => a.style.fontSize = '19px');
+    }
+}
+
+// 오버레이가 열릴 때마다 실행 (MutationObserver로 감지)
+const observer = new MutationObserver(() => {
+    if (document.querySelector('.item-overlay.is-active')) {
+        fixOverlayFonts();
+    }
+});
+observer.observe(document.body, { attributes: true, subtree: false, attributeFilter: ['class'] });
+// 초기 실행
+fixOverlayFonts();
+// 리사이즈에도 대응
+window.addEventListener('resize', fixOverlayFonts);
