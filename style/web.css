@@ -1189,7 +1189,7 @@ body.about {
 @media (min-width: 768px) and (max-width: 1023px) {
     .item-overlay h1,
     body:not(.home):not(.about):not(.archive) h1 {
-        font-size: 40px !important;   /* 여기를 원하는 크기로 변경 (예: 70px, 80px) */
+        font-size: 60px !important;   /* 여기를 원하는 크기로 변경 (예: 70px, 80px) */
     }
     /* 본문 글자 크기도 같게 하려면 */
     .item-overlay .q_and_a,
