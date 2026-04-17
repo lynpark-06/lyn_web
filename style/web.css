@@ -710,7 +710,7 @@ body.archive .saved-item:not(:last-child)::after {
         height: 120px;
         width: 120px;
     }
-    } 
+    }
 
 @media (max-width: 479px) {
     body.archive .saved-item p,
@@ -1182,18 +1182,5 @@ body.about {
 @media (min-width: 1024px) {
     body.home .grid {
         margin-top: 0px !important;  /* 원하는 높이로 조절 (px, vh 등) */
-    }
-}
-
-/* 태블릿(768px~1023px)에서 개별 페이지(오버레이 포함) h1 크기 조절 */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .item-overlay h1,
-    body:not(.home):not(.about):not(.archive) h1 {
-        font-size: 60px !important;   /* 여기를 원하는 크기로 변경 (예: 70px, 80px) */
-    }
-    /* 본문 글자 크기도 같게 하려면 */
-    .item-overlay .q_and_a,
-    body:not(.home):not(.about):not(.archive) .q_and_a {
-        font-size: 18px !important;
     }
 }
