@@ -1,3 +1,4 @@
+/* CUSTOM FONT (Velvyn) – loaded from local fonts folder */
 @font-face {
     font-family: 'Velvyn';
     src: url('../fonts/Velvelyn-Regular.woff2') format('woff2'),
@@ -8,16 +9,19 @@
     font-style: normal;
 }
 
+/* GLOBAL COLORS */
 html {
     color: rgb(50, 85, 164);
     background-color: rgb(241, 241, 241);
 }
 
+/* GLOBAL VARIABLES (used for spacing and title size) */
 :root {
     --page-top: 40px;
     --title-size: clamp(60px, 8vw, 100px);
 }
 
+/* DEFAULT HEADING STYLE (used on all pages unless overridden) */
 h1 {
     font-size: 90px;
     font-weight: normal;
@@ -26,6 +30,7 @@ h1 {
     margin-bottom: 100px;
 }
 
+/* "Save this Item" section style */
 .item {
     font-size: 20px;
     font-weight: lighter;
@@ -36,7 +41,8 @@ h1 {
     color: rgb(133, 214, 107);
 }
 
-/* Custom Checkbox Styles */
+/* SAVE BUTTON CUSTOM CHECKBOX */
+/* container for checkbox + label */
 .save-item {
     display: flex;
     align-items: center;
@@ -49,11 +55,11 @@ h1 {
     color: rgb(50, 85, 164);
     margin: 0;
 }
-
+/* hide native checkbox */
 .save-item input[type="checkbox"] {
     display: none;
 }
-
+/* custom checkbox square */
 .checkmark {
     display: inline-block;
     width: 20px;
@@ -65,7 +71,7 @@ h1 {
     box-sizing: border-box;
     border-radius: 0px;
 }
-
+/* checkmark (✓) when checked */
 .save-item input[type="checkbox"]:checked + .checkmark::after {
     content: '✓';
     position: absolute;
@@ -78,7 +84,7 @@ h1 {
     font-family: monospace;
 }
 
-/* Archive page */
+/* ARCHIVE PAGE (MY CHECKLIST) SPECIAL STYLES */
 body.archive .saved-item {
     align-items: flex-start;
 }
@@ -100,6 +106,7 @@ body.archive .save-item input[type="checkbox"]:checked + .checkmark::after {
     color: rgb(133, 214, 107);
 }
 
+/* Q&A SECTION (questions and answers on individual student pages) */
 .q_and_a > div {
     width: 800px;
     margin: auto;
@@ -116,12 +123,14 @@ body.archive .save-item input[type="checkbox"]:checked + .checkmark::after {
     font-size: 19px;
 }
 
+/* GENERAL IMAGE STYLES */
 img {
     display: block;
     margin: auto;
     margin-bottom: 50px;
 }
 
+/* HOME LINK (back to index) */
 .home-link {
     color: inherit;
     text-decoration: none;
@@ -133,6 +142,7 @@ img {
     cursor: pointer;
 }
 
+/* PREV/NEXT NAVIGATION ARROWS (on individual pages and overlay) */
 .item-nav {
     position: fixed;
     top: 50%;
@@ -159,6 +169,7 @@ img {
     color: rgb(133, 214, 107);
 }
 
+/* TRANSITION ANIMATIONS FOR OPENING OVERLAY / ITEM PAGE */
 body.item-enter-ready .item-nav,
 .item-overlay.item-enter-ready .item-nav {
     opacity: 0;
@@ -206,12 +217,14 @@ body.item-enter-active .q_and_a .item,
     transform: none;
 }
 
+/* HIDE GRID AND CORNER TITLE WHEN OVERLAY IS OPEN */
 body.home.item-overlay-open .grid,
 body.home.item-overlay-open .home-corner-title {
     opacity: 0;
     pointer-events: none;
 }
 
+/* OVERLAY (popup) STYLES */
 .item-overlay {
     position: fixed;
     inset: 0;
@@ -240,10 +253,12 @@ body.home.item-overlay-open .home-corner-title {
     opacity: 0 !important;
 }
 
+/* HOME PAGE SPECIFIC */
 .home h1 {
     font-size: 100px;
 }
 
+/* FIXED BOTTOM-LEFT TITLE (BETWEEN · HOMES) */
 body.home .home-corner-title {
     position: fixed;
     left: 120px;
@@ -284,6 +299,7 @@ body.home .home-corner-title .homes {
     white-space: nowrap;
 }
 
+/* TOP BAR (contains + button and dropdown) – DESKTOP LAYOUT */
 .topbar {
     position: relative;
     display: grid;
@@ -357,9 +373,9 @@ body.home .home-corner-title .homes {
     font-size: 20px;
 }
 
-/* 반응형 (공통) */
+/* RESPONSIVE ADJUSTMENTS (COMMON) */
 @media (min-width: 768px) and (max-width: 1023px) {
-        /* Show meta-line and callout when .tablet-active is present (JS should toggle this class when item is near center) */
+        /* show callout lines on tablet when .tablet-active is added by JS */
         .grid-item.tablet-active .meta-line {
             opacity: 1;
             transform: translate(var(--text-shift-x, 0px), -50%);
@@ -370,11 +386,9 @@ body.home .home-corner-title .homes {
             transform: rotate(var(--line-angle, -20deg)) scaleX(1);
             transition: transform 0.28s;
         }
-        /* Optionally, hide meta-line on hover for clarity */
         .grid-item.tablet-active:hover .meta-line {
             opacity: 1;
         }
-    /* Anchor meta-line to the left and keep it in viewport */
     .meta-line {
         left: 0;
         right: auto;
@@ -412,6 +426,7 @@ body.home .home-corner-title .homes {
     .dropdown { top: 80px; }
 }
 @media (min-width: 480px) and (max-width: 767px) {
+    /* MOBILE LAYOUT FOR HOME PAGE (top row, horizontal title) */
     body.home .topbar {
         display: flex;
         justify-content: flex-start;
@@ -453,6 +468,7 @@ body.home .home-corner-title .homes {
     }
 
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
+    /* mobile item navigation arrows positioned near "Save this Item" */
     body:not(.home) .item-nav,
     .item-overlay .item-nav {
         position: fixed;
@@ -483,7 +499,7 @@ body.home .home-corner-title .homes {
         transform: translateY(-50%);
     }
 
-    /* Home title: horizontal row at top-right, aligned with + */
+    /* Home title becomes a horizontal row at top-right on mobile */
     body.home {
         position: relative;
     }
@@ -526,7 +542,7 @@ body.home .home-corner-title .homes {
     }
 }
 
-/* ABOUT 페이지 */
+/* ABOUT PAGE SPECIFIC */
 body.about .topbar { position: relative; padding: 40px 60px; }
 body.about .site-title {
     position: absolute;
@@ -547,7 +563,7 @@ body.about .about-content {
 }
 body.about .about-content p { margin: 0 0 2.5rem; }
 
-/* GRID */
+/* STUDENT PHOTO GRID (HOME PAGE) */
 .grid {
     width: 100%;
     max-width: 1300px;
@@ -564,6 +580,7 @@ body.home .grid {
 body.home .grid .extra-gap-item { margin-bottom: 48px; }
 body.home .grid .extra-gap-big { margin-bottom: 88px; }
 
+/* EACH GRID ITEM (IMAGE CONTAINER) */
 .grid-item {
     position: relative;
     width: 100%;
@@ -581,6 +598,7 @@ body.home .grid .extra-gap-big { margin-bottom: 88px; }
 }
 .grid-item:hover img { transform: scale(1.05); }
 
+/* HOVER META (CALL OUT LINES + TEXT) – DESKTOP ONLY */
 .hover-meta {
     position: absolute;
     inset: 0;
@@ -629,13 +647,13 @@ body.home .grid .extra-gap-big { margin-bottom: 88px; }
     transform: rotate(var(--line-angle, -20deg)) scaleX(1);
 }
 
-/* 이미지 크기 (개별) */
+/* INDIVIDUAL PHOTO SIZES (used on student pages) */
 .kat-photo, .rae-photo, .ege-photo, .val-photo, .cher-photo, .jas-photo, .sub-photo, .sop-photo, .fel-photo {
     width: min(100%, 830px);
     margin-bottom: clamp(4px, 1.2vw, 10px);
 }
 
-/* ARCHIVE 페이지 */
+/* ARCHIVE PAGE SPECIFIC LAYOUT (saved items) */
 .archive { margin-top: 20px; }
 .saved-items-grid { margin-top: 22vh; }
 body.archive .about-content {
@@ -656,35 +674,35 @@ body.archive .saved-items-grid { margin-top: 160px !important; }
     margin: 0 auto;
 }
 .saved-item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        width: 100%;
-        padding: 18px 0;
-        position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 18px 0;
+    position: relative;
 }
 
 body.archive .saved-item-photo-link,
 body.archive .saved-item img {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 body.archive .saved-item p,
 body.archive .save-item {
-        display: flex;
-        align-items: center;
-        height: 200px;
+    display: flex;
+    align-items: center;
+    height: 200px;
 }
 body.archive .saved-item p {
-        margin: 0 16px 0 0;
-        flex: 1;
+    margin: 0 16px 0 0;
+    flex: 1;
 }
 body.archive .save-item {
-        margin-left: 0;
-        align-self: center;
+    margin-left: 0;
+    align-self: center;
 }
 body.archive .saved-item:not(:last-child)::after {
     content: "";
@@ -699,10 +717,10 @@ body.archive .saved-item:not(:last-child)::after {
     opacity: 0.4;
 }
 @media (max-width: 767px) {
-        body.archive .save-item {
-            position: relative;
-            top: -42px;
-        }
+    body.archive .save-item {
+        position: relative;
+        top: -42px;
+    }
     body.archive .saved-item p {
         height: 120px;
     }
@@ -710,8 +728,7 @@ body.archive .saved-item:not(:last-child)::after {
         height: 120px;
         width: 120px;
     }
-    } 
-
+}
 @media (max-width: 479px) {
     body.archive .saved-item p,
     body.archive .save-item {
@@ -760,10 +777,10 @@ body.archive .archive-content {
 }
 body.archive .archive-content p { margin: 0 0 40px; }
 
+/* DESKTOP / TABLET: RESTORE HOME CORNER TITLE (was hidden by some previous rule) */
 @media (min-width: 768px) {
-    /* 데스크톱/태블릿: 홈페이지 제목(h1)을 왼쪽 하단에 고정, 회전 유지 */
     body.home .home-corner-title {
-        display: block !important;   /* 숨김 해제 */
+        display: block !important;
         position: fixed;
         left: 120px;
         bottom: 40px;
@@ -802,22 +819,18 @@ body.archive .archive-content p { margin: 0 0 40px; }
         display: block;
         white-space: nowrap;
     }
-
-    /* 기존에 있던 다른 태블릿/데스크톱 스타일은 그대로 유지 */
-    /* 예: .topbar, .site-title 등 다른 것들은 건드리지 않음 */
 }
 
+/* EXTRA DESKTOP POSITIONING (pseudo-elements, maybe unused) */
 @media (min-width: 1024px) {
     body.home .topbar::after {
         left: 138px;
         bottom: 56px;
     }
-
     body.home::before {
         left: 95px;
         bottom: 122px;
     }
-
     body.home::after {
         left: 42px;
         width: 90px;
@@ -825,7 +838,7 @@ body.archive .archive-content p { margin: 0 0 40px; }
     }
 }
 
-/* GLOBAL RESPONSIVE */
+/* GLOBAL RESPONSIVE UTILITIES */
 * { box-sizing: border-box; }
 body { margin: 0; padding: 0; }
 img { max-width: 100%; height: auto; }
@@ -839,7 +852,7 @@ h1 { font-size: clamp(36px, 8vw, 90px); margin: 24px 0 56px; padding: 0 16px; }
 body.about .about-content, body.archive .archive-content { width: min(100% - 32px, 1000px); }
 .grid { width: min(100% - 32px, 1200px); gap: clamp(14px, 2.5vw, 30px); padding: 0; }
 
-/* Responsive widths: never allow side-scrolling */
+/* PREVENT SIDE SCROLLING ON SMALL SCREENS */
 @media (max-width: 1023px) {
     html,
     body,
@@ -856,7 +869,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     .dropdown { left: 28px; top: 102px; }
     body.archive .saved-items-grid { margin-top: 110px !important; }
 
-    /* Narrow text columns to match mobile-like reading width */
+    /* Narrow text columns for tablet */
     body:not(.home) .q_and_a,
     .item-overlay .q_and_a { padding: 0 36px 28px; }
     body:not(.home) .q_and_a > div,
@@ -872,7 +885,6 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         width: min(calc(100% - 72px), 680px);
     }
 
-    /* Tablet: keep desktop effect but scale callouts to fit narrower viewport */
     .grid {
         width: min(100% - 48px, 980px);
     }
@@ -898,7 +910,6 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         transform: rotate(var(--line-angle, -20deg)) scaleX(1);
     }
 
-    /* Tablet: arrows centered on image and scrolling */
     body:not(.home) .item-nav,
     .item-overlay .item-nav {
         position: absolute;
@@ -976,7 +987,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         left: 12px !important;
     }
 
-    /* Home title row (BETWEEN [png] HOMES) */
+    /* Home title row (BETWEEN [png] HOMES) on very small screens */
     body.home .topbar {
         display: flex;
         justify-content: flex-start;
@@ -1024,7 +1035,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         font-size: inherit;
     }
 
-    /* Item page arrows near "Save this Item" area */
+    /* Item page arrows near "Save this Item" area on mobile */
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
     body:not(.home) .item-nav,
     .item-overlay .item-nav {
@@ -1088,14 +1099,14 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
 @media (max-width: 479px) { h1 { font-size: 32px; } .menu-toggle { font-size: 40px; } }
 @media (max-width: 479px) { .site-title { font-size: 24px; } }
 
-/* ===== 모바일 전용 (그리드 위치 + 펀치아웃) ===== */
+/* MOBILE PUNCH‑OUT (shows name & item when image centered) */
 @media (max-width: 767px) {
-    /* 그리드 시작 위치 내리기 */
+    /* lower grid start position */
     body.home .grid {
         margin-top: 4vh !important;
     }
 
-    /* 모바일에서는 메타 라인 레이어 완전 비활성화 */
+    /* hide desktop hover lines on mobile */
     .hover-meta,
     .meta-line,
     .meta-line::before,
@@ -1107,10 +1118,10 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         transform: none !important;
     }
     
-    /* 펀치아웃 위치 및 스타일 */
+    /* punch-out box styles */
     .mobile-punchout {
         position: absolute;
-        bottom: 10%;          /* 이미지 하단에서 위로 70px */
+        bottom: 10%;
         right: 12px;
         display: flex;
         flex-direction: column;
@@ -1124,7 +1135,8 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         background: rgb(50, 85, 164);
         color: rgb(241, 241, 241);
         font-family: monospace;
-        font-size: 12px;        z-index: 1100;        padding: 6px 12px;
+        font-size: 12px;
+        padding: 6px 12px;
         white-space: nowrap;
         width: fit-content;
         opacity: 0;
@@ -1141,14 +1153,14 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
     }
 }
 
-/* 태블릿/데스크톱에서는 숨김 */
+/* HIDE PUNCH-OUT ON TABLET/DESKTOP */
 @media (min-width: 768px) {
     .mobile-punchout {
         display: none !important;
     }
 }
 
-/* 모바일: About, Archive, 개별 페이지 h1 폰트 50px */
+/* MOBILE: About, Archive, individual pages h1 font size 50px */
 @media (max-width: 767px) {
     body.about h1,
     body.archive h1,
@@ -1158,7 +1170,7 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         top: var(--page-top);
     }
 
-    /* Phone: no meta lines, text-box only */
+    /* ensure no meta lines appear accidentally */
     .hover-meta,
     .meta-line,
     .meta-line::before,
@@ -1172,28 +1184,29 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         transform: none !important;
     }
 }
-/* 아카이브, 어바웃 페이지 기본 폰트 모노스페이스 */
+
+/* ARCHIVE & ABOUT PAGES: use monospace font */
 body.archive,
 body.about {
     font-family: monospace;
 }
 
-/* 데스크톱: 그리드 시작 위치를 적절히 내림 */
+/* DESKTOP: grid start position (fine-tune) */
 @media (min-width: 1024px) {
     body.home .grid {
-        margin-top: 0px !important;  /* 원하는 높이로 조절 (px, vh 등) */
+        margin-top: 0px !important;
     }
 }
 
-/* 태블릿(768px~1023px)에서 개별 페이지(오버레이 포함) h1 크기 조절 */
+/* TABLET: adjust h1 size for overlay and individual pages (not home, about, archive) */
 @media (min-width: 768px) and (max-width: 1023px) {
     .item-overlay h1,
     body:not(.home):not(.about):not(.archive) h1 {
-    font-size: 60px;   /* 여기를 원하는 크기로 변경 (예: 70px, 80px) */
+        font-size: 70px;
     }
-}
-    /* 본문 글자 크기도 같게 하려면 */
+    /* body text size to match about page */
     .item-overlay .q_and_a,
     body:not(.home):not(.about):not(.archive) .q_and_a {
         font-size: 18px !important;
     }
+}

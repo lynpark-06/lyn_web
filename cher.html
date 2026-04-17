@@ -5,19 +5,23 @@
         <title>International Student Must Items</title>
         <link rel="stylesheet" href="style/web.css?v=27">
     </head>
-
+       
+    <!--main titile -->
     <body>
+        <!-- student name as a link back to homepage -->
         <h1>
             <a href="index.html" class="home-link">
             CHELENE
             </a>
         </h1>
+        <!-- previous and next student page navigation arrows -->
         <a href="val.html" class="item-nav prev">←</a>
         <a href="jas.html" class="item-nav next">→</a>
     <div class="q_and_a">
+        <!-- student photo -->
         <img src="cher.png" class="cher-photo">
 
-        
+        <!--interview questions and answers-->
         <div>
             <p class="question">
                 Where are you from?
@@ -71,6 +75,7 @@
             </p>
         </div>
 
+        <!-- save button: allows user to add this item to their checklist -->
         <h2 class="item">
             <label class="save-item">
                 Save this Item
@@ -79,33 +84,38 @@
             </label>
         </h2>
         
-<div class="cursor"></div>
+        <!-- empty div for custom cursor effect (visual only) -->
+        <div class="cursor"></div>
 
-<script src="script.js?v=27"></script>
-<script>
-    const saveCheckbox = document.getElementById('save-checkbox');
-    const itemData = {
-        name: 'clothes from Hongkong',
-        photo: 'cher.png',
-        page: 'CHELENE'
-    };
+        <script src="script.js?v=27"></script>
+        <!-- script to save/unsave this specific item using browser's local storage -->
+        <script>
+            const saveCheckbox = document.getElementById('save-checkbox');
+            const itemData = {
+                name: 'clothes from Hongkong',
+                photo: 'cher.png',
+                page: 'CHELENE'
+            };
 
-    // Load saved state
-    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-    const isSaved = savedItems.some(item => item.name === itemData.name);
-    saveCheckbox.checked = isSaved;
+            // load previously saved items from local storage and check if this item is already saved
+            const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+            const isSaved = savedItems.some(item => item.name === itemData.name);
+            saveCheckbox.checked = isSaved;
 
-    saveCheckbox.addEventListener('change', () => {
-        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        if (saveCheckbox.checked) {
-            // Add item if not already saved
-            if (!savedItems.some(item => item.name === itemData.name)) {
-                savedItems.push(itemData);
-            }
-        } else {
-            // Remove item
-            savedItems = savedItems.filter(item => item.name !== itemData.name);
-        }
-        localStorage.setItem('savedItems', JSON.stringify(savedItems));
-    });
-</script>
+            // when the checkbox is toggled, add or remove this item from the saved list
+            saveCheckbox.addEventListener('change', () => {
+                let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+                if (saveCheckbox.checked) {
+                    // add item if not already present
+                    if (!savedItems.some(item => item.name === itemData.name)) {
+                        savedItems.push(itemData);
+                    }
+                } else {
+                    // remove item
+                    savedItems = savedItems.filter(item => item.name !== itemData.name);
+                }
+                localStorage.setItem('savedItems', JSON.stringify(savedItems));
+            });
+        </script>
+    </body>
+</html>

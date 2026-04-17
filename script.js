@@ -1,26 +1,29 @@
-// script.js - 최종 수정본 (아이템 이름 저장 + callout lines 보존 + GitHub Pages 경호환)
+// script.js - controls menu, overlays, saving items, hover lines, and mobile punch-out effects
 
-// GitHub Pages 서브디렉토리 자동 감지 (필요시 사용, 여기선 일단 생략 - 원래 경로 그대로)
-// 만약 GitHub Pages에서 404 나면 아래 주석 해제하고 fixUrl 적용 필요
+// Helper functions to detect screen size and special preview modes
+const getViewportWidth = () => {
+    const vv = window.visualViewport?.width;
+    const cw = document.documentElement?.clientWidth;
+    return Math.min(
+        Number.isFinite(vv) ? vv : Infinity,
+        Number.isFinite(cw) ? cw : Infinity,
+        window.innerWidth
+    );
+};
+const isNarrowDesktopPreview = () => {
+    const w = getViewportWidth();
+    return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+};
+const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
+// --------------------------------------------------------------
+// 1. CREATE TOP BAR (+ BUTTON, DROPDOWN) AND ATTACH EVENT LISTENERS
+// --------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const isHomePage = document.body.classList.contains('home');
     const isItemPage = Boolean(document.querySelector('.item-nav'));
-    const getViewportWidth = () => {
-        const vv = window.visualViewport?.width;
-        const cw = document.documentElement?.clientWidth;
-        return Math.min(
-            Number.isFinite(vv) ? vv : Infinity,
-            Number.isFinite(cw) ? cw : Infinity,
-            window.innerWidth
-        );
-    };
-    const isNarrowDesktopPreview = () => {
-        const w = getViewportWidth();
-        return w < 768 && w >= 480 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    };
-    const isPhoneLikeMode = () => getViewportWidth() < 480 || isNarrowDesktopPreview();
 
+    // Builds the topbar with + button and dropdown if missing
     const ensureGlobalMenu = () => {
         let topbar = document.querySelector('.topbar');
         if (!topbar) {
@@ -68,81 +71,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { toggle, dropdown } = ensureGlobalMenu();
 
+    // Add HOME link to dropdown on individual item pages
     if (isItemPage && !dropdown.querySelector('a[href="index.html"]')) {
         dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
     }
-
+    // Same for About / Archive pages
     const isAboutOrArchive = document.body.classList.contains('about') || document.body.classList.contains('archive');
     if (isAboutOrArchive && !dropdown.querySelector('a[href="index.html"]')) {
         dropdown.insertAdjacentHTML('afterbegin', '<a href="index.html">HOME</a><br>');
     }
 
-    const setupMobileItemNav = (root) => {
-        if (getViewportWidth() >= 768 || !root) return;
+    // Positions the dropdown next to the + button on mobile
+    const alignMobileDropdownToToggle = () => {
+        if (!isPhoneLikeMode()) return;
 
-        const saveSection = root.querySelector('.q_and_a .item');
-        const itemNavs = root.querySelectorAll('.item-nav');
-        if (!saveSection || !itemNavs.length) return;
+        const toggleRect = toggle.getBoundingClientRect();
+        const dropdownPosition = window.getComputedStyle(dropdown).position;
 
-        if (root.__mobileItemNavController) {
-            root.__mobileItemNavController.abort();
+        if (dropdownPosition === 'fixed') {
+            dropdown.style.left = `${Math.round(toggleRect.left)}px`;
+            dropdown.style.top = `${Math.round(toggleRect.bottom + 6)}px`;
+            dropdown.style.right = 'auto';
+            return;
         }
 
-        const controller = new AbortController();
-        const { signal } = controller;
-        root.__mobileItemNavController = controller;
-
-        const updateMobileItemNavTop = () => {
-            const rect = saveSection.getBoundingClientRect();
-            const centerY = rect.top + (rect.height / 2);
-            root.style.setProperty('--mobile-item-nav-top', `${Math.round(centerY)}px`);
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            const isVisible = entries.some((entry) => entry.isIntersecting);
-            root.classList.toggle('mobile-item-nav-visible', isVisible);
-            if (isVisible) updateMobileItemNavTop();
-        }, {
-            threshold: 0.2,
-            root: root.classList.contains('item-overlay') ? root : null,
-            rootMargin: '0px 0px -10% 0px'
-        });
-
-        updateMobileItemNavTop();
-        observer.observe(saveSection);
-
-        const scrollTarget = root.classList.contains('item-overlay') ? root : window;
-        scrollTarget.addEventListener('scroll', updateMobileItemNavTop, { passive: true, signal });
-        window.addEventListener('resize', updateMobileItemNavTop, { signal });
-        window.addEventListener('load', updateMobileItemNavTop, { signal });
-        signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+        const topbar = toggle.closest('.topbar');
+        if (!topbar) return;
+        const topbarRect = topbar.getBoundingClientRect();
+        dropdown.style.left = `${Math.round(toggleRect.left - topbarRect.left)}px`;
+        dropdown.style.top = `${Math.round(toggleRect.bottom - topbarRect.top + 6)}px`;
+        dropdown.style.right = 'auto';
     };
 
+    alignMobileDropdownToToggle();
+    window.addEventListener('resize', alignMobileDropdownToToggle);
+
+    // Opens/closes dropdown on + click, closes when clicking outside
     if (toggle && dropdown) {
-        const alignMobileDropdownToToggle = () => {
-            if (!isPhoneLikeMode()) return;
-
-            const toggleRect = toggle.getBoundingClientRect();
-            const dropdownPosition = window.getComputedStyle(dropdown).position;
-
-            if (dropdownPosition === 'fixed') {
-                dropdown.style.left = `${Math.round(toggleRect.left)}px`;
-                dropdown.style.top = `${Math.round(toggleRect.bottom + 6)}px`;
-                dropdown.style.right = 'auto';
-                return;
-            }
-
-            const topbar = toggle.closest('.topbar');
-            if (!topbar) return;
-            const topbarRect = topbar.getBoundingClientRect();
-            dropdown.style.left = `${Math.round(toggleRect.left - topbarRect.left)}px`;
-            dropdown.style.top = `${Math.round(toggleRect.bottom - topbarRect.top + 6)}px`;
-            dropdown.style.right = 'auto';
-        };
-
-        alignMobileDropdownToToggle();
-        window.addEventListener('resize', alignMobileDropdownToToggle);
-
         toggle.addEventListener('click', () => {
             alignMobileDropdownToToggle();
             const isOpen = dropdown.classList.toggle('show');
@@ -166,6 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --------------------------------------------------------------
+    // 2. HOME PAGE: OVERLAY SYSTEM (click image → open item page in overlay)
+    // --------------------------------------------------------------
     if (isHomePage) {
         const gridLinks = document.querySelectorAll('.grid a.grid-item, .grid .grid-item[href]');
         const prefetched = new Set();
@@ -174,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let isOpening = false;
         let overlay = null;
 
+        // Hide top menu when scrolling overlay on mobile
         const syncMobileOverlayMenuVisibility = () => {
             if (!toggle || !dropdown) return;
             if (!isPhoneLikeMode() || !overlay || !document.body.classList.contains('item-overlay-open')) {
@@ -239,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const qa = doc.querySelector('.q_and_a');
             if (!titleLink || !photo || !qa) return null;
 
-            // 각 페이지의 script에서 itemData.name 추출 (아이템 이름 저장용)
+            // Extract item name from the page's script (for saving)
             let hardcodedItemName = '';
             const scripts = doc.querySelectorAll('script');
             for (let script of scripts) {
@@ -316,6 +285,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.classList.add('item-overlay-open');
                 host.scrollTop = 0;
                 host.classList.add('item-enter-ready');
+                // Move prev/next arrows near save button on mobile
+                const setupMobileItemNav = (root) => {
+                    if (getViewportWidth() >= 768 || !root) return;
+                    const saveSection = root.querySelector('.q_and_a .item');
+                    const itemNavs = root.querySelectorAll('.item-nav');
+                    if (!saveSection || !itemNavs.length) return;
+                    if (root.__mobileItemNavController) root.__mobileItemNavController.abort();
+                    const controller = new AbortController();
+                    const { signal } = controller;
+                    root.__mobileItemNavController = controller;
+                    const updateMobileItemNavTop = () => {
+                        const rect = saveSection.getBoundingClientRect();
+                        const centerY = rect.top + (rect.height / 2);
+                        root.style.setProperty('--mobile-item-nav-top', `${Math.round(centerY)}px`);
+                    };
+                    const observer = new IntersectionObserver((entries) => {
+                        const isVisible = entries.some((entry) => entry.isIntersecting);
+                        root.classList.toggle('mobile-item-nav-visible', isVisible);
+                        if (isVisible) updateMobileItemNavTop();
+                    }, { threshold: 0.2, root: root.classList.contains('item-overlay') ? root : null, rootMargin: '0px 0px -10% 0px' });
+                    updateMobileItemNavTop();
+                    observer.observe(saveSection);
+                    const scrollTarget = root.classList.contains('item-overlay') ? root : window;
+                    scrollTarget.addEventListener('scroll', updateMobileItemNavTop, { passive: true, signal });
+                    window.addEventListener('resize', updateMobileItemNavTop, { signal });
+                    window.addEventListener('load', updateMobileItemNavTop, { signal });
+                    signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+                };
                 setupMobileItemNav(host);
                 syncMobileOverlayMenuVisibility();
                 requestAnimationFrame(() => {
@@ -341,6 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 240);
         });
 
+        // Prefetch grid links
         gridLinks.forEach((link) => {
             const href = link.getAttribute('href');
             if (!href || prefetched.has(href)) return;
@@ -351,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(prefetch);
         });
 
+        // Click event with smooth animation (no zoom)
         gridLinks.forEach((link) => {
             link.addEventListener('click', async (e) => {
                 if (isNarrowDesktopPreview()) return;
@@ -427,10 +426,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --------------------------------------------------------------
+    // 3. INDIVIDUAL ITEM PAGE: REVEAL ANIMATION + MOBILE NAVIGATION ARROWS
+    // --------------------------------------------------------------
     if (isItemPage) {
         const photo = document.querySelector('img[class$="-photo"], .q_and_a > img, body > img');
         if (photo) photo.classList.add('reveal-photo');
         document.body.classList.add('item-enter-ready');
+        // Positions prev/next arrows near "Save this Item" button on mobile
+        const setupMobileItemNav = (root) => {
+            if (getViewportWidth() >= 768 || !root) return;
+            const saveSection = root.querySelector('.q_and_a .item');
+            const itemNavs = root.querySelectorAll('.item-nav');
+            if (!saveSection || !itemNavs.length) return;
+            if (root.__mobileItemNavController) root.__mobileItemNavController.abort();
+            const controller = new AbortController();
+            const { signal } = controller;
+            root.__mobileItemNavController = controller;
+            const updateMobileItemNavTop = () => {
+                const rect = saveSection.getBoundingClientRect();
+                const centerY = rect.top + (rect.height / 2);
+                root.style.setProperty('--mobile-item-nav-top', `${Math.round(centerY)}px`);
+            };
+            const observer = new IntersectionObserver((entries) => {
+                const isVisible = entries.some((entry) => entry.isIntersecting);
+                root.classList.toggle('mobile-item-nav-visible', isVisible);
+                if (isVisible) updateMobileItemNavTop();
+            }, { threshold: 0.2, root: root.classList.contains('item-overlay') ? root : null, rootMargin: '0px 0px -10% 0px' });
+            updateMobileItemNavTop();
+            observer.observe(saveSection);
+            const scrollTarget = root.classList.contains('item-overlay') ? root : window;
+            scrollTarget.addEventListener('scroll', updateMobileItemNavTop, { passive: true, signal });
+            window.addEventListener('resize', updateMobileItemNavTop, { signal });
+            window.addEventListener('load', updateMobileItemNavTop, { signal });
+            signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+        };
         setupMobileItemNav(document.body);
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -439,9 +469,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ========================
-    // 원본 callout lines 코드 (hover 시 선 긋는 효과) - 그대로 복원
-    // ========================
+    // --------------------------------------------------------------
+    // 4. DESKTOP HOVER LINES (CALLOUTS) – draws line and text next to each image
+    // --------------------------------------------------------------
     const gridItems = document.querySelectorAll('.grid-item');
     if (gridItems.length) {
         const rand = (min, max) => Math.random() * (max - min) + min;
@@ -596,12 +626,11 @@ document.addEventListener('DOMContentLoaded', () => {
             gridItems.forEach((item) => placeItemCallouts(item));
         });
     }
-
 });
 
-// ========================
-// Responsive activation for phone punchout / tablet callout
-// ========================
+// --------------------------------------------------------------
+// 5. MOBILE PUNCH‑OUT + TABLET HOVER EFFECTS (ACTIVATED BY SCROLL POSITION)
+// --------------------------------------------------------------
 {
     let ticking = false;
     const getViewportWidth = () => {

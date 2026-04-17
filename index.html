@@ -9,16 +9,17 @@
 
 <body class="home">
 
+  <!-- top bar: contains the + menu button and the dropdown -->
   <header class="topbar">
-    <!-- 왼쪽: + 버튼 -->
+    <!-- + button toggles the dropdown menu -->
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-dropdown">
       +
     </button>
 
-    <!-- 오른쪽: 균형용 빈칸(제목 진짜 가운데 유지용) -->
+    <!-- empty spacer used to center the title on desktop -->
     <div class="topbar-spacer" aria-hidden="true"></div>
 
-    <!-- 드롭다운 -->
+    <!-- dropdown menu with links to ABOUT and MY CHECKLIST pages -->
     <nav id="menu-dropdown" class="dropdown" aria-label="Menu">
       <a href="about.html">ABOUT</a>
       <br>
@@ -26,6 +27,7 @@
     </nav>
   </header>
 
+  <!-- fixed title at the bottom-left: "BETWEEN" + icon + "HOMES" (rotated on desktop, horizontal on mobile) -->
   <div class="home-corner-title" aria-hidden="true">
     <span class="between">BETWEEN</span>
     <span class="corner-slot"><img src="home.png" alt=""></span>
@@ -34,14 +36,17 @@
 
   <script src="script.js?v=27"></script>
 
-<section class="grid">
+  <!-- grid of student photos; each image links to the individual student page -->
+  <section class="grid">
   
  <section class="grid">
   <a href="rae.html" class="grid-item">
     <img src="rae.png" alt="">
+    <!-- hover effect: shows name and item with a line (desktop only) -->
     <div class="hover-meta" aria-hidden="true">
       <span class="meta-line callout-line" data-gap="20" data-inward="40" data-start-x="20" data-start-y="0.40"><span>RAE CHANDINAE BAKISAN MANO</span><span>a tin box of photos</span></span>
     </div>
+    <!-- mobile punch-out: shows name and item when image is centered on small screens -->
     <div class="mobile-punchout"><span>RAE CHANDINAE BAKISAN MANO</span><br><span>a tin box of photos</span></div>
   </a>
 
@@ -110,12 +115,10 @@
   </a>
 </section>
 
+<!-- extra divs for custom cursor effect (visual only, no content) -->
 <div class="cursor"></div>
-
 <div class="cursor"></div>
-
 <div class="cursor"></div>
-
 <div class="cursor"></div>
 
 </body>

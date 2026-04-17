@@ -7,33 +7,42 @@
   <link rel="stylesheet" href="style/web.css?v=27">
 </head>
 
+<!-- "archive" class applies special styles for the checklist page -->
 <body class="archive">
 
-  <!-- 상단 메뉴 동일하게 유지 -->
+<!-- Main title: "MY CHECKLIST" - clicking it goes back to home -->
 <h1 class="site-title">
   <a href="index.html" class="home-link">MY CHECKLIST</a>
 </h1>
 
-  <section class="archive-content">
-    <p>
-      On my checklist, you can view the items you have saved.
-      To unssave an item, simply click the button next to the item name.
-    </p>
-  </section>
+<!-- Short instruction text for the user -->
+<section class="archive-content">
+  <p>
+    On my checklist, you can view the items you have saved.
+    To unssave an item, simply click the button next to the item name.
+  </p>
+</section>
 
-  <section class="saved-items-grid">
-    <div id="items-container"></div>
-  </section>
+<!-- Container where saved items will be dynamically inserted by JavaScript -->
+<section class="saved-items-grid">
+  <div id="items-container"></div>
+</section>
 
-  <div class="cursor"></div>
-
-  <div class="cursor"></div>
+<!-- Empty divs for custom cursor effect (visual only) -->
+<div class="cursor"></div>
+<div class="cursor"></div>
 
 <script src="script.js?v=27"></script>
 
+<!-- JavaScript code specific to the checklist page (saving/unsaving items) -->
 <script>  
+  // Get the container where saved items will be shown
   const itemsContainer = document.getElementById('items-container');
+  
+  // Load saved items from browser's local storage (or empty array if nothing saved)
   let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+  
+  // Map each person's name to their actual HTML file name
   const itemPageMap = {
     'RAE CHANDINAE BAKISAN MANO': 'rae.html',
     'KATIE WU': 'katie.html',
@@ -44,19 +53,21 @@
     'FELICIA HWANG': 'fel.html',
     'SUBIN SONG': 'sub.html',
     'SOPHYA CHAN': 'sop.html'
-
   };
 
+  // Get the correct URL for an item (use map or fallback)
   function getItemUrl(item) {
     return item.url || itemPageMap[item.page] || '#';
   }
 
+  // Save the current savedItems array back to local storage
   function saveToStorage() {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
   }
 
+  // Build the HTML list of saved items and display them
   function displaySavedItems() {
-    itemsContainer.innerHTML = '';
+    itemsContainer.innerHTML = ''; // clear old content
     savedItems.forEach((item, index) => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'saved-item';
@@ -73,31 +84,30 @@
       itemsContainer.appendChild(itemDiv);
     });
 
-    // attach listeners to checkboxes
+    // Add event listeners to each checkbox (for unsaving)
     const boxes = itemsContainer.querySelectorAll('.save-item input[type="checkbox"]');
     boxes.forEach(box => {
       box.addEventListener('change', (e) => {
         const idx = Number(e.target.dataset.index);
-        // when checked, ask for confirmation before unsaving
+        // When checkbox is checked, ask user to confirm before unsaving
         if (e.target.checked) {
           const ok = confirm('Are you sure you want to unsave this item?');
           if (ok) {
-            savedItems.splice(idx, 1);
-            saveToStorage();
-            displaySavedItems();
+            savedItems.splice(idx, 1);   // remove item from array
+            saveToStorage();             // update storage
+            displaySavedItems();         // refresh the list
           } else {
-            // user cancelled — revert checkbox state
+            // User cancelled: uncheck the box
             e.target.checked = false;
           }
         }
       });
     });
   }
+  
+  // Initially load and display saved items when page loads
   displaySavedItems();
 </script>
 
-
 </body>
 </html>
-
-
