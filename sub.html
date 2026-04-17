@@ -7,22 +7,24 @@
         <link rel="stylesheet" href="style/web.css?v=27">
     </head>
 
+    <!-- main title -->
     <body>
+        <!-- student name as a link back to homepage -->
         <h1>
             <a href="index.html" class="home-link">
             SUBIN SONG
             </a>
         </h1>
 
+        <!-- previous and next student page navigation arrows -->
         <a href="jas.html" class="item-nav prev">←</a>
         <a href="sop.html" class="item-nav next">→</a>
         
-    
-       
+        <!-- student photo -->
         <img src="sub.png" class="sub-photo">
 
-<div class="q_and_a">
-        
+        <div class="q_and_a">
+        <!-- interview questions and answers -->
         <div>
             <p class="question">
                 Where are you from?
@@ -74,6 +76,8 @@
                 it means to accept evething that happens to you here even though it was out of your plan.
             </p>
         </div>
+
+        <!-- save button: allows user to add this item to their checklist -->
         <h2 class="item">
             <label class="save-item">
                 Save this Item
@@ -81,50 +85,53 @@
                 <span class="checkmark"></span>
             </label>
         </h2>
-</div>
+        </div>
         
-<div class="cursor"></div>
+        <!-- empty divs for custom cursor effect (visual only) -->
+        <div class="cursor"></div>
+        <div class="cursor"></div>
+        <div class="cursor"></div>
 
-<div class="cursor"></div>
+        <script src="script.js?v=27"></script>
+        <!-- script to save/unsave this specific item using browser's local storage -->
+        <script>
+            const saveCheckbox = document.getElementById('save-checkbox');
+            const itemData = {
+                name: 'korean socks',
+                photo: 'sub.png',
+                page: 'SUBIN SONG'
+            };
 
-<div class="cursor"></div>
-
-<script src="script.js?v=27"></script>
-<script>
-    const saveCheckbox = document.getElementById('save-checkbox');
-    const itemData = {
-        name: 'korean socks',
-        photo: 'sub.png',
-        page: 'SUBIN SONG'
-    };
-
-   // Load saved state
-    let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-    const existingIndex = savedItems.findIndex(item => item.page === itemData.page);
-    if (existingIndex !== -1) {
-        savedItems[existingIndex] = itemData;
-        localStorage.setItem('savedItems', JSON.stringify(savedItems));
-        saveCheckbox.checked = true;
-    } else {
-        saveCheckbox.checked = false;
-    }
-
-    saveCheckbox.addEventListener('change', () => {
-        let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        const index = savedItems.findIndex(item => item.page === itemData.page);
-        if (saveCheckbox.checked) {
-            // Add item if not already saved
-            if (index === -1) {
-                savedItems.push(itemData);
+            // load previously saved items from local storage and check if this item is already saved
+            let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+            const existingIndex = savedItems.findIndex(item => item.page === itemData.page);
+            if (existingIndex !== -1) {
+                savedItems[existingIndex] = itemData;
+                localStorage.setItem('savedItems', JSON.stringify(savedItems));
+                saveCheckbox.checked = true;
             } else {
-                savedItems[index] = itemData;
+                saveCheckbox.checked = false;
             }
-        } else {
-            // Remove item
-            if (index !== -1) {
-                savedItems.splice(index, 1);
-            }
-        }
-        localStorage.setItem('savedItems', JSON.stringify(savedItems));
-    });
-</script>
+
+            // when the checkbox is toggled, add or remove this item from the saved list
+            saveCheckbox.addEventListener('change', () => {
+                let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+                const index = savedItems.findIndex(item => item.page === itemData.page);
+                if (saveCheckbox.checked) {
+                    // add item if not already present
+                    if (index === -1) {
+                        savedItems.push(itemData);
+                    } else {
+                        savedItems[index] = itemData;
+                    }
+                } else {
+                    // remove item
+                    if (index !== -1) {
+                        savedItems.splice(index, 1);
+                    }
+                }
+                localStorage.setItem('savedItems', JSON.stringify(savedItems));
+            });
+        </script>
+    </body>
+</html>

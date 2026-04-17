@@ -9,7 +9,7 @@
     font-style: normal;
 }
 
-/* GLOBAL COLORS */
+/* GLOBAL COLORS - using only 2 colors across all pages */
 html {
     color: rgb(50, 85, 164);
     background-color: rgb(241, 241, 241);
@@ -21,7 +21,7 @@ html {
     --title-size: clamp(60px, 8vw, 100px);
 }
 
-/* DEFAULT HEADING STYLE (used on all pages unless overridden) */
+/* DEFAULT HEADING STYLE - used on all pages unless overridden */
 h1 {
     font-size: 90px;
     font-weight: normal;
@@ -71,7 +71,7 @@ h1 {
     box-sizing: border-box;
     border-radius: 0px;
 }
-/* checkmark (✓) when checked */
+/* checkmark when checked */
 .save-item input[type="checkbox"]:checked + .checkmark::after {
     content: '✓';
     position: absolute;
@@ -169,7 +169,8 @@ img {
     color: rgb(133, 214, 107);
 }
 
-/* TRANSITION ANIMATIONS FOR OPENING OVERLAY / ITEM PAGE */
+/* TRANSITION ANIMATIONS FOR OPENING OVERLAY - wanted smooth transition between the 
+index page to individual item pages / ITEM PAGE */
 body.item-enter-ready .item-nav,
 .item-overlay.item-enter-ready .item-nav {
     opacity: 0;
@@ -373,7 +374,8 @@ body.home .home-corner-title .homes {
     font-size: 20px;
 }
 
-/* RESPONSIVE ADJUSTMENTS (COMMON) */
+/* RESPONSIVE ADJUSTMENTS (phone,tablet landscape,portrait and computer.0-480
+481-767,768-1024,1024 and up/
 @media (min-width: 768px) and (max-width: 1023px) {
         /* show callout lines on tablet when .tablet-active is added by JS */
         .grid-item.tablet-active .meta-line {
@@ -418,7 +420,7 @@ body.home .home-corner-title .homes {
     .menu-toggle { font-size: 64px; top: 24px; left: 20px; }
     .topbar-spacer { width: 64px; }
     .dropdown { left: 20px; top: 95px; }
-}
+
 @media (min-width: 480px) and (max-width: 767px) {
     .site-title { font-size: 48px; }
     .menu-toggle { font-size: 48px; top: 20px; left: 16px; }
@@ -563,7 +565,7 @@ body.about .about-content {
 }
 body.about .about-content p { margin: 0 0 2.5rem; }
 
-/* STUDENT PHOTO GRID (HOME PAGE) */
+/* ITEM PHOTO GRID (HOME PAGE) */
 .grid {
     width: 100%;
     max-width: 1300px;
@@ -598,7 +600,8 @@ body.home .grid .extra-gap-big { margin-bottom: 88px; }
 }
 .grid-item:hover img { transform: scale(1.05); }
 
-/* HOVER META (CALL OUT LINES + TEXT) – DESKTOP ONLY */
+/* HOVER META (CALL OUT LINES + TEXT) – DESKTOP ONLY - wanted to adapt the line and punch out style i used for when making zine. 
+ */
 .hover-meta {
     position: absolute;
     inset: 0;
@@ -852,7 +855,8 @@ h1 { font-size: clamp(36px, 8vw, 90px); margin: 24px 0 56px; padding: 0 16px; }
 body.about .about-content, body.archive .archive-content { width: min(100% - 32px, 1000px); }
 .grid { width: min(100% - 32px, 1200px); gap: clamp(14px, 2.5vw, 30px); padding: 0; }
 
-/* PREVENT SIDE SCROLLING ON SMALL SCREENS */
+/* PREVENT SIDE SCROLLING ON SMALL SCREENS - fixed screen so when user scroll there is no accidental scroll 
+to empty while space. */
 @media (max-width: 1023px) {
     html,
     body,
@@ -1035,7 +1039,8 @@ body.about .about-content, body.archive .archive-content { width: min(100% - 32p
         font-size: inherit;
     }
 
-    /* Item page arrows near "Save this Item" area on mobile */
+    /* Item page arrows near "Save this Item" area on mobile - small screen, 
+    its hard to see the image if the arrows are next to images. */
     .item-nav { font-size: clamp(44px, 13vw, 72px); }
     body:not(.home) .item-nav,
     .item-overlay .item-nav {
